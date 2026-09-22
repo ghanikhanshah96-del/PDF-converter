@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #33333b;
+  --ink-muted: #707078;
+  --brand: #e5322d;
+  --brand-deep: #c82420;
+  --brand-soft: #fff0f0;
+  --surface: #ffffff;
+  --surface-solid: #ffffff;
+  --line: #e7e7ee;
+  --bg-a: #f7f7fb;
+  --bg-b: #ffffff;
+  --bg-c: #f5f5fa;
+  --danger: #e5322d;
+  --success: #2f9e62;
+  --shadow: 0 5px 30px rgba(22, 22, 22, 0.1);
+  --radius: 8px;
+  --font-display: var(--font-outfit), "Segoe UI", sans-serif;
+  --font-body: var(--font-source-sans), "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+  --color-surface: var(--surface-solid);
+  --color-line: var(--line);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--ink);
+  font-family: var(--font-body);
+  background: var(--bg-a);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.site-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .site-container {
+    padding-inline: 1.5rem;
+  }
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: white;
+  box-shadow: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--brand-deep);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--brand-deep);
+  border: 1px solid var(--line);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--brand-soft);
+}
+
+.dropzone {
+  border: 2px dashed rgba(229, 50, 45, 0.32);
+  background: #ffffff;
+  border-radius: var(--radius);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+.dropzone[data-active="true"] {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  transform: translateY(-1px);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes progress-shine {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 520ms ease both;
+}
+
+.animate-fade-up-delay {
+  animation: fade-up 640ms ease both;
+  animation-delay: 80ms;
+}
+
+.tool-grid-item {
+  animation: fade-up 560ms ease both;
+}
+
+.progress-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(215, 25, 32, 0.12);
+  overflow: hidden;
+}
+
+.progress-bar > span {
+  display: block;
+  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-deep), var(--brand));
+  border-radius: inherit;
+  overflow: hidden;
+  transition: width 220ms ease;
+}
+
+.progress-bar[data-busy="true"] > span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: progress-shine 900ms ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-up-delay,
+  .tool-grid-item,
+  .btn,
+  .dropzone {
+    animation: none !important;
+    transition: none !important;
+  }
+}

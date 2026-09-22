@@ -1,0 +1,2006 @@
+{
+  "source": "https://www.ilovepdf.com/blog",
+  "assets": [
+    {
+      "url": "https://www.ilovepdf.com/img/ilovepdf.svg",
+      "kind": "Image",
+      "width": 300,
+      "height": 76,
+      "alt": "iLovePDF",
+      "label": "iLovePDF",
+      "category": "Images",
+      "index": 0
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/383-1788785727-iLovePDF-at-Fenalaw-2026@570w.png",
+      "kind": "Image",
+      "width": 570,
+      "height": 380,
+      "alt": "iLovePDF at Fenalaw 2026: document work and compliance for legal teams",
+      "label": "iLovePDF at Fenalaw 2026: document work and compliance for legal teams",
+      "category": "Images",
+      "index": 1
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/370-1778837438-Meet-PDF-Forms-by-iLovePDF-01@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Merge any file type with iLovePDF Desktop",
+      "label": "Merge any file type with iLovePDF Desktop",
+      "category": "Images",
+      "index": 2
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/206-1678894051-How-to-convert-PDF%2C-Office%2C-%26-Images@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDFs: The complete guide",
+      "label": "How to convert PDFs: The complete guide",
+      "category": "Images",
+      "index": 3
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/136-1657013578-post97-old-%281%29@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to translate your PDF into another language",
+      "label": "How to translate your PDF into another language",
+      "category": "Images",
+      "index": 4
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/123-1652094039-How-to-convert-PNG-images-to-PDF-files-online@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PNG to PDF online",
+      "label": "How to convert PNG to PDF online",
+      "category": "Images",
+      "index": 5
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/209-1679904682-Convert-PDF-to-text@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to make a PDF searchable ",
+      "label": "How to make a PDF searchable ",
+      "category": "Images",
+      "index": 6
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/284-1704881604-Convert-JPG-to-Excel-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert JPG to Excel with free online tools",
+      "label": "How to convert JPG to Excel with free online tools",
+      "category": "Images",
+      "index": 7
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/285-1705422566-How-to-convert-JPG-to-Word-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert JPG to editable Word",
+      "label": "How to convert JPG to editable Word",
+      "category": "Images",
+      "index": 8
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/382-1787578659-Put-your-PDF-work-on-autopilot@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Put your PDF work on autopilot: API and no-code automation with iLovePDF",
+      "label": "Put your PDF work on autopilot: API and no-code automation with iLovePDF",
+      "category": "Images",
+      "index": 9
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/379-1786009995-The-new-era-of-privacy-in-legal-work@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "From obligation to advantage: how privacy is reshaping legal work",
+      "label": "From obligation to advantage: how privacy is reshaping legal work",
+      "category": "Images",
+      "index": 10
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/377-1784712108-How-to-convert-PDF-to-Markdown@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Convert PDF to Markdown: why it matters and how to do it",
+      "label": "Convert PDF to Markdown: why it matters and how to do it",
+      "category": "Images",
+      "index": 11
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/376-1781004826-Evaluating-document-tools-in-legal@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Five key questions every legal team should ask before approving a document tool",
+      "label": "Five key questions every legal team should ask before approving a document tool",
+      "category": "Images",
+      "index": 12
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/374-1780043610-Why-businesses-go-offline-with-PDFs@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Why more businesses are moving to offline PDF workflows",
+      "label": "Why more businesses are moving to offline PDF workflows",
+      "category": "Images",
+      "index": 13
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/373-1780040649-Apng@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Why businesses convert to PDF/A",
+      "label": "Why businesses convert to PDF/A",
+      "category": "Images",
+      "index": 14
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/372-1779459014-Get-the-Chrome-extensions@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "iLovePDF and iLoveIMG Chrome extensions get a fresh update",
+      "label": "iLovePDF and iLoveIMG Chrome extensions get a fresh update",
+      "category": "Images",
+      "index": 15
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/371-1779461858-the-fix-for-file-size-limits@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "File too large to upload? Here's how to fix it in minutes",
+      "label": "File too large to upload? Here's how to fix it in minutes",
+      "category": "Images",
+      "index": 16
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/369-1778837422-Meet-PDF-Forms-by-iLovePDF-05@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Meet PDF Forms: build, fill, and edit fillable PDFs in one place",
+      "label": "Meet PDF Forms: build, fill, and edit fillable PDFs in one place",
+      "category": "Images",
+      "index": 17
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/368-1778243798-New-Smart-Split-with-AI@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Smart split PDF: how iLovePDF's new AI range mode organises any document in seconds",
+      "label": "Smart split PDF: how iLovePDF's new AI range mode organises any document in seconds",
+      "category": "Images",
+      "index": 18
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/367-1778242794-What-is-a-Certificate-Authority%3F@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is a Certificate Authority (CA) and how does it support digital signatures?",
+      "label": "What is a Certificate Authority (CA) and how does it support digital signatures?",
+      "category": "Images",
+      "index": 19
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/363-1777556920-Why-use-a-PDF-to-Word-converter@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "11 reasons your business needs a PDF to Word converter",
+      "label": "11 reasons your business needs a PDF to Word converter",
+      "category": "Images",
+      "index": 20
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/365-1777556960-What-is-UUID_@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Understanding the Universally Unique Identifier (UUID)",
+      "label": "Understanding the Universally Unique Identifier (UUID)",
+      "category": "Images",
+      "index": 21
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/360-1777037287-How-to-make-a-PDF-with-iLovePDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to make a PDF: 3 simple methods to create PDF files",
+      "label": "How to make a PDF: 3 simple methods to create PDF files",
+      "category": "Images",
+      "index": 22
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/357-1777018844-What-is-an-audit-trail-in-e-Signing%3F@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is an audit trail in digital signatures?",
+      "label": "What is an audit trail in digital signatures?",
+      "category": "Images",
+      "index": 23
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/359-1776675063-iLovePDF-at-GITEX-Africa@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "iLovePDF at GITEX Africa: Real conversations, real needs, real solutions",
+      "label": "iLovePDF at GITEX Africa: Real conversations, real needs, real solutions",
+      "category": "Images",
+      "index": 24
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/355-1775823441-PDF-tools-for-business-teams-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "PDF tools for business: how teams can simplify document workflows",
+      "label": "PDF tools for business: how teams can simplify document workflows",
+      "category": "Images",
+      "index": 25
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/356-1775814644-How-to-summarize-PDFs-with-AI@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to summarize a PDF with AI",
+      "label": "How to summarize a PDF with AI",
+      "category": "Images",
+      "index": 26
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/353-1772792982-Crop-PDF-online@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to crop a PDF online and trim margins easily",
+      "label": "How to crop a PDF online and trim margins easily",
+      "category": "Images",
+      "index": 27
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/354-1773411931-ilovePDF%27s-new-Workflows-feature-lets-you-automate-and-save-your-repeat-tasks--@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Automate repetitive PDF tasks with iLovePDF Workflows",
+      "label": "Automate repetitive PDF tasks with iLovePDF Workflows",
+      "category": "Images",
+      "index": 28
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/352-1772788233-Regional-File-Processing-iLovePDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Choose where your PDF files are processed",
+      "label": "Choose where your PDF files are processed",
+      "category": "Images",
+      "index": 29
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/350-1771582695-More-advanced-PDF-editing@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Meet the new advanced PDF editor from iLovePDF",
+      "label": "Meet the new advanced PDF editor from iLovePDF",
+      "category": "Images",
+      "index": 30
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/342-1751030509-ISO-certified-file-safety@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Why iLovePDF is ISO/IEC 27001 certified: What it means for your data security",
+      "label": "Why iLovePDF is ISO/IEC 27001 certified: What it means for your data security",
+      "category": "Images",
+      "index": 31
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/351-1772013389-Introducing-Translate-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Introducing Translate PDF: AI-powered PDF translation without losing formatting",
+      "label": "Introducing Translate PDF: AI-powered PDF translation without losing formatting",
+      "category": "Images",
+      "index": 32
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/349-1772791772-What%27s-new-in-iLovePDF%27s-latest-release@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "New AI-powered translation, advanced editing, and regional control of files ",
+      "label": "New AI-powered translation, advanced editing, and regional control of files ",
+      "category": "Images",
+      "index": 33
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/348-1770974113-what%27s-new-in-iLovePDF-Desktop@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What’s new in iLovePDF Desktop for working with large PDFs?",
+      "label": "What’s new in iLovePDF Desktop for working with large PDFs?",
+      "category": "Images",
+      "index": 34
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/347-1770974391-PDF-Compliance-%26-GDPR-Hub@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "PDF Compliance & GDPR Hub: How iLovePDF keeps\nyour documents compliant",
+      "label": "PDF Compliance & GDPR Hub: How iLovePDF keeps\nyour documents compliant",
+      "category": "Images",
+      "index": 35
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/255-1696416487-How-to-download-a-PDF-from-a-link-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to download a PDF from a link",
+      "label": "How to download a PDF from a link",
+      "category": "Images",
+      "index": 36
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/42-1623231612-Add-image-to-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to insert an image into a PDF",
+      "label": "How to insert an image into a PDF",
+      "category": "Images",
+      "index": 37
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/220-1682505692-How-to-add-pages-to-PDF-files-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add pages to PDF files",
+      "label": "How to add pages to PDF files",
+      "category": "Images",
+      "index": 38
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/11-1622456585-Convert-PDF-to-Word@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF to Word",
+      "label": "How to convert PDF to Word",
+      "category": "Images",
+      "index": 39
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/381-1787568158-Reader-View-for-long-PDFs@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Reader View: a simpler way to read long PDFs on your phone",
+      "label": "Reader View: a simpler way to read long PDFs on your phone",
+      "category": "Images",
+      "index": 40
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/346-1751267652-Delete-a-page-in-Word@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to delete a page in Word (without the formatting headache)",
+      "label": "How to delete a page in Word (without the formatting headache)",
+      "category": "Images",
+      "index": 41
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/338-1751016566-Edit-PDF-for-mobile@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "A complete guide to the iLovePDF Mobile App’s Edit PDF tool",
+      "label": "A complete guide to the iLovePDF Mobile App’s Edit PDF tool",
+      "category": "Images",
+      "index": 42
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/339-1751018295-Edit-PDFs-offline@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit PDF offline with Mac and Windows",
+      "label": "How to edit PDF offline with Mac and Windows",
+      "category": "Images",
+      "index": 43
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/340-1751027441-An-iLovePDF-settings-guide-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "A complete guide to your iLovePDF profile settings",
+      "label": "A complete guide to your iLovePDF profile settings",
+      "category": "Images",
+      "index": 44
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/341-1751028696-Convert-HEIC-to-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert HEIC to PDF",
+      "label": "How to convert HEIC to PDF",
+      "category": "Images",
+      "index": 45
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/344-1751034182-Compress-PDF-offline@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to compress PDF offline ",
+      "label": "How to compress PDF offline ",
+      "category": "Images",
+      "index": 46
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/343-1751033387-How-to-scan-on-iOS@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to scan on iPhone and iPad",
+      "label": "How to scan on iPhone and iPad",
+      "category": "Images",
+      "index": 47
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/335-1748613195-185--8-study-hacks-for-students@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "8 hacks for MBA students to simplify their workflow with iLovePDF",
+      "label": "8 hacks for MBA students to simplify their workflow with iLovePDF",
+      "category": "Images",
+      "index": 48
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/333-1748612256-183--Understanding-PDF-quality-%26-conversion@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Understanding PDF quality and conversion accuracy: What you need to know",
+      "label": "Understanding PDF quality and conversion accuracy: What you need to know",
+      "category": "Images",
+      "index": 49
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/336-1748615352-186--OCR-Tips-for-better-scans@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Smart OCR tips: how to get the most out of your scanned documents",
+      "label": "Smart OCR tips: how to get the most out of your scanned documents",
+      "category": "Images",
+      "index": 50
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/337-1748615913-How-to-edit-PDF-text@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit text directly in your PDF files online ",
+      "label": "How to edit text directly in your PDF files online ",
+      "category": "Images",
+      "index": 51
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/334-1748612560-184-Edit-or-clear-PDF-metadata@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit the metadata of PDFs on Windows and Mac",
+      "label": "How to edit the metadata of PDFs on Windows and Mac",
+      "category": "Images",
+      "index": 52
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/313-1747039839-How-to-compress-PDF-under-100-KB@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to reduce PDF size under 100KB\n",
+      "label": "How to reduce PDF size under 100KB\n",
+      "category": "Images",
+      "index": 53
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/317-1747743644-Convert-PDFs-into-an-organized-Excel@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF tables to Excel (without the mess)",
+      "label": "How to convert PDF tables to Excel (without the mess)",
+      "category": "Images",
+      "index": 54
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/318-1747743753-Digital-signature-audit-trails@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is an audit trail? A simple guide to digital document tracking",
+      "label": "What is an audit trail? A simple guide to digital document tracking",
+      "category": "Images",
+      "index": 55
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/319-1747743819-What-is-a-qualified-timestamp_@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is a qualified timestamp? A simple explanation for secure e-Signing",
+      "label": "What is a qualified timestamp? A simple explanation for secure e-Signing",
+      "category": "Images",
+      "index": 56
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/320-1747743933-How-PKI-secures-e-Signatures-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is Public Key Infrastructure? How PKI secures e-Signatures",
+      "label": "What is Public Key Infrastructure? How PKI secures e-Signatures",
+      "category": "Images",
+      "index": 57
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/321-1747744017-Revise-digital-signatures-with-iLovePDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "A guide to revising the validity of digital signatures in the iLovePDF Desktop App",
+      "label": "A guide to revising the validity of digital signatures in the iLovePDF Desktop App",
+      "category": "Images",
+      "index": 58
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/312-1747037660-Use-iLovePDF-with-Drive-%26-Dropbox@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to use iLovePDF with Google Drive and Dropbox (step-by-step guide)",
+      "label": "How to use iLovePDF with Google Drive and Dropbox (step-by-step guide)",
+      "category": "Images",
+      "index": 59
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/314-1747037895-How-to-edit-PDFs-without-Adobe-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Can I edit a PDF without Adobe Acrobat? Here's how using iLovePDF",
+      "label": "Can I edit a PDF without Adobe Acrobat? Here's how using iLovePDF",
+      "category": "Images",
+      "index": 60
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/315-1747037963-How-to-merge-PDF-and-JPG-image-files-together-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to merge PDF and JPG files into one document (the easy way)",
+      "label": "How to merge PDF and JPG files into one document (the easy way)",
+      "category": "Images",
+      "index": 61
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/316-1747038067-Are-e-Signatures-legal%3F-What-makes-digital-signatures-legally-binding-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Digital signature validity explained: What makes it legal?",
+      "label": "Digital signature validity explained: What makes it legal?",
+      "category": "Images",
+      "index": 62
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/297-1714377670-Post-167@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to compare PDF content ",
+      "label": "How to compare PDF content ",
+      "category": "Images",
+      "index": 63
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/310-1744202844-iLovePDF%27s-OpenAI-PDF-GPT@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Introducing iLovePDF + ChatGPT: The custom PDF GPT",
+      "label": "Introducing iLovePDF + ChatGPT: The custom PDF GPT",
+      "category": "Images",
+      "index": 64
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/229-1687353512-The-iLovePDF-Team-Workspace-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Welcome to the iLovePDF Teams Workspace",
+      "label": "Welcome to the iLovePDF Teams Workspace",
+      "category": "Images",
+      "index": 65
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/308-1732104386-Navigating-the-eIDAS-Regulation@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Digital signatures and trust: Navigating the eIDAS Regulation",
+      "label": "Digital signatures and trust: Navigating the eIDAS Regulation",
+      "category": "Images",
+      "index": 66
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/210-1680097227-Effective-Study-Methods@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "13 effective study methods and how to use them (2025)",
+      "label": "13 effective study methods and how to use them (2025)",
+      "category": "Images",
+      "index": 67
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/306-1724846741-How-to-automatically-store-image-files-from-Google-Forms-as-PDFs-in-Dropbox@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to automatically store image files from Google Forms as PDFs in Dropbox",
+      "label": "How to automatically store image files from Google Forms as PDFs in Dropbox",
+      "category": "Images",
+      "index": 68
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/167-1666077136-How-to-edit-a-PDF-on-Chromebook@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit a PDF on Chromebook",
+      "label": "How to edit a PDF on Chromebook",
+      "category": "Images",
+      "index": 69
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/27-1622809860-Edit-PDF-files@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit PDF files online",
+      "label": "How to edit PDF files online",
+      "category": "Images",
+      "index": 70
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/305-1718004445-How-to-redact-a-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to redact a PDF",
+      "label": "How to redact a PDF",
+      "category": "Images",
+      "index": 71
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/298-1716452836-What-is-the-ESIGN-Act%3F@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is the ESIGN Act? e-Signature compliance explained",
+      "label": "What is the ESIGN Act? e-Signature compliance explained",
+      "category": "Images",
+      "index": 72
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/286-1709905324-How-to-edit-a-PDF-in-Word@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit a PDF in Word ",
+      "label": "How to edit a PDF in Word ",
+      "category": "Images",
+      "index": 73
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/52-1687954898-Compare-the-iLovePDF-Editing-Platforms-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "iLovePDF Web, Desktop, or Mobile: Which platform is right for you? (updated 2025)",
+      "label": "iLovePDF Web, Desktop, or Mobile: Which platform is right for you? (updated 2025)",
+      "category": "Images",
+      "index": 74
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/205-1678104167-Graphic-Design-Software@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "The best free graphic design software: 32 must-have tools (2025)",
+      "label": "The best free graphic design software: 32 must-have tools (2025)",
+      "category": "Images",
+      "index": 75
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/235-1688561134-iLovePDF-Review-and-File-Safety@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "iLovePDF Reviews: Why millions of daily users trust us (2025)",
+      "label": "iLovePDF Reviews: Why millions of daily users trust us (2025)",
+      "category": "Images",
+      "index": 76
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/283-1703148542-How-to-merge-PDF-offline-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to merge PDF files offline ",
+      "label": "How to merge PDF files offline ",
+      "category": "Images",
+      "index": 77
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/10-1705578360-How-to-add-a-password-to-a-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to protect a PDF file with a password",
+      "label": "How to protect a PDF file with a password",
+      "category": "Images",
+      "index": 78
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/37-1623165716-Convert-PDF-to-Office@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF files offline",
+      "label": "How to convert PDF files offline",
+      "category": "Images",
+      "index": 79
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/81-1639651309-How-to-convert-to-a-paperless-office-and-improve-team-collaboration@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to go completely paperless by 2025",
+      "label": "How to go completely paperless by 2025",
+      "category": "Images",
+      "index": 80
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/36-1623155886-Global-Changemakers@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "The remote team who have been doing it right",
+      "label": "The remote team who have been doing it right",
+      "category": "Images",
+      "index": 81
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/282-1702546384-How-to-edit-PDF-content-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit PDF text with a mobile PDF editor",
+      "label": "How to edit PDF text with a mobile PDF editor",
+      "category": "Images",
+      "index": 82
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/15-1622556703-Success-Story-London-Plus@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Boosting a mission towards civil empowerment",
+      "label": "Boosting a mission towards civil empowerment",
+      "category": "Images",
+      "index": 83
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/26-1622799463-Learnlife-Success-Story@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Barcelona's state-of-the-art Learnlife hub to change education worldwide",
+      "label": "Barcelona's state-of-the-art Learnlife hub to change education worldwide",
+      "category": "Images",
+      "index": 84
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/22-1622715925-Repair-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to repair a corrupted or damaged PDF file",
+      "label": "How to repair a corrupted or damaged PDF file",
+      "category": "Images",
+      "index": 85
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/34-1623144469-Organize-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to organize PDF pages",
+      "label": "How to organize PDF pages",
+      "category": "Images",
+      "index": 86
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/272-1700648790-Download-notepad-template-port-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Discover the digital notepad template",
+      "label": "Discover the digital notepad template",
+      "category": "Images",
+      "index": 87
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/33-1705675004-What-is-OCR%3F@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is OCR and why your business needs it",
+      "label": "What is OCR and why your business needs it",
+      "category": "Images",
+      "index": 88
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/32-1623071129-FINANCIAL3@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "6 PDF tools to digitally transform financial companies",
+      "label": "6 PDF tools to digitally transform financial companies",
+      "category": "Images",
+      "index": 89
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/17-1636641824-Convert-PDF-to-PDF_A@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Meet the PDF/A family",
+      "label": "Meet the PDF/A family",
+      "category": "Images",
+      "index": 90
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/18-1622637341-Distance-learning@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "6 must-have PDF tools for e-Learning professionals",
+      "label": "6 must-have PDF tools for e-Learning professionals",
+      "category": "Images",
+      "index": 91
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/24-1622725784-Optimize-website-SEO@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to optimize your website for better SEO",
+      "label": "How to optimize your website for better SEO",
+      "category": "Images",
+      "index": 92
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/269-1698236453-How-to-redact-a-PDF-on-mobile-or-tablet-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to redact a PDF on mobile and tablet",
+      "label": "How to redact a PDF on mobile and tablet",
+      "category": "Images",
+      "index": 93
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/25-1705578488-Effective-remote-working-tools-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 essential PDF tools for effective remote working",
+      "label": "5 essential PDF tools for effective remote working",
+      "category": "Images",
+      "index": 94
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/30-1623060584-Add-smiley-to-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add smileys and hearts to PDF",
+      "label": "How to add smileys and hearts to PDF",
+      "category": "Images",
+      "index": 95
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/31-1623062668-5-tools-for-students@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 free PDF tools every student should know",
+      "label": "5 free PDF tools every student should know",
+      "category": "Images",
+      "index": 96
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/35-1623149775-File-security@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Are my files safe using iLovePDF?",
+      "label": "Are my files safe using iLovePDF?",
+      "category": "Images",
+      "index": 97
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/268-1697533468-How-to-highlight-a-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to highlight the text in a PDF on mobile & tablet",
+      "label": "How to highlight the text in a PDF on mobile & tablet",
+      "category": "Images",
+      "index": 98
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/256-1697023202-What-is-a-PDF-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is a PDF file? ",
+      "label": "What is a PDF file? ",
+      "category": "Images",
+      "index": 99
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/88-1643733073-How-to-convert-Word-documents-to-PDF-online@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert Word to PDF online",
+      "label": "How to convert Word to PDF online",
+      "category": "Images",
+      "index": 100
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/96-1645613973-How-to-add-a-signature-to-a-PDF-easily-online-using-an-electronic-signature-tool@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to sign a PDF",
+      "label": "How to sign a PDF",
+      "category": "Images",
+      "index": 101
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/254-1695722215-Can-a-PDF-have-a-virus-and-how-to-protect-your-files-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Top tips for protecting your PDFs",
+      "label": "Top tips for protecting your PDFs",
+      "category": "Images",
+      "index": 102
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/253-1695022850-How-to-share-iLovePDF-files-to-Mobile-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to instantly share iLovePDF files to your mobile",
+      "label": "How to instantly share iLovePDF files to your mobile",
+      "category": "Images",
+      "index": 103
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/20-1622710714-post-14BLOG-POST-BIG-3@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to merge PDF files",
+      "label": "How to merge PDF files",
+      "category": "Images",
+      "index": 104
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/23-1622716372-JPG-to-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert JPG to PDF",
+      "label": "How to convert JPG to PDF",
+      "category": "Images",
+      "index": 105
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/29-1623059585-Reduce-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to reduce PDF file size",
+      "label": "How to reduce PDF file size",
+      "category": "Images",
+      "index": 106
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/252-1694091470-Free-PDF-Reader-Download-Offline-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Welcome to the free PDF reader from iLovePDF \n",
+      "label": "Welcome to the free PDF reader from iLovePDF \n",
+      "category": "Images",
+      "index": 107
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/14-1623851539-Convert-PDF-to-JPG@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Convert PDF to JPG",
+      "label": "Convert PDF to JPG",
+      "category": "Images",
+      "index": 108
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/9-1695393324-How-to-convert-PDF-to-Office@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF to Office",
+      "label": "How to convert PDF to Office",
+      "category": "Images",
+      "index": 109
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/16-1622711111-post-10BLOG-POST-BIG-2@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert a website to PDF",
+      "label": "How to convert a website to PDF",
+      "category": "Images",
+      "index": 110
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/6-1622187371-Rotate-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to rotate PDF documents",
+      "label": "How to rotate PDF documents",
+      "category": "Images",
+      "index": 111
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/251-1693562052-Learning-styles-and-practical-study-tools-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Discover different learning styles and how to use them in your studies",
+      "label": "Discover different learning styles and how to use them in your studies",
+      "category": "Images",
+      "index": 112
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/250-1691663804-How-to-convert-PDF-to-Word-offline-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "A quick guide on converting PDF to Word offline",
+      "label": "A quick guide on converting PDF to Word offline",
+      "category": "Images",
+      "index": 113
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/249-1691396502-Track-and-manage-eSignatures-with-iLovePDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "eSign with iLovePDF: Managing & tracking signature requests",
+      "label": "eSign with iLovePDF: Managing & tracking signature requests",
+      "category": "Images",
+      "index": 114
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/243-1689670498-API-Integration-%26-IT-Infrastructure-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "API integration: The role of automation in IT infrastructure",
+      "label": "API integration: The role of automation in IT infrastructure",
+      "category": "Images",
+      "index": 115
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/231-1685520545-How-to-sign-a-Google-Doc-using-a-digital-signature@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to eSign a Google Doc using digital signatures",
+      "label": "How to eSign a Google Doc using digital signatures",
+      "category": "Images",
+      "index": 116
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/227-1684849983-Digtial-Transformation-in-Business@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Embracing innovation: How digital transformation can revolutionize a business",
+      "label": "Embracing innovation: How digital transformation can revolutionize a business",
+      "category": "Images",
+      "index": 117
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/226-1684403944-How-to-summarize-and-extract-text-from-PDF-with-AI-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to summarize and paraphrase PDFs using AI ",
+      "label": "How to summarize and paraphrase PDFs using AI ",
+      "category": "Images",
+      "index": 118
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/224-1683552766-iLovePDF-Desktop-App-Updates@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "The new & improved iLovePDF Desktop App: What you need to know",
+      "label": "The new & improved iLovePDF Desktop App: What you need to know",
+      "category": "Images",
+      "index": 119
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/222-1683276535-What-is-a-wet-signature-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What is a wet signature? A comparison with digital signatures",
+      "label": "What is a wet signature? A comparison with digital signatures",
+      "category": "Images",
+      "index": 120
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/219-1682503420-Download-iLovePDF-with-cloud-storage-integration-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Unveiled: The new iLovePDF App with cloud storage",
+      "label": "Unveiled: The new iLovePDF App with cloud storage",
+      "category": "Images",
+      "index": 121
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/218-1681916094-Remove-your-files-from-iLovePDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Is iLovePDF safe? How to instantly delete files from iLovePDF",
+      "label": "Is iLovePDF safe? How to instantly delete files from iLovePDF",
+      "category": "Images",
+      "index": 122
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/217-1681477508-Covert-Photo-to-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert a photo to PDF",
+      "label": "How to convert a photo to PDF",
+      "category": "Images",
+      "index": 123
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/208-1678978852-How-to-create-a-digital-signature-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to create a signature online: A beginner’s guide",
+      "label": "How to create a signature online: A beginner’s guide",
+      "category": "Images",
+      "index": 124
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/157-1675786082-The-ultimate-guide-to-merging%2C-splitting%2C-and-organizing-your-PDFs@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "The ultimate guide to organizing, splitting, and merging PDFs",
+      "label": "The ultimate guide to organizing, splitting, and merging PDFs",
+      "category": "Images",
+      "index": 125
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/162-1675438707-iLovePDF-Updates-and-new-tools-from-2022@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "What was new in 2022? A year of updates & new releases",
+      "label": "What was new in 2022? A year of updates & new releases",
+      "category": "Images",
+      "index": 126
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/39-1623168721-Bottom-Up@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How Cape Flats students are becoming leaders for change",
+      "label": "How Cape Flats students are becoming leaders for change",
+      "category": "Images",
+      "index": 127
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/173-1675327802-How-to-convert-PDF-to-Google-Docs@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF to Google Docs",
+      "label": "How to convert PDF to Google Docs",
+      "category": "Images",
+      "index": 128
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/178-1673366925-How-to-concentrate-better-at-work-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Our focus has been hijacked: here’s how to get it back",
+      "label": "Our focus has been hijacked: here’s how to get it back",
+      "category": "Images",
+      "index": 129
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/179-1672821420-How-to-save-Excel-as-a-PDF-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to save Excel as PDF: A quick guide",
+      "label": "How to save Excel as PDF: A quick guide",
+      "category": "Images",
+      "index": 130
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/177-1671614130-How-to-convert-a-picture-to-PDF-on-iPhone-and-Android@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert a picture to PDF on iPhone, iPad, and Android",
+      "label": "How to convert a picture to PDF on iPhone, iPad, and Android",
+      "category": "Images",
+      "index": 131
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/176-1670944521-5-morning-routine-ideas-to-start-your-day-productively@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 morning routine ideas to start your day productively",
+      "label": "5 morning routine ideas to start your day productively",
+      "category": "Images",
+      "index": 132
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/174-1669301544-Create-PDF-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to create a PDF on iPhone & Android: A step-by-step guide",
+      "label": "How to create a PDF on iPhone & Android: A step-by-step guide",
+      "category": "Images",
+      "index": 133
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/175-1669889622-Tips-for-achieving-organizational-effectiveness@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "4 tips for achieving Organizational Effectiveness ",
+      "label": "4 tips for achieving Organizational Effectiveness ",
+      "category": "Images",
+      "index": 134
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/172-1668512136-How-to-edit-PDFs-on-iPhone-iPad@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to edit PDFs on iPhone & iPad",
+      "label": "How to edit PDFs on iPhone & iPad",
+      "category": "Images",
+      "index": 135
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/171-1667914455-Tip-for-starting-a-new-remote-job@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "6 tips for starting a new job remotely",
+      "label": "6 tips for starting a new job remotely",
+      "category": "Images",
+      "index": 136
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/170-1666969686-How-to-insert-a-PDF-into-a-PowerPoint-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to insert a PDF into a PowerPoint",
+      "label": "How to insert a PDF into a PowerPoint",
+      "category": "Images",
+      "index": 137
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/169-1666609927-How-to-scan-multiple-pages-into-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Scan paper to PDF with this free tool",
+      "label": "Scan paper to PDF with this free tool",
+      "category": "Images",
+      "index": 138
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/168-1666259434-4-ways-to-motivate-your-team@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "4 ways to motivate your team and increase productivity",
+      "label": "4 ways to motivate your team and increase productivity",
+      "category": "Images",
+      "index": 139
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/166-1665473593-How-to-merge-files-on-Mac@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to merge PDF files on Mac in 4 easy steps",
+      "label": "How to merge PDF files on Mac in 4 easy steps",
+      "category": "Images",
+      "index": 140
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/165-1665389089-How-to-improve-research-skills-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "A student guide: How to improve your research skills ",
+      "label": "A student guide: How to improve your research skills ",
+      "category": "Images",
+      "index": 141
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/161-1663944445-How-to-train-your-team-remotely-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to train your team remotely: Tips for effective training ",
+      "label": "How to train your team remotely: Tips for effective training ",
+      "category": "Images",
+      "index": 142
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/164-1664273511-How-to-password-protect-an-Excel-file--@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to password protect an Excel file ",
+      "label": "How to password protect an Excel file ",
+      "category": "Images",
+      "index": 143
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/163-1663849992-Digital-Signature-Solutions-for-Medical-Professionals-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Digital signature solutions for medical professionals",
+      "label": "Digital signature solutions for medical professionals",
+      "category": "Images",
+      "index": 144
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/159-1663341075-Can-music-improve-productivity@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Can music increase productivity? See what the science says ",
+      "label": "Can music increase productivity? See what the science says ",
+      "category": "Images",
+      "index": 145
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/160-1662557417-Cyber-Security-Tips@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to improve your cyber security and stay safe online\n",
+      "label": "How to improve your cyber security and stay safe online\n",
+      "category": "Images",
+      "index": 146
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/158-1662363133-How-to-study-smart-@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to study smart: 6 tips for students\n",
+      "label": "How to study smart: 6 tips for students\n",
+      "category": "Images",
+      "index": 147
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/13-1622468778-Watermark-PDF@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add a watermark and page numbers to PDF",
+      "label": "How to add a watermark and page numbers to PDF",
+      "category": "Images",
+      "index": 148
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/154-1659688693-Career-development-tips-for-students@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "4 career development tips for students\n",
+      "label": "4 career development tips for students\n",
+      "category": "Images",
+      "index": 149
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/156-1661418776-5-job-readiness-skills-for-students-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 job readiness skills for students\n",
+      "label": "5 job readiness skills for students\n",
+      "category": "Images",
+      "index": 150
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/155-1659689780-iLovePDF-Chrome-extension-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Edit PDFs with the Chrome extension from iLovePDF\n",
+      "label": "Edit PDFs with the Chrome extension from iLovePDF\n",
+      "category": "Images",
+      "index": 151
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/153-1659686644-How-to-add-initials-to-a-PDF-form-or-contract@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add initials to a PDF form or contract \n",
+      "label": "How to add initials to a PDF form or contract \n",
+      "category": "Images",
+      "index": 152
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/152-1659518067-How-to-add-images-to-PDF-on-mobile-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add images to PDF on iOS & Android\n",
+      "label": "How to add images to PDF on iOS & Android\n",
+      "category": "Images",
+      "index": 153
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/150-1658929843-Digital-tools-for-teachers@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Digital tools for teachers: Using PDFs for productivity ",
+      "label": "Digital tools for teachers: Using PDFs for productivity ",
+      "category": "Images",
+      "index": 154
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/148-1658754041-Simple-vs.-Digital-Signature-@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Simple Signature & Digital Signature: What’s the difference?\n",
+      "label": "Simple Signature & Digital Signature: What’s the difference?\n",
+      "category": "Images",
+      "index": 155
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/149-1658915942-post-99-OLD@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Introducing the new Scan to PDF Tool by iLovePDF",
+      "label": "Introducing the new Scan to PDF Tool by iLovePDF",
+      "category": "Images",
+      "index": 156
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/141-1658485812-5-Smart-tips-for-your-next-hybrid-or-virtual-meeting@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 smart tips for your hybrid and virtual meeting \n",
+      "label": "5 smart tips for your hybrid and virtual meeting \n",
+      "category": "Images",
+      "index": 157
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/135-1657016329-95-How-to-convert-HTML-OLD@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert HTML websites into PDF files \n",
+      "label": "How to convert HTML websites into PDF files \n",
+      "category": "Images",
+      "index": 158
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/140-1657018712-96-How-to-unlock-PDF-OLD@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to unlock a PDF file",
+      "label": "How to unlock a PDF file",
+      "category": "Images",
+      "index": 159
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/124-1652279995-How-to-sign-a-PDF-document-on-iOS-or-Android-device@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to sign a PDF document on your mobile",
+      "label": "How to sign a PDF document on your mobile",
+      "category": "Images",
+      "index": 160
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/128-1655127556-Integrate-iLovePDF-eSignature-API-into-your-application@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Introducing the iLovePDF e-Signature API",
+      "label": "Introducing the iLovePDF e-Signature API",
+      "category": "Images",
+      "index": 161
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/122-1651049409-Document-tricks-for-iPad-and-Tablet@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 Document tricks for your iPad you didn’t know",
+      "label": "5 Document tricks for your iPad you didn’t know",
+      "category": "Images",
+      "index": 162
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/121-1650623142-How-to-merge-PDF-files-on-mobile-devices@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to merge PDF files on your mobile",
+      "label": "How to merge PDF files on your mobile",
+      "category": "Images",
+      "index": 163
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/120-1650359583-How-to-convert-PDF-to-Word-on-iPhone-or-Android-device@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF to Word on iPhone/Android",
+      "label": "How to convert PDF to Word on iPhone/Android",
+      "category": "Images",
+      "index": 164
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/119-1649854769-How-electronic-signatures-improve-the-customer-experience@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "3 Ways e-signatures improve the customer experience",
+      "label": "3 Ways e-signatures improve the customer experience",
+      "category": "Images",
+      "index": 165
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/118-1649667600-How-to-sign-a-word-document-without-printing-it@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to sign a Word document without printing it",
+      "label": "How to sign a Word document without printing it",
+      "category": "Images",
+      "index": 166
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/117-1654851304-old@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 Student hacks college never told you",
+      "label": "5 Student hacks college never told you",
+      "category": "Images",
+      "index": 167
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/115-1649070630-Convert-PDF-files-to-Excel-tables@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert a PDF file to Excel tables",
+      "label": "How to convert a PDF file to Excel tables",
+      "category": "Images",
+      "index": 168
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/113-1648631541-Grade-assignments-with-PDF-annotation-tool@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Grade assignments with this free annotation tool",
+      "label": "Grade assignments with this free annotation tool",
+      "category": "Images",
+      "index": 169
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/111-1648452715-PDF-editing-tools-for-Mac-and-Windows@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Get these PDF editing tools on Mac/Windows",
+      "label": "Get these PDF editing tools on Mac/Windows",
+      "category": "Images",
+      "index": 170
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/108-1648050749-Digitally-transform-HR-teams-with-these-apps@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Transform your HR department with these apps",
+      "label": "Transform your HR department with these apps",
+      "category": "Images",
+      "index": 171
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/107-1647948007-How-to-unmerge-pages-in-a-pdf@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to unmerge PDF files",
+      "label": "How to unmerge PDF files",
+      "category": "Images",
+      "index": 172
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/104-1647436696-Search-a-word-or-phrase-in-a-PDF@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Search for a word or phrase in a PDF file",
+      "label": "Search for a word or phrase in a PDF file",
+      "category": "Images",
+      "index": 173
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/102-1647249306-How-to-convert-PDF-to-JPG-or-extract-images-from-PDF-files@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to save a PDF file as an image",
+      "label": "How to save a PDF file as an image",
+      "category": "Images",
+      "index": 174
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/101-1654851068-Compress-or-resize-and-convert-JPG-images-using-the-iLovePDF-Mobile-App@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "You can now edit images in iLovePDF",
+      "label": "You can now edit images in iLovePDF",
+      "category": "Images",
+      "index": 175
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/100-1646642962-How-to-add-a-password-to-a-pdf-file@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to add a password to a PDF ",
+      "label": "How to add a password to a PDF ",
+      "category": "Images",
+      "index": 176
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/98-1655131276-Post-75-old@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Are digital signatures legally binding?",
+      "label": "Are digital signatures legally binding?",
+      "category": "Images",
+      "index": 177
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/97-1646038699-How-to-convert-a-PDF-to-Powerpoint-online-free@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert a PDF to PowerPoint",
+      "label": "How to convert a PDF to PowerPoint",
+      "category": "Images",
+      "index": 178
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/95-1645434073-How-to-write-on-a-PDF-document-with-a-PDF-Editor@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to write on a PDF file",
+      "label": "How to write on a PDF file",
+      "category": "Images",
+      "index": 179
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/94-1644828690-Things-to-consider-when-choosing-an-electronic-signature-software-solution-for-your-company@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Choosing an e-signature service:  5 things to consider",
+      "label": "Choosing an e-signature service:  5 things to consider",
+      "category": "Images",
+      "index": 180
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/86-1654850965-post-67-Improve-parent-teacher-communication-with-e-signing@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Improve parent-teacher communication with e-signing",
+      "label": "Improve parent-teacher communication with e-signing",
+      "category": "Images",
+      "index": 181
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/89-1644399723-How-to-rotate-pages-in-a-PDF-file-on-smartphone@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to rotate PDF on your mobile",
+      "label": "How to rotate PDF on your mobile",
+      "category": "Images",
+      "index": 182
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/87-1643732906-Convert-PDF-to-PDFA-on-Mac-or-Windows@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to convert PDF to PDF/A on Mac and Windows",
+      "label": "How to convert PDF to PDF/A on Mac and Windows",
+      "category": "Images",
+      "index": 183
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/85-1643623878-How-to-delete-pages-from-a-PDF-file-online@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to remove pages from a PDF file",
+      "label": "How to remove pages from a PDF file",
+      "category": "Images",
+      "index": 184
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/84-1643197951-Top-10-free-tools-for-effective-remote-working-in-2022@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "The top 10 tools every remote worker needs in 2025",
+      "label": "The top 10 tools every remote worker needs in 2025",
+      "category": "Images",
+      "index": 185
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/83-1643023699-How-to-watermark-pages-in-a-PDF-document-online-free-using-Watermark-tool@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 233,
+      "alt": "How to add a watermark to PDF",
+      "label": "How to add a watermark to PDF",
+      "category": "Images",
+      "index": 186
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/82-1642594788-How-to-sign-NDA-online-using-an-electronic-signature@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to sign an NDA online",
+      "label": "How to sign an NDA online",
+      "category": "Images",
+      "index": 187
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/74-1637158666-covid-post4@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to save your COVID passport on your mobile",
+      "label": "How to save your COVID passport on your mobile",
+      "category": "Images",
+      "index": 188
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/78-1637594402-Onboard-new-employees-remotely@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to onboard somebody remotely in 6 steps",
+      "label": "How to onboard somebody remotely in 6 steps",
+      "category": "Images",
+      "index": 189
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/79-1637600570-Compress-PDF-files-on-your-mobile@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to compress PDF on mobile",
+      "label": "How to compress PDF on mobile",
+      "category": "Images",
+      "index": 190
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/76-1637575771-Send-large-files-on-WhatsApp-instant-messenger@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to send a large file on WhatsApp",
+      "label": "How to send a large file on WhatsApp",
+      "category": "Images",
+      "index": 191
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/75-1637235580-How-to-attract-Generation-Z-to-your-company@348w.jpg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to attract Generation Z to your company",
+      "label": "How to attract Generation Z to your company",
+      "category": "Images",
+      "index": 192
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/73-1633683204-Android-redesign@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How redesigning iLovePDF for Android was like a dance class",
+      "label": "How redesigning iLovePDF for Android was like a dance class",
+      "category": "Images",
+      "index": 193
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/72-1633620555-New-iLovePDF-for-iOS@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Revealed: A fresh new iLovePDF for iOS",
+      "label": "Revealed: A fresh new iLovePDF for iOS",
+      "category": "Images",
+      "index": 194
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/71-1633619285-Scan-document-on-Android@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to scan a document on Android",
+      "label": "How to scan a document on Android",
+      "category": "Images",
+      "index": 195
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/70-1633618328-Time-saving-hacks@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "5 Time-saving hacks for a productive day",
+      "label": "5 Time-saving hacks for a productive day",
+      "category": "Images",
+      "index": 196
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/69-1633615614-minimalist-remote-worker@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "How to be a minimalist remote worker",
+      "label": "How to be a minimalist remote worker",
+      "category": "Images",
+      "index": 197
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/56-1623400607-Virtual-classroom@348w.png",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "10 best virtual classroom tools for teachers in 2025",
+      "label": "10 best virtual classroom tools for teachers in 2025",
+      "category": "Images",
+      "index": 198
+    },
+    {
+      "url": "https://www.ilovepdf.com/storage/blog/55-1623331581-iOS-mobile-app@348w.jpeg",
+      "kind": "Image",
+      "width": 348,
+      "height": 232,
+      "alt": "Lessons learned from giving the iOS app a major UX makeover",
+      "label": "Lessons learned from giving the iOS app a major UX makeover",
+      "category": "Images",
+      "index": 199
+    }
+  ],
+  "unavailable": []
+}

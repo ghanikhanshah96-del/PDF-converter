@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">PDF organization article image</title>
+  <desc id="desc">Several PDF pages arranged, merged, split, and rotated.</desc>
+  <rect width="570" height="380" fill="#fff5f5"/>
+  <rect x="96" y="74" width="126" height="172" rx="14" fill="#fff" stroke="#ffd1d1" transform="rotate(-8 159 160)"/>
+  <rect x="222" y="72" width="126" height="172" rx="14" fill="#fff" stroke="#ffd1d1"/>
+  <rect x="348" y="74" width="126" height="172" rx="14" fill="#fff" stroke="#ffd1d1" transform="rotate(8 411 160)"/>
+  <rect x="140" y="120" width="54" height="9" rx="4.5" fill="#e5322d"/>
+  <rect x="252" y="122" width="62" height="9" rx="4.5" fill="#e5322d"/>
+  <rect x="380" y="120" width="60" height="9" rx="4.5" fill="#e5322d"/>
+  <path d="M178 292h214" stroke="#e5322d" stroke-width="12" stroke-linecap="round"/>
+  <path d="M392 292l-30-30m30 30l-30 30" stroke="#e5322d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="220" y="268" width="130" height="48" rx="24" fill="#fff" stroke="#e5322d"/>
+  <text x="285" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#e5322d">ORGANIZE</text>
+</svg>

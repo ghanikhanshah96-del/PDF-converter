@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="704" height="400" viewBox="0 0 704 400" role="img" aria-labelledby="title desc">
+  <title id="title">Team document workflow illustration</title>
+  <desc id="desc">Documents, comments, and signatures arranged for a team workflow.</desc>
+  <rect width="704" height="400" fill="#f8fbff"/>
+  <rect x="94" y="80" width="218" height="240" rx="16" fill="#fff" stroke="#dde5f2"/>
+  <rect x="132" y="122" width="94" height="14" rx="7" fill="#e5322d"/>
+  <rect x="132" y="166" width="132" height="10" rx="5" fill="#cad7ea"/>
+  <rect x="132" y="194" width="106" height="10" rx="5" fill="#cad7ea"/>
+  <rect x="132" y="222" width="148" height="10" rx="5" fill="#cad7ea"/>
+  <path d="M132 278c42-52 76 38 128-16" fill="none" stroke="#33333b" stroke-width="8" stroke-linecap="round"/>
+  <rect x="392" y="98" width="176" height="82" rx="18" fill="#fff" stroke="#ffd3d3"/>
+  <circle cx="430" cy="139" r="22" fill="#e5322d"/>
+  <path d="M420 139h20m-10-10v20" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <rect x="466" y="126" width="64" height="10" rx="5" fill="#f6b4b4"/>
+  <rect x="466" y="150" width="78" height="10" rx="5" fill="#f6b4b4"/>
+  <rect x="368" y="224" width="214" height="86" rx="18" fill="#fff" stroke="#dde5f2"/>
+  <rect x="404" y="254" width="112" height="10" rx="5" fill="#78b957"/>
+  <rect x="404" y="278" width="74" height="10" rx="5" fill="#d6efd2"/>
+  <circle cx="566" cy="74" r="20" fill="#4f7bd9"/>
+  <circle cx="596" cy="74" r="20" fill="#f2614b"/>
+  <circle cx="626" cy="74" r="20" fill="#78b957"/>
+</svg>

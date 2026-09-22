@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">PDF editing and signing article image</title>
+  <desc id="desc">A PDF document with editable text, a signature, and annotation controls.</desc>
+  <rect width="570" height="380" fill="#f9f5ff"/>
+  <rect x="136" y="56" width="230" height="270" rx="18" fill="#fff" stroke="#eadcf1"/>
+  <rect x="176" y="104" width="100" height="14" rx="7" fill="#b45aa0"/>
+  <rect x="176" y="154" width="142" height="10" rx="5" fill="#e6cde0"/>
+  <rect x="176" y="182" width="104" height="10" rx="5" fill="#e6cde0"/>
+  <rect x="176" y="210" width="124" height="10" rx="5" fill="#e6cde0"/>
+  <path d="M176 274c42-52 76 42 132-14" fill="none" stroke="#33333b" stroke-width="8" stroke-linecap="round"/>
+  <rect x="388" y="108" width="70" height="70" rx="18" fill="#b45aa0"/>
+  <path d="M408 144l16-16 12 12-16 16h-12z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="388" y="204" width="70" height="70" rx="18" fill="#e5322d"/>
+  <path d="M406 244c12-18 22 18 34-4" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

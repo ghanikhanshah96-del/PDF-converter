@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">PDF conversion article image</title>
+  <desc id="desc">A PDF document converting into Word, Excel, image, and PDF outputs.</desc>
+  <rect width="570" height="380" fill="#f4f6fb"/>
+  <rect x="70" y="92" width="140" height="180" rx="18" fill="#fff" stroke="#dfe5f0"/>
+  <rect x="100" y="130" width="74" height="12" rx="6" fill="#e5322d"/>
+  <rect x="100" y="164" width="84" height="10" rx="5" fill="#ffc4c4"/>
+  <rect x="100" y="190" width="58" height="10" rx="5" fill="#ffc4c4"/>
+  <text x="140" y="246" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#e5322d">PDF</text>
+  <path d="M244 190h82" stroke="#e5322d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M326 190l-22-22m22 22l-22 22" stroke="#e5322d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="360" y="74" width="80" height="80" rx="16" fill="#4f7bd9"/>
+  <text x="400" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#fff">W</text>
+  <rect x="446" y="150" width="80" height="80" rx="16" fill="#58a55c"/>
+  <text x="486" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#fff">X</text>
+  <rect x="360" y="236" width="80" height="80" rx="16" fill="#f0c33c"/>
+  <text x="400" y="286" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#fff">JPG</text>
+</svg>

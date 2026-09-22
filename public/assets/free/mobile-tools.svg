@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="704" height="400" viewBox="0 0 704 400" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile PDF tools illustration</title>
+  <desc id="desc">A phone screen showing document tools and a PDF preview.</desc>
+  <rect width="704" height="400" fill="#fff7f7"/>
+  <rect x="238" y="34" width="228" height="332" rx="36" fill="#2f3037"/>
+  <rect x="254" y="58" width="196" height="284" rx="24" fill="#fff"/>
+  <rect x="292" y="78" width="120" height="10" rx="5" fill="#dedee8"/>
+  <rect x="286" y="116" width="132" height="154" rx="14" fill="#fff1f1" stroke="#ffd3d3"/>
+  <rect x="314" y="146" width="70" height="12" rx="6" fill="#e5322d"/>
+  <rect x="314" y="180" width="78" height="9" rx="4.5" fill="#f6b4b4"/>
+  <rect x="314" y="202" width="58" height="9" rx="4.5" fill="#f6b4b4"/>
+  <rect x="284" y="292" width="42" height="42" rx="12" fill="#4f7bd9"/>
+  <rect x="334" y="292" width="42" height="42" rx="12" fill="#f2614b"/>
+  <rect x="384" y="292" width="42" height="42" rx="12" fill="#78b957"/>
+  <path d="M302 304h8l8 8v12h-16z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M350 314h12m-6-6v12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M397 321l8-14 8 14z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="220" cy="110" r="36" fill="#fff" stroke="#ffd3d3"/>
+  <text x="220" y="119" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#e5322d">PDF</text>
+  <circle cx="484" cy="160" r="28" fill="#e5322d"/>
+  <path d="M474 160h20m-10-10v20" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

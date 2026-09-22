@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">PDF compression article image</title>
+  <desc id="desc">A large PDF being compressed into a smaller file.</desc>
+  <rect width="570" height="380" fill="#f8fff6"/>
+  <rect x="104" y="86" width="154" height="202" rx="18" fill="#fff" stroke="#d9edcf"/>
+  <text x="181" y="188" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#78b957">8 MB</text>
+  <path d="M286 188h78" stroke="#78b957" stroke-width="10" stroke-linecap="round"/>
+  <path d="M364 188l-22-22m22 22l-22 22" stroke="#78b957" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="404" y="124" width="92" height="126" rx="16" fill="#fff" stroke="#d9edcf"/>
+  <text x="450" y="196" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#78b957">2 MB</text>
+  <path d="M166 306c74 36 182 36 256 0" fill="none" stroke="#d9edcf" stroke-width="12" stroke-linecap="round"/>
+</svg>

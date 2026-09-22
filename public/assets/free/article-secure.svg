@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">Secure PDF article image</title>
+  <desc id="desc">A protected PDF with a lock and local privacy badge.</desc>
+  <rect width="570" height="380" fill="#f4f8fc"/>
+  <rect x="170" y="70" width="230" height="236" rx="18" fill="#fff" stroke="#d9e5f2"/>
+  <rect x="214" y="126" width="106" height="12" rx="6" fill="#4d78a8"/>
+  <rect x="214" y="166" width="142" height="10" rx="5" fill="#c9d9eb"/>
+  <rect x="214" y="194" width="104" height="10" rx="5" fill="#c9d9eb"/>
+  <rect x="232" y="236" width="106" height="78" rx="18" fill="#4d78a8"/>
+  <path d="M256 236v-22c0-18 12-30 29-30s29 12 29 30v22" fill="none" stroke="#4d78a8" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="285" cy="274" r="8" fill="#fff"/>
+  <rect x="364" y="240" width="86" height="42" rx="21" fill="#e5322d"/>
+  <text x="407" y="266" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#fff">LOCAL</text>
+</svg>

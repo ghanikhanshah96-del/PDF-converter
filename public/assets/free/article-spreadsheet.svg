@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570" height="380" viewBox="0 0 570 380" role="img" aria-labelledby="title desc">
+  <title id="title">Spreadsheet and PDF article image</title>
+  <desc id="desc">A spreadsheet grid connected to a PDF document.</desc>
+  <rect width="570" height="380" fill="#f6fff8"/>
+  <rect x="88" y="92" width="178" height="196" rx="18" fill="#fff" stroke="#d8efd9"/>
+  <g stroke="#d8efd9" stroke-width="3">
+    <path d="M120 138h114M120 176h114M120 214h114M120 252h114"/>
+    <path d="M150 116v154M188 116v154M226 116v154"/>
+  </g>
+  <rect x="120" y="116" width="114" height="22" fill="#58a55c" rx="6"/>
+  <path d="M294 190h70" stroke="#58a55c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M364 190l-22-22m22 22l-22 22" stroke="#58a55c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="394" y="102" width="116" height="176" rx="18" fill="#fff" stroke="#d8efd9"/>
+  <text x="452" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#e5322d">PDF</text>
+</svg>

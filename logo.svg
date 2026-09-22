@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="bestfreepdfconverter logo">
+  <rect width="64" height="64" rx="14" fill="#d71920"/>
+  <path
+    d="M21 13h18l9 9v29H21z"
+    fill="#ffffff"
+    stroke="#ffffff"
+    stroke-linejoin="round"
+    stroke-width="2"
+  />
+  <path d="M39 13v10h9" fill="#ffd9dc"/>
+  <path
+    d="M25 35.5 31 42l12-15"
+    fill="none"
+    stroke="#d71920"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="5"
+  />
+</svg>
