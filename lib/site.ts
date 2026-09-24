@@ -2,7 +2,9 @@ export const SITE = {
   name: "best free pdf converter",
   domain: "bestfreepdfconverter.com",
   url: "https://bestfreepdfconverter.com",
-  tagline: "Free PDF tools that run in your browser. Files never leave your device.",
+  tagline:
+    "Free PDF converter tools online. Convert, edit, compress, and manage PDFs in your browser.",
   description:
-    "Merge, split, compress, convert, sign, and unlock PDFs online. All processing happens in your browser for privacy.",
+    "Use free online PDF tools to convert, edit, compress, merge, split, and manage PDF files quickly without installing software.",
+  seoTitle: "Free PDF Converter Tools Online | Convert, Edit & Manage PDFs",
 } as const;

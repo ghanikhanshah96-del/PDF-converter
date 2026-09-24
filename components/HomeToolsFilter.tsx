@@ -23,7 +23,13 @@ const filterOptions: { id: ActiveCategory; label: string }[] = [
   })),
 ];
 
-export function HomeToolsFilter() {
+export function HomeToolsFilter({
+  heading = "Choose your PDF tool",
+  intro,
+}: {
+  heading?: string;
+  intro?: string;
+} = {}) {
   const [active, setActive] = useState<ActiveCategory>("all");
 
   const visibleTools = useMemo(() => {
@@ -46,10 +52,10 @@ export function HomeToolsFilter() {
             id="tools-heading"
             className="font-display text-2xl font-semibold text-[var(--ink)] sm:text-3xl"
           >
-            Choose your PDF tool
+            {heading}
           </h2>
           <p className="mt-1 text-sm text-[var(--ink-muted)]">
-            {visibleTools.length} fast browser tools available
+            {intro ?? `${visibleTools.length} fast browser tools available`}
           </p>
         </div>
 

@@ -19,6 +19,8 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "public/pdf.worker.min.mjs",
+      "scripts/**",
+      "eslint-report.json",
     ],
   },
 ];
