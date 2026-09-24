@@ -1,11 +1,12 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
+import { embedTextFont } from "@/lib/pdfFont";
 
 export async function excelToPdf(file: File): Promise<Uint8Array> {
   const XLSX = await import("xlsx");
   const data = await file.arrayBuffer();
   const workbook = XLSX.read(data, { type: "array" });
   const pdf = await PDFDocument.create();
-  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const { font, sanitize } = await embedTextFont(pdf);
   const fontSize = 9;
   const lineHeight = 12;
   const margin = 40;
@@ -23,7 +24,7 @@ export async function excelToPdf(file: File): Promise<Uint8Array> {
     let page = pdf.addPage([pageWidth, pageHeight]);
     let y = pageHeight - margin;
 
-    page.drawText(sheetName, {
+    page.drawText(sanitize(sheetName), {
       x: margin,
       y,
       size: 12,
@@ -34,7 +35,7 @@ export async function excelToPdf(file: File): Promise<Uint8Array> {
 
     for (const row of rows) {
       const cells = row.map((c) => (c == null ? "" : String(c)));
-      const line = cells.join("  |  ");
+      const line = sanitize(cells.join("  |  "));
       const chunks: string[] = [];
       const maxChars = 140;
       for (let i = 0; i < line.length; i += maxChars) {
@@ -47,7 +48,12 @@ export async function excelToPdf(file: File): Promise<Uint8Array> {
           page = pdf.addPage([pageWidth, pageHeight]);
           y = pageHeight - margin;
         }
-        page.drawText(chunk.slice(0, 180), {
+        const text = sanitize(chunk.slice(0, 180));
+        if (!text) {
+          y -= lineHeight;
+          continue;
+        }
+        page.drawText(text, {
           x: margin,
           y,
           size: fontSize,

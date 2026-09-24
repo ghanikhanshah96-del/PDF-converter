@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ContactForm } from "@/components/ContactForm";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -52,51 +52,7 @@ export default function ContactPage() {
           <h2 className="font-display text-2xl font-semibold text-[var(--ink)]">
             Send a message
           </h2>
-          <form
-            action={`mailto:${email}`}
-            method="post"
-            encType="text/plain"
-            className="mt-6 grid gap-4"
-          >
-            <label className="grid gap-2 text-sm font-semibold text-[var(--ink)]">
-              Name
-              <input
-                name="name"
-                type="text"
-                className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)]"
-                placeholder="Your name"
-              />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold text-[var(--ink)]">
-              Email
-              <input
-                name="email"
-                type="email"
-                className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)]"
-                placeholder="you@example.com"
-              />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold text-[var(--ink)]">
-              Message
-              <textarea
-                name="message"
-                rows={7}
-                className="resize-y rounded-lg border border-[var(--line)] bg-white px-4 py-3 text-base font-normal outline-none transition focus:border-[var(--brand)]"
-                placeholder="Tell us what happened or what you need."
-              />
-            </label>
-            <button type="submit" className="btn btn-primary w-full sm:w-auto">
-              Open email app
-            </button>
-          </form>
-
-          <p className="mt-5 text-sm leading-relaxed text-[var(--ink-muted)]">
-            For privacy details, read the{" "}
-            <Link href="/privacy" className="font-semibold text-[var(--brand)] underline">
-              Privacy Policy
-            </Link>
-            .
-          </p>
+          <ContactForm supportEmail={email} />
         </section>
       </div>
     </div>

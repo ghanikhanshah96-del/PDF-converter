@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
+import { embedTextFont } from "@/lib/pdfFont";
 
 type ProgressCallback = (pct: number, label?: string) => void;
 
@@ -26,7 +27,7 @@ export async function wordToPdf(
   await yieldToBrowser();
 
   const pdf = await PDFDocument.create();
-  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const { font, sanitize } = await embedTextFont(pdf);
   const fontSize = 11;
   const lineHeight = 16;
   const margin = 50;
@@ -43,12 +44,18 @@ export async function wordToPdf(
   let renderedWords = 0;
 
   const drawLine = (line: string) => {
+    const safe = sanitize(line);
+    if (!safe) {
+      y -= lineHeight;
+      return;
+    }
+
     if (y < margin + lineHeight) {
       page = pdf.addPage([pageWidth, pageHeight]);
       y = pageHeight - margin;
     }
 
-    page.drawText(line, {
+    page.drawText(safe, {
       x: margin,
       y,
       size: fontSize,
@@ -61,11 +68,16 @@ export async function wordToPdf(
   onProgress?.(55, "Building PDF pages…");
 
   for (const paragraph of paragraphs) {
-    const words = paragraph.trim().split(/\s+/).filter(Boolean);
+    const words = paragraph
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => sanitize(word));
     let line = "";
     let lineWidth = 0;
 
     for (const word of words) {
+      if (!word) continue;
       const wordWidth = font.widthOfTextAtSize(word, fontSize);
       const testWidth = line ? lineWidth + spaceWidth + wordWidth : wordWidth;
 

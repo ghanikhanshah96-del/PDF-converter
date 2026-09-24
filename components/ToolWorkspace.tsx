@@ -9,6 +9,12 @@ import {
   type ReactNode,
 } from "react";
 import { downloadBlob, basename } from "@/lib/download";
+import {
+  assertFilesWithinLimit,
+  formatBytes,
+  MAX_FILE_BYTES,
+  MAX_FILE_LABEL,
+} from "@/lib/limits";
 
 export type ProcessResult = {
   blob: Blob;
@@ -75,8 +81,24 @@ export function ToolWorkspace({
   const addFiles = useCallback(
     (list: FileList | File[]) => {
       const next = Array.from(list);
-      setError(null);
       setResult(null);
+
+      const oversized = next.filter((f) => f.size > MAX_FILE_BYTES);
+      if (oversized.length) {
+        const first = oversized[0];
+        setError(
+          `"${first.name}" is ${formatBytes(first.size)}. Maximum file size is ${MAX_FILE_LABEL}. Please choose a smaller file or compress it first.`,
+        );
+        const allowed = next.filter((f) => f.size <= MAX_FILE_BYTES);
+        if (allowed.length) {
+          setFiles((prev) =>
+            multiple ? [...prev, ...allowed] : allowed.slice(0, 1),
+          );
+        }
+        return;
+      }
+
+      setError(null);
       setFiles((prev) => (multiple ? [...prev, ...next] : next.slice(0, 1)));
     },
     [multiple],
@@ -118,6 +140,7 @@ export function ToolWorkspace({
       return;
     }
     try {
+      assertFilesWithinLimit(files);
       if (validate) await validate(files);
       setBusy(true);
       setProgress(8);
@@ -130,7 +153,7 @@ export function ToolWorkspace({
       setProgress(100);
       setProgressLabel("Done");
       setResult(out);
-      downloadBlob(out.blob, out.filename);
+      // Manual download only — keeps behavior consistent across browsers/tools
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setProgress(0);
@@ -160,10 +183,13 @@ export function ToolWorkspace({
         }}
         onDrop={onDrop}
       >
-          <span className="font-display text-base font-semibold text-[var(--ink)] sm:text-lg">
-            {title}
-          </span>
+        <span className="font-display text-base font-semibold text-[var(--ink)] sm:text-lg">
+          {title}
+        </span>
         <span className="mt-1 text-sm text-[var(--ink-muted)]">{hint}</span>
+        <span className="mt-2 text-xs text-[var(--ink-muted)]">
+          Max file size: {MAX_FILE_LABEL} per file
+        </span>
         {fileLabel && (
           <span className="mt-3 max-w-full truncate rounded-full bg-[var(--brand-soft)] px-3 py-1 text-sm font-medium text-[var(--brand-deep)]">
             {fileLabel}
@@ -195,7 +221,7 @@ export function ToolWorkspace({
                 {file.name}
               </span>
               <span className="shrink-0 text-xs text-[var(--ink-muted)]">
-                {(file.size / 1024).toFixed(0)} KB
+                {formatBytes(file.size)}
               </span>
               {multiple && (
                 <>
@@ -250,27 +276,32 @@ export function ToolWorkspace({
       )}
 
       {error && (
-        <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-[var(--danger)]" role="alert">
+        <p
+          className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-[var(--danger)]"
+          role="alert"
+        >
           {error}
         </p>
       )}
 
       <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
-        <button
-          type="button"
-          className="btn btn-primary w-full sm:w-auto"
-          onClick={run}
-          disabled={busy || disabled || files.length < minFiles}
-        >
-          {busy ? "Working…" : processLabel}
-        </button>
+        {!result && (
+          <button
+            type="button"
+            className="btn btn-primary w-full sm:w-auto"
+            onClick={run}
+            disabled={busy || disabled || files.length < minFiles}
+          >
+            {busy ? "Working…" : processLabel}
+          </button>
+        )}
         {result && (
           <button
             type="button"
-            className="btn btn-secondary w-full sm:w-auto"
+            className="btn btn-primary w-full sm:w-auto"
             onClick={() => downloadBlob(result.blob, result.filename)}
           >
-            Download again
+            Download {result.filename}
           </button>
         )}
         {files.length > 0 && !busy && (
@@ -293,7 +324,8 @@ export function ToolWorkspace({
       {result && (
         <p className="mt-3 text-sm text-[var(--brand-deep)]">
           Ready: <strong>{result.filename}</strong>
-          {files[0] ? ` (from ${basename(files[0].name)})` : ""}
+          {files[0] ? ` (from ${basename(files[0].name)})` : ""}. Click Download
+          to save the file.
         </p>
       )}
     </div>

@@ -31,7 +31,24 @@ export default function PrivacyPage() {
             JavaScript libraries.
           </p>
 
-          <h2 className="font-display text-2xl font-semibold">No uploads for tools</h2>
+          <h2
+            id="local-conversion"
+            className="scroll-mt-24 font-display text-2xl font-semibold"
+          >
+            Local conversion
+          </h2>
+          <p>
+            All core PDF tools convert and process files entirely in your
+            browser on this device. Your documents are not sent to our servers
+            for conversion.
+          </p>
+
+          <h2
+            id="no-uploads"
+            className="scroll-mt-24 font-display text-2xl font-semibold"
+          >
+            No uploads for tools
+          </h2>
           <p>
             When you use merge, split, compress, convert, edit, sign, unlock,
             or related utilities on this site, selected files are read locally
@@ -39,7 +56,12 @@ export default function PrivacyPage() {
             tools, and we do not receive or store your documents on our servers.
           </p>
 
-          <h2 className="font-display text-2xl font-semibold">No accounts required</h2>
+          <h2
+            id="no-accounts"
+            className="scroll-mt-24 font-display text-2xl font-semibold"
+          >
+            No accounts required
+          </h2>
           <p>
             Core tools do not require an account. If we add optional accounts or
             cloud features later, we will update this policy and clearly

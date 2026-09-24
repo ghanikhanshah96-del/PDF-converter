@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb, degrees } from "pdf-lib";
+import { PDFDocument, rgb, degrees } from "pdf-lib";
+import { embedTextFont } from "@/lib/pdfFont";
 
 export interface TextOverlay {
   pageIndex: number;
@@ -25,12 +26,14 @@ export async function applyPdfOverlays(
 ): Promise<Uint8Array> {
   const bytes = await file.arrayBuffer();
   const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-  const font = await pdfFont(doc);
+  const { font, sanitize } = await embedTextFont(doc);
 
   for (const overlay of texts) {
     const page = doc.getPage(overlay.pageIndex);
     const { height } = page.getSize();
-    page.drawText(overlay.text, {
+    const text = sanitize(overlay.text);
+    if (!text) continue;
+    page.drawText(text, {
       x: overlay.x,
       y: height - overlay.y - (overlay.size ?? 16),
       size: overlay.size ?? 16,
@@ -55,10 +58,6 @@ export async function applyPdfOverlays(
   }
 
   return doc.save();
-}
-
-async function pdfFont(doc: PDFDocument) {
-  return doc.embedFont(StandardFonts.Helvetica);
 }
 
 export async function stampSignature(
