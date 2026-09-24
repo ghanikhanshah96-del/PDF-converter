@@ -89,7 +89,10 @@ export default function PrivacyPage() {
           <h2 className="font-display text-2xl font-semibold">Contact</h2>
           <p>
             Questions about privacy: reach out through our{" "}
-            <Link href="/contact" className="text-[var(--brand)] underline">
+            <Link
+              href="/contact"
+              className="font-semibold text-[var(--brand)] underline underline-offset-2 hover:text-[var(--brand-deep)]"
+            >
               Contact
             </Link>{" "}
             page.

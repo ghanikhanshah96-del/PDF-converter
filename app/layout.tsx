@@ -8,13 +8,17 @@ import "./globals.css";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+  weight: ["600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
   subsets: ["latin"],
+  weight: ["400", "600"],
   display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {

@@ -1,20 +1,11 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { isDisposableEmailDomain } from "@/lib/disposableEmails";
 
 const EMAIL_PATTERN =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
-
-/** Domains that look like placeholders often used in QA. */
-const BLOCKED_EMAIL_DOMAINS = new Set([
-  "something.com",
-  "example.com",
-  "test.com",
-  "domain.com",
-  "asdf.com",
-  "abc.com",
-]);
 
 function validateName(value: string): string | null {
   const name = value.trim();
@@ -47,12 +38,12 @@ function validateEmail(value: string): string | null {
     return "Email domain must end with a valid extension (for example .com or .org).";
   }
 
-  if (BLOCKED_EMAIL_DOMAINS.has(domain)) {
-    return "Please use your real email address — placeholder domains are not accepted.";
-  }
-
   if (labels.some((part) => !part || part.startsWith("-") || part.endsWith("-"))) {
     return "Enter a valid email domain.";
+  }
+
+  if (isDisposableEmailDomain(domain)) {
+    return "Temporary or disposable email addresses are not accepted. Please use a permanent email.";
   }
 
   return null;
@@ -76,25 +67,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
     message?: string;
     form?: string;
   }>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "copied">(
-    "idle",
-  );
-
-  const subject = useMemo(
-    () => `Contact from ${name.trim() || "website visitor"}`,
-    [name],
-  );
-
-  const body = useMemo(() => {
-    return [
-      `Name: ${name.trim()}`,
-      `Email: ${email.trim()}`,
-      "",
-      "Message:",
-      "",
-      message.trim(),
-    ].join("\n");
-  }, [name, email, message]);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -135,7 +108,10 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
       if (!res.ok || !data.success) {
         setStatus("idle");
         setErrors({
-          form: "We couldn't send your message.\nPlease try again in a moment.",
+          form:
+            data.message && res.status === 400
+              ? data.message
+              : "We couldn't send your message.\nPlease try again in a moment.",
         });
         return;
       }
@@ -148,18 +124,6 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
       setStatus("idle");
       setErrors({
         form: "We couldn't send your message.\nPlease try again in a moment.",
-      });
-    }
-  };
-
-  const copyFallback = async () => {
-    const text = `To: ${supportEmail}\nSubject: ${subject}\n\n${body}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatus("copied");
-    } catch {
-      setErrors({
-        form: `Could not copy. Please email ${supportEmail} manually.`,
       });
     }
   };
@@ -179,7 +143,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
           onChange={(e) => {
             setName(e.target.value);
             setErrors((prev) => ({ ...prev, name: undefined, form: undefined }));
-            if (status === "sent" || status === "copied") setStatus("idle");
+            if (status === "sent") setStatus("idle");
           }}
           className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
           placeholder="Your name"
@@ -204,7 +168,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
           onChange={(e) => {
             setEmail(e.target.value);
             setErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
-            if (status === "sent" || status === "copied") setStatus("idle");
+            if (status === "sent") setStatus("idle");
           }}
           className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
           placeholder="you@company.org"
@@ -232,7 +196,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
               message: undefined,
               form: undefined,
             }));
-            if (status === "sent" || status === "copied") setStatus("idle");
+            if (status === "sent") setStatus("idle");
           }}
           className="resize-y rounded-lg border border-[var(--line)] bg-white px-4 py-3 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
           placeholder="Tell us what happened or what you need."
@@ -272,43 +236,27 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
         </p>
       )}
 
-      {status === "copied" && (
-        <p
-          className="rounded-xl bg-[var(--brand-soft)] px-3 py-2 text-sm font-normal text-[var(--brand-deep)]"
-          role="status"
-        >
-          Message copied. Paste it into your email app and send to {supportEmail}.
-        </p>
-      )}
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <button
-          type="submit"
-          className="btn btn-primary w-full sm:w-auto"
-          disabled={sending}
-        >
-          {sending ? "Sending..." : "Send message"}
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary w-full sm:w-auto"
-          onClick={copyFallback}
-          disabled={sending}
-        >
-          Copy message
-        </button>
-      </div>
+      <button
+        type="submit"
+        className="btn btn-primary w-full sm:w-auto"
+        disabled={sending}
+      >
+        {sending ? "Sending..." : "Send message"}
+      </button>
 
       <p className="text-sm font-normal leading-relaxed text-[var(--ink-muted)]">
         Or email us directly at{" "}
         <a
           href={`mailto:${supportEmail}`}
-          className="font-semibold text-[var(--brand)] underline"
+          className="font-semibold text-[var(--brand)] underline underline-offset-2"
         >
           {supportEmail}
         </a>
         . For privacy details, read the{" "}
-        <Link href="/privacy" className="font-semibold text-[var(--brand)] underline">
+        <Link
+          href="/privacy"
+          className="font-semibold text-[var(--brand)] underline underline-offset-2"
+        >
           Privacy Policy
         </Link>
         .

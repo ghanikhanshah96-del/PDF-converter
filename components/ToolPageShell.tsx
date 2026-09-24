@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import type { ToolDefinition } from "@/lib/tools";
 import { SITE } from "@/lib/site";
-import { toolPages } from "@/lib/content/toolPages";
+import { getToolPage } from "@/lib/content/getToolPage";
 import { getToolLayout, type BlockId } from "@/lib/content/toolLayouts";
 import { PrivacyCallout } from "@/components/PrivacyCallout";
 import { ToolJsonLd } from "@/components/ToolJsonLd";
@@ -131,7 +131,7 @@ function normalizeBlocks(
   return ["hero", "privacy", "workspace", ...rest];
 }
 
-export function ToolPageShell({
+export async function ToolPageShell({
   tool,
   children,
   notice,
@@ -140,7 +140,7 @@ export function ToolPageShell({
   children: ReactNode;
   notice?: ReactNode;
 }) {
-  const seo = toolPages[tool.id];
+  const seo = await getToolPage(tool.id);
   const layout = getToolLayout(tool.id);
   const blocksOrder = normalizeBlocks(layout.blocks);
 

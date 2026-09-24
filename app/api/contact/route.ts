@@ -1,19 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { isDisposableEmailDomain } from "@/lib/disposableEmails";
 
 export const runtime = "nodejs";
 
 const EMAIL_PATTERN =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
-
-const BLOCKED_EMAIL_DOMAINS = new Set([
-  "something.com",
-  "example.com",
-  "test.com",
-  "domain.com",
-  "asdf.com",
-  "abc.com",
-]);
 
 const LIMITS = {
   name: 100,
@@ -58,11 +50,11 @@ function validateEmail(value: unknown): string | null {
   if (tld.length < 2 || !/^[a-z]+$/i.test(tld)) {
     return "Enter a valid email domain.";
   }
-  if (BLOCKED_EMAIL_DOMAINS.has(domain)) {
-    return "Please use your real email address.";
-  }
   if (labels.some((part) => !part || part.startsWith("-") || part.endsWith("-"))) {
     return "Enter a valid email domain.";
+  }
+  if (isDisposableEmailDomain(domain)) {
+    return "Temporary or disposable email addresses are not accepted. Please use a permanent email.";
   }
   return null;
 }

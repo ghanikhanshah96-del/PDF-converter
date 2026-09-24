@@ -67,7 +67,10 @@ export default function TermsPage() {
 
         <p>
           See also our{" "}
-          <Link href="/privacy" className="text-[var(--brand)] underline">
+          <Link
+            href="/privacy"
+            className="font-semibold text-[var(--brand)] underline underline-offset-2 hover:text-[var(--brand-deep)]"
+          >
             Privacy Policy
           </Link>
           .
