@@ -49,10 +49,20 @@ export function orderSeoSections(
   }
 }
 
+/** Join short prose lines into one flowing paragraph. */
+function proseParagraph(paragraphs: string[]) {
+  return paragraphs
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
 function proseBlock(
   section: Extract<ToolPageSection, { type: "prose" }>,
   skin: SeoSkin,
 ) {
+  const text = proseParagraph(section.paragraphs);
+
   if (skin === "magazine") {
     return (
       <section
@@ -62,11 +72,9 @@ function proseBlock(
         <h2 className="font-display text-2xl font-bold leading-tight sm:text-3xl">
           {section.heading}
         </h2>
-        <div className="mt-4 max-w-3xl space-y-4 text-base leading-relaxed text-[var(--ink-muted)]">
-          {section.paragraphs.map((p) => (
-            <p key={p.slice(0, 48)}>{p}</p>
-          ))}
-        </div>
+        <p className="mt-4 w-full text-base leading-relaxed text-[var(--ink-muted)]">
+          {text}
+        </p>
       </section>
     );
   }
@@ -80,11 +88,9 @@ function proseBlock(
         <h2 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">
           {section.heading}
         </h2>
-        <div className="mt-3 space-y-2 text-sm leading-relaxed text-[var(--ink-muted)]">
-          {section.paragraphs.map((p) => (
-            <p key={p.slice(0, 48)}>{p}</p>
-          ))}
-        </div>
+        <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)]">
+          {text}
+        </p>
       </section>
     );
   }
@@ -98,27 +104,21 @@ function proseBlock(
         <h2 className="font-display text-xl font-bold sm:text-2xl">
           {section.heading}
         </h2>
-        <div className="mt-3 columns-1 gap-6 space-y-3 text-sm leading-relaxed text-[var(--ink-muted)] sm:columns-2 sm:text-base">
-          {section.paragraphs.map((p) => (
-            <p key={p.slice(0, 48)} className="break-inside-avoid">
-              {p}
-            </p>
-          ))}
-        </div>
+        <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+          {text}
+        </p>
       </section>
     );
   }
 
   return (
-    <section key={section.heading}>
+    <section key={section.heading} className="w-full">
       <h2 className="font-display text-xl font-bold sm:text-2xl">
         {section.heading}
       </h2>
-      <div className="mt-3 space-y-3 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
-        {section.paragraphs.map((p) => (
-          <p key={p.slice(0, 48)}>{p}</p>
-        ))}
-      </div>
+      <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+        {text}
+      </p>
     </section>
   );
 }
@@ -223,11 +223,11 @@ function cardsBlock(
           {section.heading}
         </h2>
         {section.intro && (
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+          <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
             {section.intro}
           </p>
         )}
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 center-orphan-sm-2 center-orphan-lg-3">
+        <div className="mt-5 grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3 center-orphan-sm-2 center-orphan-lg-3">
           {section.items.map((item) => (
             <article
               key={item.title}
@@ -279,30 +279,35 @@ function cardsBlock(
   }
 
   const n = section.items.length;
+  // Fill the full content width; pick columns so rows stay balanced
   const cols =
     skin === "dense-editorial"
-      ? "sm:grid-cols-1"
-      : skin === "magazine" || n >= 5
-        ? "sm:grid-cols-2 lg:grid-cols-3"
-        : "sm:grid-cols-2";
+      ? "grid-cols-1"
+      : n === 1
+        ? "grid-cols-1"
+        : n === 2
+          ? "grid-cols-1 sm:grid-cols-2"
+          : n === 3
+            ? "grid-cols-1 sm:grid-cols-3"
+            : n === 4
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
   const orphan =
-    skin === "dense-editorial"
-      ? ""
-      : skin === "magazine" || n >= 5
-        ? "center-orphan-sm-2 center-orphan-lg-3"
-        : "center-orphan-sm-2";
+    skin !== "dense-editorial" && n > 4
+      ? "center-orphan-sm-2 center-orphan-lg-3"
+      : "";
 
   return (
-    <section key={section.heading}>
+    <section key={section.heading} className="w-full">
       <h2 className="font-display text-xl font-bold sm:text-2xl">
         {section.heading}
       </h2>
       {section.intro && (
-        <p className="mt-3 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+        <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
           {section.intro}
         </p>
       )}
-      <div className={`mt-4 grid gap-3 ${cols} ${orphan}`}>
+      <div className={`mt-4 grid w-full gap-3 ${cols} ${orphan}`}>
         {section.items.map((item) => (
           <article
             key={item.title}
@@ -319,10 +324,18 @@ function cardsBlock(
   );
 }
 
-/**
- * Pack bullets left-to-right so short points share a row and long tips wrap
- * only when needed — avoids tall sparse columns with empty leftover cells.
- */
+/** Full-width bullet grid — columns stretch evenly across the content row. */
+function bulletGridClass(count: number) {
+  if (count <= 1) return "grid-cols-1";
+  if (count === 2) return "grid-cols-1 sm:grid-cols-2";
+  if (count === 3) return "grid-cols-1 sm:grid-cols-3";
+  if (count === 4) return "grid-cols-2 lg:grid-cols-4";
+  if (count === 5) return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5";
+  if (count === 6) return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-6";
+  if (count <= 8) return "grid-cols-2 sm:grid-cols-4";
+  return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4";
+}
+
 function BulletPoints({
   items,
   bordered = false,
@@ -331,11 +344,13 @@ function BulletPoints({
   bordered?: boolean;
 }) {
   return (
-    <ul className="mt-4 flex list-none flex-wrap gap-x-6 gap-y-2 text-sm leading-relaxed text-[var(--ink-muted)] sm:gap-x-8 sm:text-base">
+    <ul
+      className={`mt-4 grid w-full list-none gap-x-4 gap-y-2 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base ${bulletGridClass(items.length)}`}
+    >
       {items.map((item) => (
         <li
           key={item}
-          className={`relative ${
+          className={`relative min-w-0 ${
             bordered
               ? "rounded-lg border border-[var(--line)] bg-white px-3 py-1.5 pl-7 before:absolute before:left-3 before:top-1.5 before:content-['•'] before:text-[var(--brand)]"
               : "pl-4 before:absolute before:left-0 before:content-['•'] before:text-[var(--brand)]"
@@ -354,12 +369,12 @@ function bulletsBlock(
 ) {
   if (skin === "magazine" || skin === "feature-spotlight") {
     return (
-      <section key={section.heading}>
+      <section key={section.heading} className="w-full">
         <h2 className="font-display text-xl font-bold sm:text-2xl">
           {section.heading}
         </h2>
         {section.intro && (
-          <p className="mt-3 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+          <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
             {section.intro}
           </p>
         )}
@@ -390,12 +405,12 @@ function bulletsBlock(
   }
 
   return (
-    <section key={section.heading}>
+    <section key={section.heading} className="w-full">
       <h2 className="font-display text-xl font-bold sm:text-2xl">
         {section.heading}
       </h2>
       {section.intro && (
-        <p className="mt-3 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+        <p className="mt-3 w-full text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
           {section.intro}
         </p>
       )}
@@ -459,7 +474,7 @@ export function ToolSeoSections({
           : "mt-12 space-y-10";
 
   return (
-    <div className={wrapper} data-seo-skin={skin}>
+    <div className={`w-full ${wrapper}`} data-seo-skin={skin}>
       {ordered.map((section) => {
         switch (section.type) {
           case "prose":

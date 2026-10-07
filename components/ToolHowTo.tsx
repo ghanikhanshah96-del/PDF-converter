@@ -107,11 +107,11 @@ export function ToolHowTo({
 
   // numbered-cards (default) — multi-column so steps fill the width
   return (
-    <section className="mt-12" aria-labelledby="howto-heading">
+    <section className="mt-12 w-full" aria-labelledby="howto-heading">
       <h2 id="howto-heading" className="font-display text-xl font-bold">
         {heading}
       </h2>
-      <ol className={`mt-4 grid gap-3 ${colClass} ${orphanClass}`}>
+      <ol className={`mt-4 grid w-full gap-3 ${colClass} ${orphanClass}`}>
         {steps.map((step, i) => (
           <li
             key={step}

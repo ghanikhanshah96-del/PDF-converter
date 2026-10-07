@@ -10,7 +10,10 @@ export function PdfToExcelClient() {
   return (
     <ToolWorkspace
       accept={tool.accept}
-      title="Drop a PDF with tables"
+      multiple
+      processMode="each"
+      title="Drop PDFs with tables"
+      hint="Select one or more PDF files — or click to browse"
       processLabel="Convert to Excel"
       onProcess={async (files, onProgress) => {
         onProgress(15, "Loading libraries…");

@@ -19,7 +19,10 @@ function UnlockForm({
   return (
     <ToolWorkspace
       accept={tool.accept}
+      multiple
+      processMode="each"
       title={title}
+      hint="Select one or more locked PDFs — or click to browse"
       processLabel={processLabel}
       passwordGate={false}
       options={

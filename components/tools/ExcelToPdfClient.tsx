@@ -11,7 +11,10 @@ export function ExcelToPdfClient() {
   return (
     <ToolWorkspace
       accept={tool.accept}
-      title="Drop an Excel (.xlsx) file"
+      multiple
+      processMode="each"
+      title="Drop Excel (.xlsx) files"
+      hint="Select one or more spreadsheets — or click to browse"
       processLabel="Convert to PDF"
       onProcess={async (files, onProgress) => {
         onProgress(15, "Loading SheetJS…");

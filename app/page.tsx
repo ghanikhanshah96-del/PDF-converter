@@ -144,9 +144,14 @@ export default function HomePage() {
           <p className="mt-3 text-sm text-[var(--ink-muted)] sm:text-base">
             {homeContent.capabilities.intro}
           </p>
-          <ul className="mt-4 grid list-disc gap-2 pl-5 text-sm text-[var(--ink-muted)] sm:grid-cols-2 sm:text-base">
+          <ul className="mt-4 grid list-none gap-x-6 gap-y-2 text-sm text-[var(--ink-muted)] sm:grid-cols-2 lg:grid-cols-3 sm:text-base">
             {homeContent.capabilities.items.map((item) => (
-              <li key={item}>{item}</li>
+              <li
+                key={item}
+                className="relative pl-4 before:absolute before:left-0 before:content-['•'] before:text-[var(--brand)]"
+              >
+                {item}
+              </li>
             ))}
           </ul>
           <p className="mt-4 text-sm text-[var(--ink-muted)] sm:text-base">

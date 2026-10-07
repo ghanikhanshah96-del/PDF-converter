@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import type { ToolDefinition } from "@/lib/tools";
@@ -43,12 +42,9 @@ function HeroBlock({
 }) {
   if (variant === "with-aside") {
     return (
-      <header className="mt-5 grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-start">
+      <header className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-start">
         <div>
-          <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
-            {SITE.name}
-          </p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,2.5rem)] font-bold leading-tight sm:text-4xl">
+          <h1 className="font-display text-[clamp(2rem,9vw,2.5rem)] font-bold leading-tight sm:text-4xl">
             {tool.h1}
           </h1>
           <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
@@ -68,11 +64,8 @@ function HeroBlock({
 
   if (variant === "centered-narrow") {
     return (
-      <header className="mx-auto mt-5 max-w-3xl text-center">
-        <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
-          {SITE.name}
-        </p>
-        <h1 className="mt-2 font-display text-[clamp(2rem,8vw,2.75rem)] font-bold leading-tight">
+      <header className="mx-auto max-w-3xl text-center">
+        <h1 className="font-display text-[clamp(2rem,8vw,2.75rem)] font-bold leading-tight">
           {tool.h1}
         </h1>
         <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
@@ -84,13 +77,10 @@ function HeroBlock({
 
   if (variant === "split-banner") {
     return (
-      <header className="mt-5 overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-br from-white to-[var(--brand-soft)]">
+      <header className="overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-br from-white to-[var(--brand-soft)]">
         <div className="grid gap-4 p-5 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div>
-            <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
-              Free online tool
-            </p>
-            <h1 className="mt-2 font-display text-[clamp(1.85rem,8vw,2.6rem)] font-bold leading-tight">
+            <h1 className="font-display text-[clamp(1.85rem,8vw,2.6rem)] font-bold leading-tight">
               {tool.h1}
             </h1>
           </div>
@@ -103,11 +93,8 @@ function HeroBlock({
   }
 
   return (
-    <header className="mt-5">
-      <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
-        {SITE.name}
-      </p>
-      <h1 className="mt-2 font-display text-[clamp(2rem,9vw,2.5rem)] font-bold leading-tight sm:text-4xl">
+    <header>
+      <h1 className="font-display text-[clamp(2rem,9vw,2.5rem)] font-bold leading-tight sm:text-4xl">
         {tool.h1}
       </h1>
       <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
@@ -148,12 +135,12 @@ export async function ToolPageShell({
     hero: <HeroBlock tool={tool} variant={layout.hero} />,
     privacy: (
       <>
-        <PrivacyCallout className="mt-6" />
+        <PrivacyCallout className="mt-5" />
         {notice}
       </>
     ),
     workspace: (
-      <div id="tool-workspace" className="mt-6 scroll-mt-24">
+      <div id="tool-workspace" className="mt-5 scroll-mt-24">
         {children}
       </div>
     ),
@@ -167,7 +154,6 @@ export async function ToolPageShell({
     seo: seo?.sections?.length ? (
       <ToolSeoSections
         sections={seo.sections.filter((s) => {
-          // ToolHowTo already covers the workflow — drop duplicate how-to blocks
           if (s.type === "steps") return false;
           if (s.type === "cards") {
             const howToHeading = /^how to\b/i.test(s.heading);
@@ -193,22 +179,10 @@ export async function ToolPageShell({
 
   return (
     <div
-      className="site-container py-6 sm:py-12"
+      className="site-container py-6 sm:py-10"
       data-tool-layout={layout.name}
     >
       <ToolJsonLd tool={tool} />
-
-      <nav className="text-sm text-[var(--ink-muted)]" aria-label="Breadcrumb">
-        <ol className="flex flex-wrap items-center gap-2">
-          <li>
-            <Link href="/" className="hover:text-[var(--brand)]">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li className="text-[var(--ink)]">{tool.name}</li>
-        </ol>
-      </nav>
 
       {blocksOrder.map((blockId) => (
         <div key={blockId}>{blocks[blockId]}</div>

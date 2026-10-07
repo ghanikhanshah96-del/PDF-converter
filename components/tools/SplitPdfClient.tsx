@@ -15,7 +15,10 @@ export function SplitPdfClient() {
   return (
     <ToolWorkspace
       accept={tool.accept}
-      title="Drop a PDF to split"
+      multiple
+      processMode="each"
+      title="Drop PDFs to split"
+      hint="Select one or more PDF files — or click to browse"
       processLabel="Split PDF"
       options={
         <>

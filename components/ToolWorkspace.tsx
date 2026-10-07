@@ -9,12 +9,14 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { downloadBlob, basename } from "@/lib/download";
+import { downloadBlob } from "@/lib/download";
 import {
   assertFilesWithinLimit,
   formatBytes,
   MAX_FILE_BYTES,
   MAX_FILE_LABEL,
+  MAX_FILES,
+  MAX_FILES_LABEL,
 } from "@/lib/limits";
 import {
   isPdfEncrypted,
@@ -31,40 +33,44 @@ export type ProcessResult = {
 export type ToolWorkspaceProps = {
   accept: string;
   multiple?: boolean;
+  /** Cap on selected files (default MAX_FILES). */
+  maxFiles?: number;
+  /**
+   * "each" — process every file separately (batch convert).
+   * "all" — process the whole list once (merge / images→PDF).
+   */
+  processMode?: "each" | "all";
   title?: string;
   hint?: string;
   processLabel?: string;
   disabled?: boolean;
-  /** Extra controls rendered between file list and action buttons */
   options?: ReactNode;
-  /** Validate/prepare before process; throw Error to show message */
   validate?: (files: File[]) => void | Promise<void>;
-  /** Heavy work — dynamically import engines inside this callback */
   onProcess: (
     files: File[],
     onProgress: (pct: number, label?: string) => void,
   ) => Promise<ProcessResult>;
   minFiles?: number;
-  /**
-   * When true (default for PDF accept), detect locked PDFs and ask for
-   * passwords before processing — same behavior as iLovePDF.
-   */
   passwordGate?: boolean;
 };
 
 type FileEntry = {
   id: string;
   file: File;
-  /** null while checking */
   encrypted: boolean | null;
   password: string;
   unlocked: boolean;
   unlockError: string | null;
 };
 
+type ResultEntry = {
+  id: string;
+  blob: Blob;
+  filename: string;
+};
+
 function waitForPaint() {
   if (typeof window === "undefined") return Promise.resolve();
-
   return new Promise<void>((resolve) => {
     window.requestAnimationFrame(() => {
       window.setTimeout(resolve, 0);
@@ -81,9 +87,30 @@ function acceptLooksLikePdf(accept: string): boolean {
   return a.includes("pdf") || a.includes(".pdf");
 }
 
+function fileMatchesAccept(file: File, accept: string): boolean {
+  if (!accept.trim()) return true;
+  const tokens = accept.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+  const name = file.name.toLowerCase();
+  const type = (file.type || "").toLowerCase();
+  return tokens.some((token) => {
+    if (token.startsWith(".")) return name.endsWith(token);
+    if (token.endsWith("/*")) return type.startsWith(token.slice(0, -1));
+    return type === token || name.endsWith(`.${token.split("/").pop()}`);
+  });
+}
+
+function ensureExtension(name: string, fallbackExt: string): string {
+  const trimmed = name.trim() || "download";
+  if (/\.[a-z0-9]{2,8}$/i.test(trimmed)) return trimmed;
+  const ext = fallbackExt.replace(/^\./, "");
+  return ext ? `${trimmed}.${ext}` : trimmed;
+}
+
 export function ToolWorkspace({
   accept,
   multiple = false,
+  maxFiles = MAX_FILES,
+  processMode = "all",
   title = "Drop files here",
   hint = "or click to browse",
   processLabel = "Process",
@@ -95,7 +122,10 @@ export function ToolWorkspace({
   passwordGate,
 }: ToolWorkspaceProps) {
   const gateEnabled = passwordGate ?? acceptLooksLikePdf(accept);
+  const batchEach = processMode === "each";
+  const allowMulti = multiple || batchEach;
   const inputId = useId();
+  const addMoreId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [active, setActive] = useState(false);
@@ -103,27 +133,18 @@ export function ToolWorkspace({
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ProcessResult | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [results, setResults] = useState<ResultEntry[]>([]);
 
   const files = useMemo(() => entries.map((e) => e.file), [entries]);
-
-  const fileLabel = useMemo(() => {
-    if (!entries.length) return null;
-    if (entries.length === 1) return entries[0].file.name;
-    return `${entries.length} files selected`;
-  }, [entries]);
+  const slotsLeft = Math.max(0, maxFiles - entries.length);
 
   const lockedPending = useMemo(
-    () =>
-      entries.filter(
-        (e) => e.encrypted === true && !e.unlocked,
-      ),
+    () => entries.filter((e) => e.encrypted === true && !e.unlocked),
     [entries],
   );
-
   const stillChecking = entries.some((e) => e.encrypted === null);
 
-  // Detect encryption for newly added PDFs
   useEffect(() => {
     if (!gateEnabled) return;
     let cancelled = false;
@@ -170,36 +191,88 @@ export function ToolWorkspace({
 
   const addFiles = useCallback(
     (list: FileList | File[]) => {
-      const next = Array.from(list);
-      setResult(null);
+      const incoming = Array.from(list);
+      setResults([]);
 
-      const oversized = next.filter((f) => f.size > MAX_FILE_BYTES);
-      if (oversized.length) {
-        const first = oversized[0];
-        setError(
-          `"${first.name}" is ${formatBytes(first.size)}. Maximum file size is ${MAX_FILE_LABEL}. Please choose a smaller file or compress it first.`,
-        );
-      } else {
-        setError(null);
+      if (!incoming.length) {
+        setStatus("No files were selected.");
+        return;
       }
 
-      const allowed = next.filter((f) => f.size <= MAX_FILE_BYTES);
-      if (!allowed.length) return;
-
-      const newEntries: FileEntry[] = allowed.map((file) => ({
-        id: makeId(),
-        file,
-        encrypted: gateEnabled && isPdfFile(file) ? null : false,
-        password: "",
-        unlocked: !(gateEnabled && isPdfFile(file)),
-        unlockError: null,
-      }));
-
-      setEntries((prev) =>
-        multiple ? [...prev, ...newEntries] : newEntries.slice(0, 1),
+      const rejectedType = incoming.filter((f) => !fileMatchesAccept(f, accept));
+      const oversized = incoming.filter(
+        (f) => fileMatchesAccept(f, accept) && f.size > MAX_FILE_BYTES,
       );
+      const allowed = incoming.filter(
+        (f) => fileMatchesAccept(f, accept) && f.size <= MAX_FILE_BYTES,
+      );
+
+      const messages: string[] = [];
+      if (rejectedType.length) {
+        messages.push(
+          rejectedType.length === 1
+            ? `"${rejectedType[0].name}" is not a supported file type for this tool.`
+            : `${rejectedType.length} files were skipped (unsupported type).`,
+        );
+      }
+      if (oversized.length) {
+        const first = oversized[0];
+        messages.push(
+          `"${first.name}" is ${formatBytes(first.size)}. Maximum size is ${MAX_FILE_LABEL}.`,
+        );
+      }
+
+      setEntries((prev) => {
+        const room = allowMulti ? Math.max(0, maxFiles - prev.length) : 1;
+        if (room <= 0) {
+          queueMicrotask(() => {
+            setError(
+              [...messages, `You already selected the maximum of ${maxFiles} files.`].join(
+                " ",
+              ),
+            );
+            setStatus(null);
+          });
+          return prev;
+        }
+
+        const toAdd = allowed.slice(0, room);
+        if (allowed.length > room) {
+          messages.push(
+            `Only ${room} more file${room === 1 ? "" : "s"} can be added (max ${maxFiles}).`,
+          );
+        }
+
+        if (!toAdd.length) {
+          queueMicrotask(() => {
+            setError(messages.join(" ") || "No valid files to add.");
+            setStatus(null);
+          });
+          return prev;
+        }
+
+        const newEntries: FileEntry[] = toAdd.map((file) => ({
+          id: makeId(),
+          file,
+          encrypted: gateEnabled && isPdfFile(file) ? null : false,
+          password: "",
+          unlocked: !(gateEnabled && isPdfFile(file)),
+          unlockError: null,
+        }));
+
+        queueMicrotask(() => {
+          setError(messages.length ? messages.join(" ") : null);
+          setStatus(
+            toAdd.length === 1
+              ? `Added “${toAdd[0].name}”.`
+              : `Added ${toAdd.length} files.`,
+          );
+        });
+
+        return allowMulti ? [...prev, ...newEntries] : newEntries.slice(0, 1);
+      });
     },
-    [multiple, gateEnabled],
+    [accept, allowMulti, gateEnabled, maxFiles],
   );
 
   const onDrop = useCallback(
@@ -222,8 +295,13 @@ export function ToolWorkspace({
   };
 
   const removeFile = (index: number) => {
-    setEntries((prev) => prev.filter((_, i) => i !== index));
-    setResult(null);
+    setEntries((prev) => {
+      const removed = prev[index];
+      const next = prev.filter((_, i) => i !== index);
+      setStatus(removed ? `Removed “${removed.file.name}”.` : null);
+      return next;
+    });
+    setResults([]);
   };
 
   const setPassword = (id: string, password: string) => {
@@ -246,6 +324,7 @@ export function ToolWorkspace({
           e.id === id ? { ...e, unlocked: true, unlockError: null } : e,
         ),
       );
+      setStatus(`Unlocked “${entry.file.name}”.`);
     } catch (err) {
       setEntries((prev) =>
         prev.map((e) =>
@@ -291,7 +370,7 @@ export function ToolWorkspace({
 
   const run = async () => {
     setError(null);
-    setResult(null);
+    setResults([]);
     if (entries.length < minFiles) {
       setError(
         minFiles > 1
@@ -315,6 +394,7 @@ export function ToolWorkspace({
       setBusy(true);
       setProgress(5);
       setProgressLabel("Preparing…");
+      setStatus(null);
       await waitForPaint();
 
       const processFiles = await resolveFilesForProcess((pct, label) => {
@@ -323,25 +403,101 @@ export function ToolWorkspace({
       });
 
       if (validate) await validate(processFiles);
-      setProgress(25);
-      setProgressLabel("Loading libraries…");
-      await waitForPaint();
-      const out = await onProcess(processFiles, (pct, label) => {
-        // Map tool progress into 25–100 range
-        const mapped = 25 + Math.round((pct / 100) * 75);
-        setProgress(Math.max(0, Math.min(100, mapped)));
-        if (label) setProgressLabel(label);
-      });
+
+      const collected: ResultEntry[] = [];
+
+      if (batchEach) {
+        for (let i = 0; i < processFiles.length; i++) {
+          const file = processFiles[i];
+          const base = 20 + Math.round((i / processFiles.length) * 75);
+          setProgress(base);
+          setProgressLabel(`Processing ${file.name} (${i + 1}/${processFiles.length})…`);
+          await waitForPaint();
+          const out = await onProcess([file], (pct, label) => {
+            const mapped =
+              base + Math.round((pct / 100) * (75 / processFiles.length));
+            setProgress(Math.max(0, Math.min(99, mapped)));
+            if (label) setProgressLabel(`${file.name}: ${label}`);
+          });
+          collected.push({
+            id: makeId(),
+            blob: out.blob,
+            filename: out.filename,
+          });
+        }
+      } else {
+        setProgress(25);
+        setProgressLabel("Loading libraries…");
+        await waitForPaint();
+        const out = await onProcess(processFiles, (pct, label) => {
+          const mapped = 25 + Math.round((pct / 100) * 75);
+          setProgress(Math.max(0, Math.min(100, mapped)));
+          if (label) setProgressLabel(label);
+        });
+        collected.push({
+          id: makeId(),
+          blob: out.blob,
+          filename: out.filename,
+        });
+      }
+
       setProgress(100);
       setProgressLabel("Done");
-      setResult(out);
+      setResults(collected);
+      setStatus(
+        collected.length === 1
+          ? `Ready: ${collected[0].filename}`
+          : `${collected.length} files ready to download.`,
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setProgress(0);
       setProgressLabel("");
+      setStatus(null);
     } finally {
       setBusy(false);
     }
+  };
+
+  const updateResultName = (id: string, filename: string) => {
+    setResults((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, filename } : r)),
+    );
+  };
+
+  const removeResult = (id: string) => {
+    setResults((prev) => {
+      const next = prev.filter((r) => r.id !== id);
+      setStatus(
+        next.length
+          ? `${next.length} download${next.length === 1 ? "" : "s"} remaining.`
+          : "All downloads cleared.",
+      );
+      return next;
+    });
+  };
+
+  const downloadOne = (result: ResultEntry) => {
+    const ext =
+      result.filename.match(/(\.[a-z0-9]{2,8})$/i)?.[1] ||
+      (result.blob.type.includes("pdf")
+        ? ".pdf"
+        : result.blob.type.includes("word")
+          ? ".docx"
+          : "");
+    downloadBlob(result.blob, ensureExtension(result.filename, ext));
+    setStatus(`Downloaded “${ensureExtension(result.filename, ext)}”.`);
+  };
+
+  const downloadAll = () => {
+    results.forEach((r, i) => {
+      window.setTimeout(() => downloadOne(r), i * 180);
+    });
+    setStatus(
+      results.length === 1
+        ? "Download started."
+        : `Starting ${results.length} downloads…`,
+    );
   };
 
   const canProcess =
@@ -351,52 +507,84 @@ export function ToolWorkspace({
     !stillChecking &&
     lockedPending.every((e) => e.password.trim().length > 0);
 
+  const showDropzone = entries.length === 0;
+
   return (
     <div className="surface p-4 sm:p-6">
-      <label
-        htmlFor={inputId}
-        className="dropzone flex cursor-pointer flex-col items-center justify-center px-4 py-8 text-center sm:py-14"
-        data-active={active}
-        onDragEnter={(e) => {
-          e.preventDefault();
-          setActive(true);
-        }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setActive(true);
-        }}
-        onDragLeave={(e) => {
-          e.preventDefault();
-          setActive(false);
-        }}
-        onDrop={onDrop}
-      >
-        <span className="font-display text-base font-semibold text-[var(--ink)] sm:text-lg">
-          {title}
-        </span>
-        <span className="mt-1 text-sm text-[var(--ink-muted)]">{hint}</span>
-        <span className="mt-2 text-xs text-[var(--ink-muted)]">
-          Max file size: {MAX_FILE_LABEL} per file
-        </span>
-        {fileLabel && (
-          <span className="mt-3 max-w-full truncate rounded-full bg-[var(--brand-soft)] px-3 py-1 text-sm font-medium text-[var(--brand-deep)]">
-            {fileLabel}
-          </span>
-        )}
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="file"
-          className="sr-only"
-          accept={accept}
-          multiple={multiple}
-          disabled={busy || disabled}
-          onChange={(e) => {
-            if (e.target.files?.length) addFiles(e.target.files);
-            e.target.value = "";
+      {showDropzone ? (
+        <label
+          htmlFor={inputId}
+          className="dropzone flex cursor-pointer flex-col items-center justify-center px-4 py-8 text-center sm:py-14"
+          data-active={active}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setActive(true);
           }}
-        />
-      </label>
+          onDragOver={(e) => {
+            e.preventDefault();
+            setActive(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            setActive(false);
+          }}
+          onDrop={onDrop}
+        >
+          <span className="font-display text-base font-semibold text-[var(--ink)] sm:text-lg">
+            {title}
+          </span>
+          <span className="mt-1 text-sm text-[var(--ink-muted)]">{hint}</span>
+          <span className="mt-2 text-xs text-[var(--ink-muted)]">
+            Max {MAX_FILE_LABEL} per file
+            {allowMulti ? ` · up to ${MAX_FILES_LABEL}` : ""}
+          </span>
+          <input
+            ref={inputRef}
+            id={inputId}
+            type="file"
+            className="sr-only"
+            accept={accept}
+            multiple={allowMulti}
+            disabled={busy || disabled}
+            onChange={(e) => {
+              if (e.target.files?.length) addFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--line)] bg-[var(--bg-a)] px-4 py-3">
+          <p className="text-sm text-[var(--ink)]">
+            <strong>{entries.length}</strong> file
+            {entries.length === 1 ? "" : "s"} selected
+            {allowMulti && slotsLeft > 0
+              ? ` · ${slotsLeft} more can be added`
+              : allowMulti
+                ? " · limit reached"
+                : ""}
+          </p>
+          {allowMulti && slotsLeft > 0 && (
+            <label
+              htmlFor={addMoreId}
+              className="btn btn-secondary !min-h-10 cursor-pointer !px-4 !py-2 text-sm"
+            >
+              Add more files
+              <input
+                id={addMoreId}
+                type="file"
+                className="sr-only"
+                accept={accept}
+                multiple
+                disabled={busy || disabled}
+                onChange={(e) => {
+                  if (e.target.files?.length) addFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          )}
+        </div>
+      )}
 
       {entries.length > 0 && (
         <ul className="mt-4 space-y-2" aria-label="Selected files">
@@ -428,7 +616,7 @@ export function ToolWorkspace({
                 <span className="shrink-0 text-xs text-[var(--ink-muted)]">
                   {formatBytes(entry.file.size)}
                 </span>
-                {multiple && (
+                {allowMulti && (
                   <>
                     <button
                       type="button"
@@ -457,7 +645,7 @@ export function ToolWorkspace({
                   onClick={() => removeFile(index)}
                   disabled={busy}
                 >
-                  ✕
+                  Delete
                 </button>
               </div>
 
@@ -517,6 +705,15 @@ export function ToolWorkspace({
         </div>
       )}
 
+      {status && !error && (
+        <p
+          className="mt-4 rounded-xl bg-[var(--brand-soft)] px-3 py-2 text-sm text-[var(--brand-deep)]"
+          role="status"
+        >
+          {status}
+        </p>
+      )}
+
       {error && (
         <p
           className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-[var(--danger)]"
@@ -526,8 +723,73 @@ export function ToolWorkspace({
         </p>
       )}
 
+      {results.length > 0 && (
+        <div className="mt-5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-display text-base font-semibold text-[var(--ink)]">
+              Downloads
+            </h3>
+            {results.length > 1 && (
+              <button
+                type="button"
+                className="btn btn-primary !min-h-10 !px-4 !py-2 text-sm"
+                onClick={downloadAll}
+              >
+                Download all ({results.length})
+              </button>
+            )}
+          </div>
+          <ul className="space-y-2" aria-label="Ready downloads">
+            {results.map((result) => (
+              <li
+                key={result.id}
+                className="flex flex-col gap-2 rounded-xl border border-[var(--line)] bg-white px-3 py-3 sm:flex-row sm:items-center"
+              >
+                <label className="min-w-0 flex-1 text-xs font-medium text-[var(--ink-muted)]">
+                  File name
+                  <input
+                    type="text"
+                    className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[var(--bg-a)] px-3 py-2 text-sm font-medium text-[var(--ink)]"
+                    value={result.filename}
+                    onChange={(e) =>
+                      updateResultName(result.id, e.target.value)
+                    }
+                    aria-label="Edit download file name"
+                  />
+                </label>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary !min-h-10 !px-4 !py-2 text-sm"
+                    onClick={() => downloadOne(result)}
+                  >
+                    Download
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary !min-h-10 !px-4 !py-2 text-sm text-[var(--danger)]"
+                    onClick={() => removeResult(result.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          {results.length === 1 && (
+            <button
+              type="button"
+              className="btn btn-primary w-full sm:w-auto"
+              onClick={downloadAll}
+            >
+              Download {results[0].filename}
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
-        {!result && (
+        {results.length === 0 && (
           <button
             type="button"
             className="btn btn-primary w-full sm:w-auto"
@@ -537,13 +799,19 @@ export function ToolWorkspace({
             {busy ? "Working…" : processLabel}
           </button>
         )}
-        {result && (
+        {results.length > 0 && (
           <button
             type="button"
-            className="btn btn-primary w-full sm:w-auto"
-            onClick={() => downloadBlob(result.blob, result.filename)}
+            className="btn btn-secondary w-full sm:w-auto"
+            onClick={() => {
+              setResults([]);
+              setProgress(0);
+              setProgressLabel("");
+              setStatus("Ready to process again.");
+            }}
+            disabled={busy}
           >
-            Download {result.filename}
+            Process again
           </button>
         )}
         {entries.length > 0 && !busy && (
@@ -552,24 +820,17 @@ export function ToolWorkspace({
             className="btn btn-secondary w-full sm:w-auto"
             onClick={() => {
               setEntries([]);
-              setResult(null);
+              setResults([]);
               setError(null);
+              setStatus(null);
               setProgress(0);
               setProgressLabel("");
             }}
           >
-            Clear
+            Clear all
           </button>
         )}
       </div>
-
-      {result && (
-        <p className="mt-3 text-sm text-[var(--brand-deep)]">
-          Ready: <strong>{result.filename}</strong>
-          {files[0] ? ` (from ${basename(files[0].name)})` : ""}. Click Download
-          to save the file.
-        </p>
-      )}
     </div>
   );
 }

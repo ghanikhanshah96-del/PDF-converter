@@ -19,6 +19,7 @@ export function MergePdfClient() {
     <ToolWorkspace
       accept={tool.accept}
       multiple
+      processMode="all"
       minFiles={2}
       title="Drop PDF files to merge"
       hint="You can add the same PDF more than once. Locked files will ask for a password."

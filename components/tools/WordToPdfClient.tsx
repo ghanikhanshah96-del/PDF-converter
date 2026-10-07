@@ -20,7 +20,10 @@ export function WordToPdfClient() {
   return (
     <ToolWorkspace
       accept={tool.accept}
-      title="Drop a Word (.docx) file"
+      multiple
+      processMode="each"
+      title="Drop Word (.docx) files"
+      hint="Select one or more documents — or click to browse"
       processLabel="Convert to PDF"
       onProcess={async (files, onProgress) => {
         onProgress(15, "Loading converters…");

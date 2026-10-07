@@ -15,7 +15,10 @@ export function CompressPdfClient() {
   return (
     <ToolWorkspace
       accept={tool.accept}
-      title="Drop a PDF to compress"
+      multiple
+      processMode="each"
+      title="Drop PDFs to compress"
+      hint="Select one or more PDF files — or click to browse"
       processLabel="Compress PDF"
       options={
         <fieldset className="flex flex-wrap gap-4 text-sm">

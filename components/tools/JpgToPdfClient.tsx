@@ -11,8 +11,10 @@ export function JpgToPdfClient() {
     <ToolWorkspace
       accept={tool.accept}
       multiple
+      processMode="all"
+      maxFiles={40}
       title="Drop images to convert"
-      hint="JPG, PNG, or WEBP — or click to browse"
+      hint="JPG, PNG, or WEBP — add multiple images into one PDF"
       processLabel="Create PDF"
       onProcess={async (files, onProgress) => {
         onProgress(20, "Loading pdf-lib…");
