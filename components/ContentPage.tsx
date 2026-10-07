@@ -23,20 +23,13 @@ function richText(text: string): ReactNode[] {
 }
 
 function BulletList({ items }: { items: string[] }) {
-  // 1 col mobile → 2 cols tablet → 3 cols desktop (fewer vertical rows)
-  const cols =
-    items.length <= 2
-      ? "grid-cols-1 sm:grid-cols-2"
-      : items.length <= 4
-        ? "grid-cols-1 sm:grid-cols-2"
-        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
-
   return (
-    <ul
-      className={`mt-2 grid ${cols} gap-x-4 gap-y-1 text-[14px] leading-snug text-[var(--ink)] sm:text-[15px]`}
-    >
+    <ul className="mt-2 flex list-none flex-wrap gap-x-6 gap-y-1.5 text-[14px] leading-snug text-[var(--ink)] sm:gap-x-8 sm:text-[15px]">
       {items.map((item) => (
-        <li key={item} className="relative pl-4 before:absolute before:left-0 before:content-['•'] before:text-[var(--brand)]">
+        <li
+          key={item}
+          className="relative pl-4 before:absolute before:left-0 before:content-['•'] before:text-[var(--brand)]"
+        >
           {richText(item)}
         </li>
       ))}

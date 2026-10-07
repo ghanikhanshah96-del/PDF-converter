@@ -390,3 +390,51 @@ svg {
 .contact-message::-webkit-scrollbar-thumb:hover {
   background: var(--brand-deep);
 }
+
+/* Center a lone card when it sits alone in the last row */
+@media (min-width: 640px) {
+  .center-orphan-sm-2 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 0.75rem) / 2);
+  }
+
+  .center-orphan-sm-2.gap-4 > :last-child:nth-child(odd) {
+    max-width: calc((100% - 1rem) / 2);
+  }
+}
+
+@media (min-width: 768px) {
+  .center-orphan-md-2 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 0.75rem) / 2);
+  }
+
+  .center-orphan-md-2.gap-4 > :last-child:nth-child(odd) {
+    max-width: calc((100% - 1rem) / 2);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Reset 2-col orphan rules once a 3-col grid takes over */
+  .center-orphan-lg-3.center-orphan-sm-2 > :last-child:nth-child(odd),
+  .center-orphan-lg-3.center-orphan-md-2 > :last-child:nth-child(odd) {
+    grid-column: auto;
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .center-orphan-lg-3 > :last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 1.5rem) / 3);
+  }
+
+  .center-orphan-lg-3.gap-4 > :last-child:nth-child(3n + 1) {
+    max-width: calc((100% - 2rem) / 3);
+  }
+}

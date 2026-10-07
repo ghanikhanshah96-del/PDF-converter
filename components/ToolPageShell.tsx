@@ -166,7 +166,18 @@ export async function ToolPageShell({
     ),
     seo: seo?.sections?.length ? (
       <ToolSeoSections
-        sections={seo.sections}
+        sections={seo.sections.filter((s) => {
+          // ToolHowTo already covers the workflow — drop duplicate how-to blocks
+          if (s.type === "steps") return false;
+          if (s.type === "cards") {
+            const howToHeading = /^how to\b/i.test(s.heading);
+            const stepCards = s.items.some((item) =>
+              /^step\s*\d/i.test(item.title),
+            );
+            if (howToHeading || stepCards) return false;
+          }
+          return true;
+        })}
         skin={layout.seoSkin}
         order={layout.seoOrder}
       />

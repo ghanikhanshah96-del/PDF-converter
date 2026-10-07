@@ -127,13 +127,19 @@ function stepsBlock(
   section: Extract<ToolPageSection, { type: "steps" }>,
   skin: SeoSkin,
 ) {
+  const n = section.steps.length;
+  const cols =
+    n <= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2 lg:grid-cols-4";
+  const orphan =
+    n <= 3 ? "center-orphan-sm-2 center-orphan-lg-3" : "center-orphan-sm-2";
+
   if (skin === "feature-spotlight" || skin === "split-rhythm") {
     return (
       <section key={section.heading}>
         <h2 className="font-display text-xl font-bold sm:text-2xl">
           {section.heading}
         </h2>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className={`mt-4 grid gap-3 ${cols} ${orphan}`}>
           {section.steps.map((step, i) => (
             <div
               key={step}
@@ -155,7 +161,7 @@ function stepsBlock(
       <h2 className="font-display text-xl font-bold sm:text-2xl">
         {section.heading}
       </h2>
-      <ol className="mt-4 space-y-3">
+      <ol className={`mt-4 grid gap-3 ${cols} ${orphan}`}>
         {section.steps.map((step, i) => (
           <li
             key={step}
@@ -221,7 +227,7 @@ function cardsBlock(
             {section.intro}
           </p>
         )}
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 center-orphan-sm-2 center-orphan-lg-3">
           {section.items.map((item) => (
             <article
               key={item.title}
@@ -272,12 +278,19 @@ function cardsBlock(
     );
   }
 
+  const n = section.items.length;
   const cols =
-    skin === "magazine"
-      ? "sm:grid-cols-2 lg:grid-cols-3"
-      : skin === "dense-editorial"
-        ? "sm:grid-cols-1"
+    skin === "dense-editorial"
+      ? "sm:grid-cols-1"
+      : skin === "magazine" || n >= 5
+        ? "sm:grid-cols-2 lg:grid-cols-3"
         : "sm:grid-cols-2";
+  const orphan =
+    skin === "dense-editorial"
+      ? ""
+      : skin === "magazine" || n >= 5
+        ? "center-orphan-sm-2 center-orphan-lg-3"
+        : "center-orphan-sm-2";
 
   return (
     <section key={section.heading}>
@@ -289,7 +302,7 @@ function cardsBlock(
           {section.intro}
         </p>
       )}
-      <div className={`mt-4 grid gap-3 ${cols}`}>
+      <div className={`mt-4 grid gap-3 ${cols} ${orphan}`}>
         {section.items.map((item) => (
           <article
             key={item.title}
@@ -303,6 +316,35 @@ function cardsBlock(
         ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * Pack bullets left-to-right so short points share a row and long tips wrap
+ * only when needed — avoids tall sparse columns with empty leftover cells.
+ */
+function BulletPoints({
+  items,
+  bordered = false,
+}: {
+  items: string[];
+  bordered?: boolean;
+}) {
+  return (
+    <ul className="mt-4 flex list-none flex-wrap gap-x-6 gap-y-2 text-sm leading-relaxed text-[var(--ink-muted)] sm:gap-x-8 sm:text-base">
+      {items.map((item) => (
+        <li
+          key={item}
+          className={`relative ${
+            bordered
+              ? "rounded-lg border border-[var(--line)] bg-white px-3 py-1.5 pl-7 before:absolute before:left-3 before:top-1.5 before:content-['•'] before:text-[var(--brand)]"
+              : "pl-4 before:absolute before:left-0 before:content-['•'] before:text-[var(--brand)]"
+          }`}
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -321,16 +363,7 @@ function bulletsBlock(
             {section.intro}
           </p>
         )}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {section.items.map((item) => (
-            <span
-              key={item}
-              className="rounded-full border border-[var(--line)] bg-white px-3 py-2 text-sm text-[var(--ink)]"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
+        <BulletPoints items={section.items} bordered />
       </section>
     );
   }
@@ -339,7 +372,7 @@ function bulletsBlock(
     return (
       <section
         key={section.heading}
-        className="grid gap-4 rounded-2xl border border-[var(--line)] bg-[var(--bg-a)] p-5 md:grid-cols-[1fr_1.2fr]"
+        className="grid gap-4 rounded-2xl border border-[var(--line)] bg-[var(--bg-a)] p-5 md:grid-cols-[minmax(0,14rem)_1fr] md:items-start"
       >
         <div>
           <h2 className="font-display text-xl font-bold sm:text-2xl">
@@ -351,16 +384,7 @@ function bulletsBlock(
             </p>
           )}
         </div>
-        <ul className="space-y-2 text-sm leading-relaxed text-[var(--ink-muted)]">
-          {section.items.map((item) => (
-            <li
-              key={item}
-              className="rounded-lg border border-[var(--line)] bg-white px-3 py-2"
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
+        <BulletPoints items={section.items} bordered />
       </section>
     );
   }
@@ -375,11 +399,7 @@ function bulletsBlock(
           {section.intro}
         </p>
       )}
-      <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
-        {section.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      <BulletPoints items={section.items} />
     </section>
   );
 }

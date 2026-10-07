@@ -19,7 +19,7 @@ export const homeContent = {
     h1: "Free PDF Converter Tools Online",
     paragraphs: [
       "Convert, edit, compress, and manage your PDF files with our free online PDF tools. Whether you need to convert documents, reduce file size, merge pages, or make quick edits, BestFreePDFConverter.com provides simple solutions that work directly from your browser.",
-      "No software installation. No complicated steps. Just select your file, choose your tool, and complete your PDF task quickly — processing stays in your browser.",
+      "No software installation. No complicated steps. Just select your file, choose your tool, and complete your PDF task quickly, with processing that stays in your browser.",
     ],
     ctaLabel: "Start Using PDF Tools",
     ctaHref: "#tools",
@@ -27,8 +27,7 @@ export const homeContent = {
   toolsIntro: {
     heading: "Powerful PDF Tools for Every Document Need",
     paragraphs: [
-      "Managing PDF files should be simple. Our collection of free PDF tools helps you handle everyday document tasks including conversion, editing, optimization, and organization.",
-      "Choose the tool you need and complete your task in just a few clicks.",
+      "Managing PDF files should be simple. Our collection of free PDF tools helps you handle everyday document tasks including conversion, editing, optimization, and organization. Choose the tool you need and complete your task in just a few clicks.",
     ],
   },
   convertBand: {

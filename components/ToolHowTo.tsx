@@ -10,6 +10,14 @@ export function ToolHowTo({
   variant: HowToVariant;
 }) {
   const heading = `How to use ${toolName}`;
+  const colClass =
+    steps.length <= 3
+      ? "sm:grid-cols-2 lg:grid-cols-3"
+      : "sm:grid-cols-2 lg:grid-cols-4";
+  const orphanClass =
+    steps.length <= 3
+      ? "center-orphan-sm-2 center-orphan-lg-3"
+      : "center-orphan-sm-2";
 
   if (variant === "horizontal-rail") {
     return (
@@ -17,7 +25,7 @@ export function ToolHowTo({
         <h2 id="howto-heading" className="font-display text-xl font-bold">
           {heading}
         </h2>
-        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className={`mt-4 grid gap-3 ${colClass} ${orphanClass}`}>
           {steps.map((step, i) => (
             <li
               key={step}
@@ -60,7 +68,7 @@ export function ToolHowTo({
         <h2 id="howto-heading" className="font-display text-xl font-bold">
           {heading}
         </h2>
-        <ul className="mt-4 space-y-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-a)] p-4">
+        <ul className={`mt-4 grid gap-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-a)] p-4 ${colClass} ${orphanClass}`}>
           {steps.map((step, i) => (
             <li
               key={step}
@@ -86,7 +94,9 @@ export function ToolHowTo({
         <h2 id="howto-heading" className="font-display text-xl font-bold">
           {heading}
         </h2>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+        <ol
+          className={`mt-3 grid list-decimal gap-x-6 gap-y-2 pl-5 text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base ${colClass}`}
+        >
           {steps.map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -95,13 +105,13 @@ export function ToolHowTo({
     );
   }
 
-  // numbered-cards (default)
+  // numbered-cards (default) — multi-column so steps fill the width
   return (
     <section className="mt-12" aria-labelledby="howto-heading">
       <h2 id="howto-heading" className="font-display text-xl font-bold">
         {heading}
       </h2>
-      <ol className="mt-4 space-y-3">
+      <ol className={`mt-4 grid gap-3 ${colClass} ${orphanClass}`}>
         {steps.map((step, i) => (
           <li
             key={step}
