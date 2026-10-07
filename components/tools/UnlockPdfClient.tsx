@@ -21,6 +21,7 @@ function UnlockForm({
       accept={tool.accept}
       title={title}
       processLabel={processLabel}
+      passwordGate={false}
       options={
         <>
           <label className="block text-sm font-medium" htmlFor="pdf-password">

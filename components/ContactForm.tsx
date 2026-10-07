@@ -186,7 +186,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
         Message
         <textarea
           name="message"
-          rows={7}
+          rows={5}
           value={message}
           disabled={sending}
           onChange={(e) => {
@@ -198,11 +198,16 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
             }));
             if (status === "sent") setStatus("idle");
           }}
-          className="resize-y rounded-lg border border-[var(--line)] bg-white px-4 py-3 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
+          className="contact-message rounded-lg border border-[var(--line)] bg-white px-4 py-3 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
           placeholder="Tell us what happened or what you need."
           aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? "message-error" : undefined}
+          aria-describedby={
+            errors.message ? "message-error" : "message-hint"
+          }
         />
+        <span id="message-hint" className="text-xs font-normal text-[var(--ink-muted)]">
+          Fixed height — scroll inside the box when your message is longer.
+        </span>
         {errors.message && (
           <span
             id="message-error"
@@ -254,7 +259,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
         </a>
         . For privacy details, read the{" "}
         <Link
-          href="/privacy"
+          href="/privacy-policy"
           className="font-semibold text-[var(--brand)] underline underline-offset-2"
         >
           Privacy Policy

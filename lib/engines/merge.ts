@@ -1,6 +1,15 @@
 import { PDFDocument } from "pdf-lib";
+import { protectPdfBytes } from "@/lib/pdf-encryption";
 
-export async function mergePdfs(files: File[]): Promise<Uint8Array> {
+export type MergeOptions = {
+  /** Optional password to protect the merged output (iLovePDF-style Protect). */
+  outputPassword?: string;
+};
+
+export async function mergePdfs(
+  files: File[],
+  options: MergeOptions = {},
+): Promise<Uint8Array> {
   if (files.length < 2) {
     throw new Error("Add at least two PDF files to merge.");
   }
@@ -11,5 +20,11 @@ export async function mergePdfs(files: File[]): Promise<Uint8Array> {
     const pages = await merged.copyPages(doc, doc.getPageIndices());
     pages.forEach((page) => merged.addPage(page));
   }
-  return merged.save();
+
+  const out = await merged.save();
+  const password = options.outputPassword?.trim();
+  if (password) {
+    return protectPdfBytes(out, password);
+  }
+  return out;
 }

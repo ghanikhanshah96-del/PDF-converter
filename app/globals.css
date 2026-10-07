@@ -56,8 +56,13 @@ a:not([class]) {
 }
 
 ::selection {
-  background: var(--brand-soft);
-  color: var(--ink);
+  background: var(--brand);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: var(--brand);
+  color: #ffffff;
 }
 
 .font-display {
@@ -233,4 +238,155 @@ svg {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* —— PDF editor (iLovePDF-style chrome, site tokens) —— */
+.pdf-editor-select {
+  appearance: none;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23707078' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.4rem 1.75rem 0.4rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink);
+  min-height: 34px;
+}
+
+.pdf-editor-select:focus {
+  outline: 2px solid rgba(229, 50, 45, 0.25);
+  border-color: var(--brand);
+}
+
+.pdf-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  color: var(--ink);
+  background: transparent;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.pdf-tool-btn:hover {
+  background: var(--bg-a);
+  color: var(--brand-deep);
+}
+
+.pdf-tool-btn[data-active="true"] {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-color: rgba(229, 50, 45, 0.25);
+}
+
+.pdf-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 38px;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.pdf-mode-pill[data-active="true"] {
+  background: #fff6d6;
+  border-color: #f0d56a;
+  color: var(--ink);
+}
+
+.pdf-save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 20px rgba(229, 50, 45, 0.28);
+}
+
+.pdf-save-btn:hover:not(:disabled) {
+  background: var(--brand-deep);
+}
+
+.pdf-save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pdf-float-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(40, 40, 48, 0.88);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.pdf-float-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.pdf-float-nav button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pdf-float-nav button:disabled {
+  opacity: 0.35;
+}
+
+/* Contact message field — fixed height, custom scrollbar, no resize */
+.contact-message {
+  resize: none;
+  height: 9.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand) #f3f3f6;
+}
+
+.contact-message::-webkit-scrollbar {
+  width: 8px;
+}
+
+.contact-message::-webkit-scrollbar-track {
+  background: #f3f3f6;
+  border-radius: 999px;
+  margin-block: 6px;
+}
+
+.contact-message::-webkit-scrollbar-thumb {
+  background: var(--brand);
+  border-radius: 999px;
+  border: 2px solid #f3f3f6;
+}
+
+.contact-message::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-deep);
 }

@@ -49,17 +49,17 @@ export const homeContent = {
       {
         title: "Edit PDF Online",
         text: "Add text, images, annotations, and make changes directly to your PDF.",
-        href: "/edit-pdf",
+        href: "/edit-pdf-online-free",
       },
       {
         title: "Sign PDF Online",
         text: "Add electronic signatures to contracts, forms, and important documents.",
-        href: "/sign-pdf",
+        href: "/sign-pdf-online-free",
       },
       {
         title: "Unlock PDF Online",
         text: "Remove PDF restrictions from documents you are authorized to access.",
-        href: "/unlock-pdf",
+        href: "/unlock-pdf-online",
       },
       {
         title: "PDF Password Remover",

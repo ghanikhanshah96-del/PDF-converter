@@ -3,17 +3,37 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/site";
+import { isNavActive } from "@/lib/navActive";
 
 const NAV_LINKS = [
   { href: "/#tools", label: "Tools" },
-  { href: "/about", label: "About" },
+  { href: "/about-us", label: "About Us" },
   { href: "/blog", label: "Blog" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/contact", label: "Contact" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/contact-us", label: "Contact Us" },
 ] as const;
 
+function linkClass(active: boolean, mobile = false) {
+  if (mobile) {
+    return [
+      "flex min-h-12 items-center rounded-lg px-3 text-base font-medium transition",
+      active
+        ? "bg-[var(--brand-soft)] font-semibold text-[var(--brand)]"
+        : "text-[var(--ink)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]",
+    ].join(" ");
+  }
+  return [
+    "min-h-10 rounded-lg px-3 py-2 text-sm font-medium transition",
+    active
+      ? "bg-[var(--brand-soft)] font-semibold text-[var(--brand)]"
+      : "text-[var(--ink-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]",
+  ].join(" ");
+}
+
 export function Header() {
+  const pathname = usePathname() || "/";
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -36,6 +56,10 @@ export function Header() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <header className="relative sticky top-0 z-40 border-b border-[var(--line)] bg-white text-[var(--ink)]">
@@ -70,15 +94,19 @@ export function Header() {
           className="hidden items-center gap-1 md:flex"
           aria-label="Primary"
         >
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="min-h-10 rounded-lg px-3 py-2 text-sm text-[var(--ink-muted)] transition hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isNavActive(pathname, link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={linkClass(active)}
+                aria-current={active ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <button
@@ -125,17 +153,21 @@ export function Header() {
             aria-label="Mobile"
           >
             <ul className="site-container flex flex-col gap-1 py-3">
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="flex min-h-12 items-center rounded-lg px-3 text-base font-medium text-[var(--ink)] transition hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const active = isNavActive(pathname, link.href);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={linkClass(active, true)}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </>

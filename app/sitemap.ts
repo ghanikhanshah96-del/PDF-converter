@@ -4,7 +4,7 @@ import { SITE } from "@/lib/site";
 import { tools, type ToolId } from "@/lib/tools";
 
 /** Content refresh date used when a page has no per-entry updated field. */
-const SITE_UPDATED = new Date("2026-09-24");
+const SITE_UPDATED = new Date("2026-10-07");
 
 /**
  * SEO priority by tool — higher for primary commercial keywords
@@ -51,11 +51,13 @@ function entry(
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     entry("/", 1.0, "daily"),
-    entry("/about", 0.6, "monthly"),
+    entry("/about-us", 0.6, "monthly"),
     entry("/blog", 0.75, "weekly"),
-    entry("/contact", 0.55, "monthly"),
-    entry("/privacy", 0.35, "yearly"),
-    entry("/terms", 0.35, "yearly"),
+    entry("/contact-us", 0.55, "monthly"),
+    entry("/privacy-policy", 0.4, "yearly"),
+    entry("/terms-and-conditions", 0.4, "yearly"),
+    entry("/disclaimer", 0.35, "yearly"),
+    entry("/editorial-policy", 0.35, "yearly"),
   ];
 
   const toolPages: MetadataRoute.Sitemap = tools.map((tool) =>

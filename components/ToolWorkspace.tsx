@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useEffect,
   useId,
   useMemo,
   useRef,
@@ -15,6 +16,12 @@ import {
   MAX_FILE_BYTES,
   MAX_FILE_LABEL,
 } from "@/lib/limits";
+import {
+  isPdfEncrypted,
+  isPdfFile,
+  unlockPdfBytes,
+  unlockedPdfFile,
+} from "@/lib/pdf-encryption";
 
 export type ProcessResult = {
   blob: Blob;
@@ -38,6 +45,21 @@ export type ToolWorkspaceProps = {
     onProgress: (pct: number, label?: string) => void,
   ) => Promise<ProcessResult>;
   minFiles?: number;
+  /**
+   * When true (default for PDF accept), detect locked PDFs and ask for
+   * passwords before processing — same behavior as iLovePDF.
+   */
+  passwordGate?: boolean;
+};
+
+type FileEntry = {
+  id: string;
+  file: File;
+  /** null while checking */
+  encrypted: boolean | null;
+  password: string;
+  unlocked: boolean;
+  unlockError: string | null;
 };
 
 function waitForPaint() {
@@ -48,6 +70,15 @@ function waitForPaint() {
       window.setTimeout(resolve, 0);
     });
   });
+}
+
+function makeId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function acceptLooksLikePdf(accept: string): boolean {
+  const a = accept.toLowerCase();
+  return a.includes("pdf") || a.includes(".pdf");
 }
 
 export function ToolWorkspace({
@@ -61,10 +92,12 @@ export function ToolWorkspace({
   validate,
   onProcess,
   minFiles = 1,
+  passwordGate,
 }: ToolWorkspaceProps) {
+  const gateEnabled = passwordGate ?? acceptLooksLikePdf(accept);
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [entries, setEntries] = useState<FileEntry[]>([]);
   const [active, setActive] = useState(false);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -72,11 +105,68 @@ export function ToolWorkspace({
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ProcessResult | null>(null);
 
+  const files = useMemo(() => entries.map((e) => e.file), [entries]);
+
   const fileLabel = useMemo(() => {
-    if (!files.length) return null;
-    if (files.length === 1) return files[0].name;
-    return `${files.length} files selected`;
-  }, [files]);
+    if (!entries.length) return null;
+    if (entries.length === 1) return entries[0].file.name;
+    return `${entries.length} files selected`;
+  }, [entries]);
+
+  const lockedPending = useMemo(
+    () =>
+      entries.filter(
+        (e) => e.encrypted === true && !e.unlocked,
+      ),
+    [entries],
+  );
+
+  const stillChecking = entries.some((e) => e.encrypted === null);
+
+  // Detect encryption for newly added PDFs
+  useEffect(() => {
+    if (!gateEnabled) return;
+    let cancelled = false;
+
+    (async () => {
+      const pending = entries.filter(
+        (e) => e.encrypted === null && isPdfFile(e.file),
+      );
+      if (!pending.length) return;
+
+      for (const entry of pending) {
+        try {
+          const encrypted = await isPdfEncrypted(entry.file);
+          if (cancelled) return;
+          setEntries((prev) =>
+            prev.map((e) =>
+              e.id === entry.id
+                ? {
+                    ...e,
+                    encrypted,
+                    unlocked: encrypted ? false : true,
+                    unlockError: null,
+                  }
+                : e,
+            ),
+          );
+        } catch {
+          if (cancelled) return;
+          setEntries((prev) =>
+            prev.map((e) =>
+              e.id === entry.id
+                ? { ...e, encrypted: false, unlocked: true, unlockError: null }
+                : e,
+            ),
+          );
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [entries, gateEnabled]);
 
   const addFiles = useCallback(
     (list: FileList | File[]) => {
@@ -89,19 +179,27 @@ export function ToolWorkspace({
         setError(
           `"${first.name}" is ${formatBytes(first.size)}. Maximum file size is ${MAX_FILE_LABEL}. Please choose a smaller file or compress it first.`,
         );
-        const allowed = next.filter((f) => f.size <= MAX_FILE_BYTES);
-        if (allowed.length) {
-          setFiles((prev) =>
-            multiple ? [...prev, ...allowed] : allowed.slice(0, 1),
-          );
-        }
-        return;
+      } else {
+        setError(null);
       }
 
-      setError(null);
-      setFiles((prev) => (multiple ? [...prev, ...next] : next.slice(0, 1)));
+      const allowed = next.filter((f) => f.size <= MAX_FILE_BYTES);
+      if (!allowed.length) return;
+
+      const newEntries: FileEntry[] = allowed.map((file) => ({
+        id: makeId(),
+        file,
+        encrypted: gateEnabled && isPdfFile(file) ? null : false,
+        password: "",
+        unlocked: !(gateEnabled && isPdfFile(file)),
+        unlockError: null,
+      }));
+
+      setEntries((prev) =>
+        multiple ? [...prev, ...newEntries] : newEntries.slice(0, 1),
+      );
     },
-    [multiple],
+    [multiple, gateEnabled],
   );
 
   const onDrop = useCallback(
@@ -114,7 +212,7 @@ export function ToolWorkspace({
   );
 
   const moveFile = (index: number, dir: -1 | 1) => {
-    setFiles((prev) => {
+    setEntries((prev) => {
       const next = [...prev];
       const target = index + dir;
       if (target < 0 || target >= next.length) return prev;
@@ -124,14 +222,77 @@ export function ToolWorkspace({
   };
 
   const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setEntries((prev) => prev.filter((_, i) => i !== index));
     setResult(null);
+  };
+
+  const setPassword = (id: string, password: string) => {
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.id === id
+          ? { ...e, password, unlocked: false, unlockError: null }
+          : e,
+      ),
+    );
+  };
+
+  const tryUnlock = async (id: string) => {
+    const entry = entries.find((e) => e.id === id);
+    if (!entry) return;
+    try {
+      await unlockPdfBytes(entry.file, entry.password);
+      setEntries((prev) =>
+        prev.map((e) =>
+          e.id === id ? { ...e, unlocked: true, unlockError: null } : e,
+        ),
+      );
+    } catch (err) {
+      setEntries((prev) =>
+        prev.map((e) =>
+          e.id === id
+            ? {
+                ...e,
+                unlocked: false,
+                unlockError:
+                  err instanceof Error ? err.message : "Incorrect password.",
+              }
+            : e,
+        ),
+      );
+    }
+  };
+
+  const resolveFilesForProcess = async (
+    onProgress: (pct: number, label?: string) => void,
+  ): Promise<File[]> => {
+    if (!gateEnabled) return files;
+
+    const out: File[] = [];
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      if (!entry.encrypted) {
+        out.push(entry.file);
+        continue;
+      }
+      if (!entry.password.trim()) {
+        throw new Error(
+          `"${entry.file.name}" is password-protected. Enter the password to continue.`,
+        );
+      }
+      onProgress(
+        10 + Math.round((i / Math.max(entries.length, 1)) * 20),
+        `Unlocking ${entry.file.name}…`,
+      );
+      const bytes = await unlockPdfBytes(entry.file, entry.password);
+      out.push(unlockedPdfFile(entry.file, bytes));
+    }
+    return out;
   };
 
   const run = async () => {
     setError(null);
     setResult(null);
-    if (files.length < minFiles) {
+    if (entries.length < minFiles) {
       setError(
         minFiles > 1
           ? `Add at least ${minFiles} files.`
@@ -139,21 +300,41 @@ export function ToolWorkspace({
       );
       return;
     }
+    if (stillChecking) {
+      setError("Still checking file security. Please wait a moment.");
+      return;
+    }
+    if (lockedPending.some((e) => !e.password.trim())) {
+      setError(
+        "One or more PDFs are password-protected. Enter each password to continue.",
+      );
+      return;
+    }
     try {
       assertFilesWithinLimit(files);
-      if (validate) await validate(files);
       setBusy(true);
-      setProgress(8);
+      setProgress(5);
+      setProgressLabel("Preparing…");
+      await waitForPaint();
+
+      const processFiles = await resolveFilesForProcess((pct, label) => {
+        setProgress(Math.max(0, Math.min(100, pct)));
+        if (label) setProgressLabel(label);
+      });
+
+      if (validate) await validate(processFiles);
+      setProgress(25);
       setProgressLabel("Loading libraries…");
       await waitForPaint();
-      const out = await onProcess(files, (pct, label) => {
-        setProgress(Math.max(0, Math.min(100, pct)));
+      const out = await onProcess(processFiles, (pct, label) => {
+        // Map tool progress into 25–100 range
+        const mapped = 25 + Math.round((pct / 100) * 75);
+        setProgress(Math.max(0, Math.min(100, mapped)));
         if (label) setProgressLabel(label);
       });
       setProgress(100);
       setProgressLabel("Done");
       setResult(out);
-      // Manual download only — keeps behavior consistent across browsers/tools
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setProgress(0);
@@ -162,6 +343,13 @@ export function ToolWorkspace({
       setBusy(false);
     }
   };
+
+  const canProcess =
+    !busy &&
+    !disabled &&
+    entries.length >= minFiles &&
+    !stillChecking &&
+    lockedPending.every((e) => e.password.trim().length > 0);
 
   return (
     <div className="surface p-4 sm:p-6">
@@ -210,50 +398,104 @@ export function ToolWorkspace({
         />
       </label>
 
-      {files.length > 0 && (
+      {entries.length > 0 && (
         <ul className="mt-4 space-y-2" aria-label="Selected files">
-          {files.map((file, index) => (
+          {entries.map((entry, index) => (
             <li
-              key={`${file.name}-${file.size}-${index}`}
-              className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--line)] bg-white/80 px-3 py-2 text-sm sm:flex-nowrap"
+              key={entry.id}
+              className="rounded-xl border border-[var(--line)] bg-white/80 px-3 py-2 text-sm"
             >
-              <span className="min-w-0 flex-[1_1_12rem] truncate font-medium">
-                {file.name}
-              </span>
-              <span className="shrink-0 text-xs text-[var(--ink-muted)]">
-                {formatBytes(file.size)}
-              </span>
-              {multiple && (
-                <>
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <span className="min-w-0 flex-[1_1_12rem] truncate font-medium">
+                  {entry.file.name}
+                </span>
+                {entry.encrypted === null && (
+                  <span className="shrink-0 text-xs text-[var(--ink-muted)]">
+                    Checking…
+                  </span>
+                )}
+                {entry.encrypted === true && (
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                      entry.unlocked
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-amber-50 text-amber-800"
+                    }`}
+                  >
+                    {entry.unlocked ? "Unlocked" : "Locked"}
+                  </span>
+                )}
+                <span className="shrink-0 text-xs text-[var(--ink-muted)]">
+                  {formatBytes(entry.file.size)}
+                </span>
+                {multiple && (
+                  <>
+                    <button
+                      type="button"
+                      className="min-h-9 rounded-md px-3 py-1 hover:bg-[var(--brand-soft)]"
+                      aria-label={`Move ${entry.file.name} up`}
+                      onClick={() => moveFile(index, -1)}
+                      disabled={busy || index === 0}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      className="min-h-9 rounded-md px-3 py-1 hover:bg-[var(--brand-soft)]"
+                      aria-label={`Move ${entry.file.name} down`}
+                      onClick={() => moveFile(index, 1)}
+                      disabled={busy || index === entries.length - 1}
+                    >
+                      ↓
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  className="min-h-9 rounded-md px-3 py-1 text-[var(--danger)] hover:bg-red-50"
+                  aria-label={`Remove ${entry.file.name}`}
+                  onClick={() => removeFile(index)}
+                  disabled={busy}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {entry.encrypted === true && !entry.unlocked && (
+                <div className="mt-2 flex flex-wrap items-end gap-2 border-t border-[var(--line)] pt-2">
+                  <label className="min-w-[12rem] flex-1 text-xs font-medium text-[var(--ink)]">
+                    Password required to open this PDF
+                    <input
+                      type="password"
+                      autoComplete="off"
+                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                      placeholder="Enter PDF password"
+                      value={entry.password}
+                      disabled={busy}
+                      onChange={(e) => setPassword(entry.id, e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void tryUnlock(entry.id);
+                        }
+                      }}
+                    />
+                  </label>
                   <button
                     type="button"
-                    className="min-h-9 rounded-md px-3 py-1 hover:bg-[var(--brand-soft)]"
-                    aria-label={`Move ${file.name} up`}
-                    onClick={() => moveFile(index, -1)}
-                    disabled={busy || index === 0}
+                    className="btn btn-secondary !py-2 text-sm"
+                    disabled={busy || !entry.password.trim()}
+                    onClick={() => void tryUnlock(entry.id)}
                   >
-                    ↑
+                    Unlock
                   </button>
-                  <button
-                    type="button"
-                    className="min-h-9 rounded-md px-3 py-1 hover:bg-[var(--brand-soft)]"
-                    aria-label={`Move ${file.name} down`}
-                    onClick={() => moveFile(index, 1)}
-                    disabled={busy || index === files.length - 1}
-                  >
-                    ↓
-                  </button>
-                </>
+                  {entry.unlockError && (
+                    <p className="w-full text-xs text-[var(--danger)]" role="alert">
+                      {entry.unlockError}
+                    </p>
+                  )}
+                </div>
               )}
-              <button
-                type="button"
-                className="min-h-9 rounded-md px-3 py-1 text-[var(--danger)] hover:bg-red-50"
-                aria-label={`Remove ${file.name}`}
-                onClick={() => removeFile(index)}
-                disabled={busy}
-              >
-                ✕
-              </button>
             </li>
           ))}
         </ul>
@@ -290,7 +532,7 @@ export function ToolWorkspace({
             type="button"
             className="btn btn-primary w-full sm:w-auto"
             onClick={run}
-            disabled={busy || disabled || files.length < minFiles}
+            disabled={!canProcess}
           >
             {busy ? "Working…" : processLabel}
           </button>
@@ -304,12 +546,12 @@ export function ToolWorkspace({
             Download {result.filename}
           </button>
         )}
-        {files.length > 0 && !busy && (
+        {entries.length > 0 && !busy && (
           <button
             type="button"
             className="btn btn-secondary w-full sm:w-auto"
             onClick={() => {
-              setFiles([]);
+              setEntries([]);
               setResult(null);
               setError(null);
               setProgress(0);

@@ -8,8 +8,8 @@ const overlays = JSON.parse(
 /** Structural fields preserved from product (not SEO copy). */
 const structure = {
   "pdf-to-word": {
-    slug: "pdf-to-word",
-    href: "/pdf-to-word",
+    slug: "pdf-to-word-converter-free",
+    href: "/pdf-to-word-converter-free",
     name: "PDF to Word",
     shortName: "PDF → Word",
     category: "convert",
@@ -18,8 +18,8 @@ const structure = {
     multiple: false,
   },
   "word-to-pdf": {
-    slug: "word-to-pdf",
-    href: "/word-to-pdf",
+    slug: "word-to-pdf-converter-free",
+    href: "/word-to-pdf-converter-free",
     name: "Word to PDF",
     shortName: "Word → PDF",
     category: "convert",
@@ -29,8 +29,8 @@ const structure = {
     multiple: false,
   },
   "merge-pdf": {
-    slug: "merge-pdf",
-    href: "/merge-pdf",
+    slug: "merge-pdf-online-free",
+    href: "/merge-pdf-online-free",
     name: "Merge PDF",
     shortName: "Merge",
     category: "organize",
@@ -39,8 +39,8 @@ const structure = {
     multiple: true,
   },
   "split-pdf": {
-    slug: "split-pdf",
-    href: "/split-pdf",
+    slug: "split-pdf-online-free",
+    href: "/split-pdf-online-free",
     name: "Split PDF",
     shortName: "Split",
     category: "organize",
@@ -49,8 +49,8 @@ const structure = {
     multiple: false,
   },
   "compress-pdf": {
-    slug: "compress-pdf",
-    href: "/compress-pdf",
+    slug: "compress-pdf-free",
+    href: "/compress-pdf-free",
     name: "Compress PDF",
     shortName: "Compress",
     category: "optimize",
@@ -59,8 +59,8 @@ const structure = {
     multiple: false,
   },
   "pdf-to-jpg": {
-    slug: "pdf-to-jpg",
-    href: "/pdf-to-jpg",
+    slug: "pdf-to-jpg-converter-free",
+    href: "/pdf-to-jpg-converter-free",
     name: "PDF to JPG",
     shortName: "PDF → JPG",
     category: "convert",
@@ -69,8 +69,8 @@ const structure = {
     multiple: false,
   },
   "jpg-to-pdf": {
-    slug: "jpg-to-pdf",
-    href: "/jpg-to-pdf",
+    slug: "jpg-to-pdf-converter-free",
+    href: "/jpg-to-pdf-converter-free",
     name: "JPG to PDF",
     shortName: "JPG → PDF",
     category: "convert",
@@ -79,8 +79,8 @@ const structure = {
     multiple: true,
   },
   "edit-pdf": {
-    slug: "edit-pdf",
-    href: "/edit-pdf",
+    slug: "edit-pdf-online-free",
+    href: "/edit-pdf-online-free",
     name: "Edit PDF",
     shortName: "Edit",
     category: "edit",
@@ -99,8 +99,8 @@ const structure = {
     multiple: false,
   },
   "sign-pdf": {
-    slug: "sign-pdf",
-    href: "/sign-pdf",
+    slug: "sign-pdf-online-free",
+    href: "/sign-pdf-online-free",
     name: "Sign PDF",
     shortName: "Sign",
     category: "edit",
@@ -109,8 +109,8 @@ const structure = {
     multiple: false,
   },
   "excel-to-pdf": {
-    slug: "excel-to-pdf",
-    href: "/excel-to-pdf",
+    slug: "excel-to-pdf-converter",
+    href: "/excel-to-pdf-converter",
     name: "Excel to PDF",
     shortName: "Excel → PDF",
     category: "convert",
@@ -120,8 +120,8 @@ const structure = {
     multiple: false,
   },
   "pdf-to-excel": {
-    slug: "pdf-to-excel",
-    href: "/pdf-to-excel",
+    slug: "pdf-to-excel-converter",
+    href: "/pdf-to-excel-converter",
     name: "PDF to Excel",
     shortName: "PDF → Excel",
     category: "convert",
@@ -130,8 +130,8 @@ const structure = {
     multiple: false,
   },
   "rotate-pdf": {
-    slug: "rotate-pdf",
-    href: "/rotate-pdf",
+    slug: "rotate-pdf-online",
+    href: "/rotate-pdf-online",
     name: "Rotate PDF",
     shortName: "Rotate",
     category: "organize",
@@ -140,8 +140,8 @@ const structure = {
     multiple: false,
   },
   "unlock-pdf": {
-    slug: "unlock-pdf",
-    href: "/unlock-pdf",
+    slug: "unlock-pdf-online",
+    href: "/unlock-pdf-online",
     name: "Unlock PDF",
     shortName: "Unlock",
     category: "secure",
