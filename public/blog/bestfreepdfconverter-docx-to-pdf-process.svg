@@ -1,0 +1,45 @@
+<!-- Original illustration for BestFreePDFConverter.com. Created for this site. Not a product screenshot. No third-party asset or license. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">DOCX text is extracted, then placed on new PDF pages</title>
+  <desc id="desc">Three steps: a DOCX file, text extraction in the browser, and a new letter-size PDF that contains the words without the original layout.</desc>
+  <rect width="960" height="420" rx="16" fill="#f7f7fb"/>
+  <rect x="36" y="36" width="250" height="300" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="36" y="36" width="250" height="48" rx="12" fill="#fff0f0"/>
+  <rect x="36" y="72" width="250" height="12" fill="#fff0f0"/>
+  <text x="56" y="68" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">1. DOCX file</text>
+  <rect x="64" y="112" width="194" height="14" rx="4" fill="#33333b"/>
+  <rect x="64" y="140" width="160" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="64" y="160" width="180" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="64" y="188" width="70" height="52" rx="6" fill="#fff0f0" stroke="#e5322d"/>
+  <text x="78" y="218" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="12">Image</text>
+  <rect x="146" y="188" width="112" height="52" rx="6" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="168" y="218" fill="#707078" font-family="Segoe UI, sans-serif" font-size="12">Table</text>
+  <text x="64" y="276" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Layout stays in Word.</text>
+  <text x="64" y="298" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Only .docx is accepted.</text>
+  <polygon points="310,186 348,170 348,202" fill="#e5322d"/>
+  <rect x="356" y="36" width="250" height="300" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="356" y="36" width="250" height="48" rx="12" fill="#fff0f0"/>
+  <rect x="356" y="72" width="250" height="12" fill="#fff0f0"/>
+  <text x="376" y="68" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">2. Extract text</text>
+  <text x="384" y="124" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="15">In the browser</text>
+  <rect x="384" y="148" width="194" height="10" rx="3" fill="#33333b"/>
+  <rect x="384" y="168" width="170" height="10" rx="3" fill="#33333b"/>
+  <rect x="384" y="188" width="186" height="10" rx="3" fill="#33333b"/>
+  <rect x="384" y="208" width="150" height="10" rx="3" fill="#33333b"/>
+  <text x="384" y="258" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Pictures and table</text>
+  <text x="384" y="278" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">columns are not copied.</text>
+  <text x="384" y="306" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">No upload API is used.</text>
+  <polygon points="630,186 668,170 668,202" fill="#e5322d"/>
+  <rect x="676" y="36" width="250" height="300" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="676" y="36" width="250" height="48" rx="12" fill="#fff0f0"/>
+  <rect x="676" y="72" width="250" height="12" fill="#fff0f0"/>
+  <text x="696" y="68" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">3. New PDF</text>
+  <rect x="704" y="112" width="194" height="160" rx="6" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="720" y="128" width="150" height="8" rx="2" fill="#33333b"/>
+  <rect x="720" y="146" width="160" height="8" rx="2" fill="#33333b"/>
+  <rect x="720" y="164" width="140" height="8" rx="2" fill="#33333b"/>
+  <rect x="720" y="182" width="156" height="8" rx="2" fill="#33333b"/>
+  <rect x="720" y="200" width="120" height="8" rx="2" fill="#33333b"/>
+  <text x="704" y="304" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">US Letter pages, 11 pt.</text>
+  <text x="36" y="380" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">Illustration of text extraction. This is not a screenshot of the converter.</text>
+</svg>

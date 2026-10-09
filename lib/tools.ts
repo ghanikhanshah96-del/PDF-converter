@@ -118,54 +118,46 @@ export const tools: ToolDefinition[] = [
     name: "Word to PDF",
     shortName: "Word → PDF",
     category: "convert",
-    summary: "Convert your Word documents into PDF files quickly with our free Word to PDF Converter.",
-    description: "Convert your Word documents into PDF files quickly with our free Word to PDF Converter. Select your DOC or DOCX file, convert it into a PDF, and download a document that is easy to share, print, and open on any device.",
+    summary: "Extract text from a DOCX file and download a new PDF. Images and the original Word layout are not kept.",
+    description: "Convert a DOCX file to PDF in your browser. The tool extracts the document text and rebuilds US Letter pages. It does not keep images, table columns, headers, or the original Word layout. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
     h1: "Free Word to PDF Converter Online",
     title: "Free Word to PDF Converter Online | Convert DOCX to PDF",
-    metaDescription: "Convert Word documents to PDF online for free. Turn DOC or DOCX files into professional PDF documents quickly with our easy converter.",
+    metaDescription: "Convert a DOCX file to PDF in your browser. Text is extracted onto new pages. Images and the original Word layout are not kept.",
     howTo: [
-          "Choose the DOC or DOCX document you want to convert.",
-          "Start the conversion process and let the tool create your PDF file.",
-          "Download the final PDF and use it for sharing, printing, or storage."
+          "Choose one or more DOCX files, up to 50 MB each and 20 files.",
+          "Select Convert to PDF. The page extracts the text in your browser and builds a new PDF.",
+          "Select Download, or Download all if you converted more than one file, then open the PDF and check the text."
     ],
     faqs: [
           {
-                "question": "How do I convert Word to PDF for free?",
-                "answer": "Select your Word document, start the conversion process, and download your PDF file."
+                "question": "How do I convert a DOCX file to PDF?",
+                "answer": "Select a .docx file, choose Convert to PDF, then Download. Up to 20 files can be converted in one visit. Each file becomes a separate PDF."
           },
           {
-                "question": "Can I convert DOCX to PDF online?",
-                "answer": "Yes. A Word to PDF converter can convert DOCX files into PDF documents directly through your browser."
+                "question": "Does this tool accept DOC files?",
+                "answer": "No. Only DOCX files are accepted. Open an older .doc file in Word and save it as DOCX, or save the PDF from Word."
           },
           {
-                "question": "Is this Word to PDF converter free?",
-                "answer": "Yes. You can convert Word documents into PDF format without paying for desktop conversion software."
+                "question": "Will my formatting and images stay the same?",
+                "answer": "No. The tool extracts text and places it on new letter-size pages. Images, table columns, headers, and the original layout are not preserved."
           },
           {
-                "question": "Will my formatting stay the same after conversion?",
-                "answer": "Most text, headings, images, and basic formatting are preserved, but complex layouts may require checking after conversion."
+                "question": "Is there a file size limit?",
+                "answer": "Yes. Each file must be 50 MB or smaller, and you can select up to 20 files at a time."
           },
           {
-                "question": "Can I convert Word files on mobile?",
-                "answer": "Yes. Online Word to PDF converters work through modern mobile browsers."
+                "question": "Does conversion change the original DOCX?",
+                "answer": "No. The selected file is read in the browser and a new PDF is downloaded."
           },
           {
-                "question": "What is the difference between DOC and DOCX?",
-                "answer": "DOC is an older Microsoft Word format, while DOCX is the newer format used by modern versions of Word."
-          },
-          {
-                "question": "Why should I convert Word to PDF?",
-                "answer": "PDF keeps your document layout consistent and makes sharing easier across different devices."
-          },
-          {
-                "question": "Can I edit a PDF after converting Word to PDF?",
-                "answer": "PDF files are mainly designed for viewing and sharing. If you need to make changes, you can convert the PDF back into Word format or use a PDF editor."
+                "question": "Can I use this on a phone?",
+                "answer": "The page works in a browser that can select a local DOCX file and save a download. Where the PDF appears depends on that browser."
           }
     ],
-    related: ["pdf-to-word","excel-to-pdf","merge-pdf"],
+    related: ["pdf-to-word","compress-pdf","merge-pdf"],
     accept: "application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx",
     multiple: false,
-    keywords: ["word to pdf converter online","convert word to pdf free","free online word to pdf converter","docx to pdf converter free","convert doc to pdf online"],
+    keywords: ["word to pdf converter online","convert word to pdf free","free online word to pdf converter","docx to pdf converter free","convert docx to pdf in browser"],
   },
   {
     id: "merge-pdf",

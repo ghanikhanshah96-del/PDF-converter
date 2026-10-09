@@ -1,0 +1,27 @@
+<!-- Original illustration for BestFreePDFConverter.com. Created for this site. Not a product screenshot. No third-party asset or license. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Checks to make after downloading the PDF</title>
+  <desc id="desc">Four checks: the file name ends in .pdf, the words are present, images are not expected, and each selected DOCX produced its own PDF.</desc>
+  <rect width="960" height="360" rx="16" fill="#f7f7fb"/>
+  <text x="40" y="52" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">After you select Download</text>
+  <g font-family="Segoe UI, sans-serif" font-size="18">
+    <rect x="40" y="80" width="420" height="64" rx="10" fill="#ffffff" stroke="#e7e7ee"/>
+    <circle cx="72" cy="112" r="14" fill="#e5322d"/>
+    <text x="66" y="118" fill="#ffffff" font-size="16" font-weight="700">1</text>
+    <text x="100" y="118" fill="#33333b">The name ends in .pdf</text>
+    <rect x="500" y="80" width="420" height="64" rx="10" fill="#ffffff" stroke="#e7e7ee"/>
+    <circle cx="532" cy="112" r="14" fill="#e5322d"/>
+    <text x="526" y="118" fill="#ffffff" font-size="16" font-weight="700">2</text>
+    <text x="560" y="118" fill="#33333b">The words are readable</text>
+    <rect x="40" y="164" width="420" height="64" rx="10" fill="#ffffff" stroke="#e7e7ee"/>
+    <circle cx="72" cy="196" r="14" fill="#e5322d"/>
+    <text x="66" y="202" fill="#ffffff" font-size="16" font-weight="700">3</text>
+    <text x="100" y="202" fill="#33333b">Pictures will be missing</text>
+    <rect x="500" y="164" width="420" height="64" rx="10" fill="#ffffff" stroke="#e7e7ee"/>
+    <circle cx="532" cy="196" r="14" fill="#e5322d"/>
+    <text x="526" y="202" fill="#ffffff" font-size="16" font-weight="700">4</text>
+    <text x="560" y="202" fill="#33333b">One PDF per DOCX file</text>
+  </g>
+  <text x="40" y="280" fill="#707078" font-family="Segoe UI, sans-serif" font-size="16">If the status line does not say Ready, the PDF was not created.</text>
+  <text x="40" y="312" fill="#707078" font-family="Segoe UI, sans-serif" font-size="16">Limits: .docx only, 50 MB each, 20 files. This is an illustration.</text>
+</svg>

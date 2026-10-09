@@ -1,0 +1,29 @@
+<!-- Original illustration for BestFreePDFConverter.com. Created for this site. Not a product screenshot. No third-party asset or license. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480" role="img" aria-labelledby="title desc">
+  <title id="title">Word layout compared with the text-only PDF</title>
+  <desc id="desc">The left page shows a heading, image, and table. The right page shows the same words as plain lines, with the image and table columns omitted.</desc>
+  <rect width="960" height="480" rx="16" fill="#f7f7fb"/>
+  <text x="48" y="48" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="20" font-weight="700">Same words, different page</text>
+  <rect x="48" y="72" width="400" height="340" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="72" y="108" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">Word document</text>
+  <text x="72" y="148" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">Quarterly note</text>
+  <rect x="72" y="168" width="150" height="90" rx="8" fill="#fff0f0" stroke="#e5322d"/>
+  <text x="112" y="218" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="14">Photo</text>
+  <rect x="240" y="168" width="176" height="90" rx="8" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="256" y="196" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Item</text>
+  <text x="340" y="196" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Qty</text>
+  <text x="256" y="224" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="13">Paper</text>
+  <text x="340" y="224" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="13">3</text>
+  <text x="72" y="300" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="15">Please review the totals.</text>
+  <text x="72" y="380" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Header, image, and columns</text>
+  <rect x="512" y="72" width="400" height="340" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="536" y="108" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">PDF from this converter</text>
+  <text x="536" y="156" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">Quarterly note</text>
+  <text x="536" y="188" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">Item Qty</text>
+  <text x="536" y="214" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">Paper 3</text>
+  <text x="536" y="246" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">Please review the totals.</text>
+  <text x="536" y="300" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">No photo.</text>
+  <text x="536" y="324" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">No table grid.</text>
+  <text x="536" y="348" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">New letter-size pages.</text>
+  <text x="536" y="380" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Illustration, not a downloaded file.</text>
+</svg>
