@@ -22,10 +22,10 @@ export default function BlogPage() {
     <div className="bg-[var(--bg-a)]">
       <section className="py-10 sm:py-14">
         <div className="site-container">
-          <h1 className="max-w-3xl font-display text-[clamp(2rem,6vw,3.25rem)] font-semibold leading-tight text-[var(--ink)]">
+          <h1 className="font-display text-[clamp(2rem,6vw,3.25rem)] font-semibold leading-tight text-[var(--ink)]">
             Blog
           </h1>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
+          <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
             Practical instructions for saving or downloading a Word document
             as a PDF, including formatting problems and privacy tradeoffs.
           </p>
@@ -51,7 +51,7 @@ export default function BlogPage() {
                 <h2 className="mt-4 font-display text-2xl font-semibold leading-snug text-[var(--ink)] group-hover:text-[var(--brand)] sm:text-3xl">
                   {post.title}
                 </h2>
-                <p className="mt-3 max-w-3xl text-base leading-relaxed text-[var(--ink-muted)]">
+                <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)]">
                   {post.excerpt}
                 </p>
                 <span className="mt-5 inline-block text-sm font-bold text-[var(--brand)]">

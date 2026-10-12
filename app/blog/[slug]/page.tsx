@@ -128,45 +128,43 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
 
       <header className="py-8 sm:py-12">
         <div className="site-container">
-          <div className="mx-auto max-w-3xl">
-            <nav className="text-sm text-[var(--ink-muted)]" aria-label="Breadcrumb">
-              <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <li>
-                  <Link
-                    href="/"
-                    className="rounded-sm hover:text-[var(--brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li>
-                  <Link
-                    href="/blog"
-                    className="rounded-sm hover:text-[var(--brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li className="min-w-0 text-[var(--ink)]">{post.title}</li>
-              </ol>
-            </nav>
-            <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wide">
-              <span className="rounded-full bg-[var(--brand-soft)] px-3 py-1 text-[var(--brand)]">
-                {post.category}
-              </span>
-              <span className="rounded-full bg-white px-3 py-1 text-[var(--ink-muted)]">
-                {post.readTime}
-              </span>
-              <span className="rounded-full bg-white px-3 py-1 text-[var(--ink-muted)]">
-                Published {publishedLabel}
-              </span>
-            </div>
-            <h1 className="mt-4 font-display text-[clamp(1.85rem,5vw,2.75rem)] font-semibold leading-tight text-[var(--ink)]">
-              {post.title}
-            </h1>
+          <nav className="text-sm text-[var(--ink-muted)]" aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <li>
+                <Link
+                  href="/"
+                  className="rounded-sm hover:text-[var(--brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                >
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="rounded-sm hover:text-[var(--brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                >
+                  Blog
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="min-w-0 text-[var(--ink)]">{post.title}</li>
+            </ol>
+          </nav>
+          <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wide">
+            <span className="rounded-full bg-[var(--brand-soft)] px-3 py-1 text-[var(--brand)]">
+              {post.category}
+            </span>
+            <span className="rounded-full bg-white px-3 py-1 text-[var(--ink-muted)]">
+              {post.readTime}
+            </span>
+            <span className="rounded-full bg-white px-3 py-1 text-[var(--ink-muted)]">
+              Published {publishedLabel}
+            </span>
           </div>
+          <h1 className="mt-4 font-display text-[clamp(1.85rem,5vw,2.75rem)] font-semibold leading-tight text-[var(--ink)]">
+            {post.title}
+          </h1>
         </div>
       </header>
 

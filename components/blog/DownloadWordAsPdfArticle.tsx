@@ -45,7 +45,7 @@ const toc = [
 
 export function DownloadWordAsPdfArticle() {
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="w-full">
       <p className="text-base leading-7 text-[var(--ink)]">
         You can download a Word document as a PDF from Microsoft Word, from
         Word for the web, from Google Docs, or from the{" "}
