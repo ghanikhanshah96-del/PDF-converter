@@ -1,217 +1,102 @@
-import { PDFDocument, rgb } from "pdf-lib";
-import { embedTextFont } from "@/lib/pdfFont";
-import { decodeDataUri, embedRaster, type RasterImage } from "@/lib/engines/rasterImage";
+import { PDFDocument } from "pdf-lib";
+import { appendElementPages, separateBordersFromText } from "@/lib/engines/captureLayout";
 
 type ProgressCallback = (pct: number, label?: string) => void;
 
-type Piece =
-  | { kind: "text"; text: string }
-  | { kind: "image"; image: RasterImage };
-
 const yieldToBrowser = () =>
   new Promise<void>((resolve) => {
-    if (typeof window === "undefined") {
-      resolve();
-      return;
-    }
     window.setTimeout(resolve, 0);
   });
 
-const BLOCK_TAGS = new Set([
-  "p",
-  "div",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "li",
-  "tr",
-  "blockquote",
-  "pre",
-  "table",
-  "ul",
-  "ol",
-  "section",
-  "article",
-]);
-
-function htmlToPieces(html: string): Piece[] {
-  if (typeof DOMParser === "undefined") return [{ kind: "text", text: html }];
-
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const pieces: Piece[] = [];
-
-  const pushText = (text: string) => {
-    if (!text) return;
-    const previous = pieces[pieces.length - 1];
-    if (previous?.kind === "text") previous.text += text;
-    else pieces.push({ kind: "text", text });
-  };
-
-  const walk = (node: Node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      pushText(node.textContent ?? "");
-      return;
-    }
-    if (!(node instanceof HTMLElement)) {
-      node.childNodes.forEach(walk);
-      return;
-    }
-
-    const tag = node.tagName.toLowerCase();
-    if (tag === "img") {
-      const decoded = decodeDataUri(node.getAttribute("src") || "");
-      if (decoded) pieces.push({ kind: "image", image: decoded });
-      return;
-    }
-    if (tag === "br") {
-      pushText("\n");
-      return;
-    }
-
-    const block = BLOCK_TAGS.has(tag);
-    if (block) pushText("\n");
-    node.childNodes.forEach(walk);
-    if (block) pushText("\n");
-  };
-
-  doc.body.childNodes.forEach(walk);
-
-  return pieces
-    .map((piece) =>
-      piece.kind === "text"
-        ? { kind: "text" as const, text: piece.text.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n") }
-        : piece,
-    )
-    .filter((piece) => piece.kind === "image" || piece.text.trim().length > 0);
+async function waitForImages(root: ParentNode) {
+  const images = [...root.querySelectorAll("img")];
+  await Promise.all(
+    images.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete) {
+            resolve();
+            return;
+          }
+          img.addEventListener("load", () => resolve(), { once: true });
+          img.addEventListener("error", () => resolve(), { once: true });
+        }),
+    ),
+  );
 }
 
+/**
+ * Render the DOCX with its headings, tables, images, and page layout,
+ * then place each page into the PDF.
+ */
 export async function wordToPdf(
   file: File,
   onProgress?: ProgressCallback,
 ): Promise<Uint8Array> {
-  onProgress?.(18, "Loading converters…");
-  const mammoth = await import("mammoth");
-  onProgress?.(28, "Reading Word file…");
-  const arrayBuffer = await file.arrayBuffer();
-  onProgress?.(40, "Reading text and images…");
-  const result = await mammoth.convertToHtml({ arrayBuffer });
-  const pieces = htmlToPieces(result.value || "");
-  await yieldToBrowser();
+  if (typeof document === "undefined") {
+    throw new Error("Word to PDF runs in the browser.");
+  }
 
-  const pdf = await PDFDocument.create();
-  const { font, sanitize } = await embedTextFont(pdf);
-  const fontSize = 11;
-  const lineHeight = 16;
-  const margin = 50;
-  const pageWidth = 612;
-  const pageHeight = 792;
-  const maxWidth = pageWidth - margin * 2;
-  const maxImageHeight = pageHeight - margin * 2;
-  const spaceWidth = font.widthOfTextAtSize(" ", fontSize);
+  onProgress?.(12, "Loading layout engine…");
+  const { renderAsync } = await import("docx-preview");
 
-  let page = pdf.addPage([pageWidth, pageHeight]);
-  let y = pageHeight - margin;
-  let drewContent = false;
+  onProgress?.(24, "Reading Word file…");
+  const buffer = await file.arrayBuffer();
 
-  const newPage = () => {
-    page = pdf.addPage([pageWidth, pageHeight]);
-    y = pageHeight - margin;
-  };
+  const host = document.createElement("div");
+  host.setAttribute("aria-hidden", "true");
+  host.style.position = "fixed";
+  host.style.left = "0";
+  host.style.top = "0";
+  host.style.zIndex = "-1";
+  host.style.pointerEvents = "none";
+  host.style.background = "#ffffff";
+  document.body.appendChild(host);
 
-  const drawLine = (line: string) => {
-    const safe = sanitize(line);
-    if (y < margin + lineHeight) newPage();
-    if (safe) {
-      page.drawText(safe, {
-        x: margin,
-        y,
-        size: fontSize,
-        font,
-        color: rgb(0.08, 0.1, 0.12),
-      });
-      drewContent = true;
-    }
-    y -= lineHeight;
-  };
-
-  const drawWrapped = (text: string) => {
-    const paragraphs = text.split(/\r?\n/);
-    for (const paragraph of paragraphs) {
-      const words = paragraph.trim().split(/\s+/).filter(Boolean);
-      if (!words.length) {
-        y -= lineHeight;
-        continue;
-      }
-
-      let line = "";
-      let lineWidth = 0;
-      for (const word of words) {
-        const safeWord = sanitize(word);
-        if (!safeWord) continue;
-        const wordWidth = font.widthOfTextAtSize(safeWord, fontSize);
-        const testWidth = line ? lineWidth + spaceWidth + wordWidth : wordWidth;
-        if (line && testWidth > maxWidth) {
-          drawLine(line);
-          line = safeWord;
-          lineWidth = wordWidth;
-        } else {
-          line = line ? `${line} ${safeWord}` : safeWord;
-          lineWidth = testWidth;
-        }
-      }
-      if (line) drawLine(line);
-    }
-  };
-
-  const drawImage = async (image: RasterImage) => {
-    const embedded = await embedRaster(pdf, image);
-    if (!embedded) return;
-
-    const fit = Math.min(maxWidth / embedded.width, maxImageHeight / embedded.height, 1);
-    const width = embedded.width * fit;
-    const height = embedded.height * fit;
-    if (y < margin + height) newPage();
-
-    page.drawImage(embedded, {
-      x: margin,
-      y: y - height,
-      width,
-      height,
+  try {
+    onProgress?.(38, "Building headings, tables, and layout…");
+    await renderAsync(buffer, host, host, {
+      inWrapper: true,
+      breakPages: true,
+      ignoreWidth: false,
+      ignoreHeight: false,
+      ignoreFonts: false,
+      renderHeaders: true,
+      renderFooters: true,
+      renderFootnotes: true,
+      renderEndnotes: true,
+      useBase64URL: true,
+      className: "docx",
     });
-    y -= height + 12;
-    drewContent = true;
-  };
 
-  onProgress?.(58, "Building PDF pages…");
-  let index = 0;
-  for (const piece of pieces) {
-    if (piece.kind === "image") await drawImage(piece.image);
-    else drawWrapped(piece.text);
+    separateBordersFromText(host);
+    await waitForImages(host);
+    if (document.fonts?.ready) await document.fonts.ready;
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    });
 
-    index += 1;
-    if (index % 8 === 0) {
+    const pages = [...host.querySelectorAll("section.docx")] as HTMLElement[];
+    if (!pages.length) {
+      throw new Error("This Word file did not produce any pages to convert.");
+    }
+
+    const pdf = await PDFDocument.create();
+
+    for (let index = 0; index < pages.length; index += 1) {
       onProgress?.(
-        Math.min(90, 58 + Math.round((index / Math.max(pieces.length, 1)) * 30)),
-        "Building PDF pages…",
+        48 + Math.round((index / pages.length) * 44),
+        `Rendering page ${index + 1} of ${pages.length}…`,
       );
+      pages[index].style.margin = "0";
+      pages[index].style.boxShadow = "none";
+      await appendElementPages(pdf, pages[index]);
       await yieldToBrowser();
     }
-  }
 
-  if (!drewContent) {
-    page.drawText("Empty document", {
-      x: margin,
-      y: pageHeight - margin,
-      size: fontSize,
-      font,
-      color: rgb(0.08, 0.1, 0.12),
-    });
+    onProgress?.(96, "Preparing download…");
+    return pdf.save();
+  } finally {
+    host.remove();
   }
-
-  onProgress?.(94, "Preparing download…");
-  await yieldToBrowser();
-  return pdf.save();
 }

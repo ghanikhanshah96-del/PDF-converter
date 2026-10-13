@@ -56,10 +56,8 @@ export function DownloadWordAsPdfArticle() {
       </p>
       <p className="mt-3 text-base leading-7 text-[var(--ink)]">
         Our converter accepts <code>.docx</code> files, reads them in your
-        browser, and builds a new PDF from the extracted text. It does not
-        copy images, table columns, headers, or the Word layout. Use it when
-        the text is what you need to share. Export from Word or Google Docs
-        when the pages have to look like the original.
+        browser, and builds a PDF that keeps headings, tables, pictures, and
+        the Word page layout.
       </p>
 
       <figure className="mt-6">
@@ -73,9 +71,8 @@ export function DownloadWordAsPdfArticle() {
           className="h-auto w-full rounded-lg border border-[var(--line)] bg-white"
         />
         <figcaption className="mt-2 text-sm leading-6 text-[var(--ink-muted)]">
-          Our converter extracts the words, then places them on new US Letter
-          pages. The picture and table in the first panel are not carried into
-          the PDF. This is an illustration, not a screenshot.
+          The converter keeps the Word page, including headings, tables, and
+          pictures. This drawing is an illustration, not a screenshot.
         </figcaption>
       </figure>
 
@@ -142,8 +139,8 @@ export function DownloadWordAsPdfArticle() {
                   to 20 files, 50 MB each, processed in the browser.
                 </td>
                 <td className="px-3 py-3">
-                  Text and pictures are placed on letter-size pages. Table grids,
-                  headers, and the original layout are simplified.{" "}
+                  Headings, tables, pictures, and the Word page layout are kept
+                  in the PDF.{" "}
                   <code>.doc</code> files are rejected.
                 </td>
               </tr>
@@ -457,12 +454,12 @@ export function DownloadWordAsPdfArticle() {
                   Images are missing
                 </th>
                 <td className="px-3 py-3">
-                  The tool never draws images. Adjusting Word wrapping will
-                  not add them to this PDF.
+                  A picture that failed to load in the browser did not get drawn
+                  on that page.
                 </td>
                 <td className="px-3 py-3">
-                  Save or download the PDF from Word or Google Docs if the
-                  pictures have to appear.
+                  Convert again. If it is still missing, save the PDF from
+                  Word or Google Docs.
                 </td>
               </tr>
               <tr className="border-t border-[var(--line)] align-top">
@@ -470,12 +467,11 @@ export function DownloadWordAsPdfArticle() {
                   A table is no longer a table
                 </th>
                 <td className="px-3 py-3">
-                  Columns are not reconstructed. Extracted cell text becomes
-                  lines.
+                  The table grid from the DOCX is included in the PDF.
                 </td>
                 <td className="px-3 py-3">
-                  Use Word’s own PDF save when column alignment matters. Do
-                  not expect a second run here to restore the grid.
+                  Open the PDF and check the rows and columns. Save from Word
+                  if a cell still looks off.
                 </td>
               </tr>
               <tr className="border-t border-[var(--line)] align-top">

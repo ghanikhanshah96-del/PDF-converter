@@ -6,36 +6,36 @@ const content: ToolPageContent = {
       type: "bullets",
       heading: "What this Word to PDF tool does",
       intro:
-        "BestFreePDFConverter.com reads a DOCX file in your browser and builds a new PDF that includes the text and pictures. It does not copy the Word design.",
+        "BestFreePDFConverter.com reads a DOCX file in your browser and builds a PDF that keeps the document layout.",
       items: [
         "DOCX files only. Legacy DOC files are not accepted.",
         "Up to 50 MB per file and 20 files in one visit.",
         "Each file becomes its own PDF. Files are not merged.",
-        "Body text is placed on US Letter pages.",
+        "Headings, tables, pictures, and page size from the Word file are kept.",
         "The original DOCX file is not rewritten.",
       ],
     },
     {
       type: "cards",
-      heading: "What the PDF does not keep",
+      heading: "What the PDF keeps",
       intro:
-        "Getting a file named .pdf does not mean the Word layout was preserved.",
+        "The PDF is built from the Word pages, not from a plain text copy.",
       items: [
         {
-          title: "Exact Word layout",
-          text: "Pictures are included. Columns, borders, headers, and the original page design are still simplified.",
+          title: "Headings",
+          text: "Heading sizes and styles stay on the page instead of becoming plain lines.",
         },
         {
           title: "Tables",
-          text: "Columns and borders are not rebuilt. Extracted cell text is written as ordinary lines.",
+          text: "Table rows, columns, and borders are kept in the PDF.",
         },
         {
-          title: "Headers and page setup",
-          text: "Headers, footers, page numbers, Word fonts, and the original page size are not copied. Pages are letter size with fixed margins.",
+          title: "Pictures and headers",
+          text: "Images, headers, and footers from the DOCX are included with the page.",
         },
         {
-          title: "A faithful copy",
-          text: "Export from Microsoft Word or Google Docs when the pages, pictures, or tables have to match the original.",
+          title: "Page layout",
+          text: "The Word page size and arrangement are used for the PDF pages.",
         },
       ],
     },
@@ -45,8 +45,7 @@ const content: ToolPageContent = {
       paragraphs: [
         "After you select Convert to PDF, wait until the status says Ready.",
         "Then select Download, or Download all when more than one PDF is ready.",
-        "Open the file and confirm the words you needed are there.",
-        "Open the PDF and confirm the words and pictures you needed are there.",
+        "Open the PDF and check the headings, tables, and pictures.",
         "A step-by-step explanation is on the guide How to Download a Word Document as a PDF, linked above the tool.",
       ],
     },
@@ -62,7 +61,7 @@ const content: ToolPageContent = {
     {
       type: "cta",
       heading: "Convert a DOCX file",
-      text: "Select a DOCX file of 50 MB or less, choose Convert to PDF, then download the text PDF and check it.",
+      text: "Select a DOCX file of 50 MB or less, choose Convert to PDF, then download the PDF and check the layout.",
       buttonLabel: "Select a DOCX file",
     },
   ],

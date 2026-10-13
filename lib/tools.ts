@@ -118,14 +118,14 @@ export const tools: ToolDefinition[] = [
     name: "Word to PDF",
     shortName: "Word → PDF",
     category: "convert",
-    summary: "Convert a DOCX file to PDF in your browser, including the pictures in the document.",
-    description: "Convert a DOCX file to PDF in your browser. Text and images are placed on US Letter pages. Table borders, headers, and the original Word layout are simplified. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
+    summary: "Convert a DOCX file to PDF in your browser and keep headings, tables, images, and page layout.",
+    description: "Convert a DOCX file to PDF in your browser. Headings, tables, pictures, headers, and the Word page layout are kept in the PDF. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
     h1: "Free Word to PDF Converter Online",
     title: "Free Word to PDF Converter Online | Convert DOCX to PDF",
-    metaDescription: "Convert a DOCX file to PDF in your browser. Text and images are included on new pages. The original Word layout is simplified.",
+    metaDescription: "Convert a DOCX file to PDF in your browser. Headings, tables, images, and the Word page layout are kept in the PDF.",
     howTo: [
           "Choose one or more DOCX files, up to 50 MB each and 20 files.",
-          "Select Convert to PDF. The page reads the text and pictures in your browser and builds a new PDF.",
+          "Select Convert to PDF. The page keeps the Word layout, including headings and tables, and builds the PDF in your browser.",
           "Select Download, or Download all if you converted more than one file, then open the PDF and check the text."
     ],
     faqs: [
@@ -139,7 +139,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Will my formatting and images stay the same?",
-                "answer": "Pictures are included. Text is placed on new letter-size pages, but table borders, headers, and the original Word layout are simplified."
+                "answer": "Yes. Headings, tables, pictures, and the page layout from the DOCX are kept in the PDF."
           },
           {
                 "question": "Is there a file size limit?",
