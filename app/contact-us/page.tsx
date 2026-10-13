@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { ContactDetails } from "@/components/ContactDetails";
 import { ContactForm } from "@/components/ContactForm";
 import { ContentPage } from "@/components/ContentPage";
 import {
@@ -88,12 +89,14 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <ContentPage
-          nested
-          eyebrow="Helpful details"
-          title="Before you write"
-          blocks={contactBlocks}
-        />
+        <ContactDetails>
+          <ContentPage
+            nested
+            eyebrow="Helpful details"
+            title="Before you write"
+            blocks={contactBlocks}
+          />
+        </ContactDetails>
       </div>
     </div>
   );

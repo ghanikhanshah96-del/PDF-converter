@@ -76,6 +76,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="google-site-verification"
+          content="ZcdlBZbglO8CYV5XtgL3lVXjJBebOXewBeemLbEf5Rg"
+        />
+      </head>
       <body
         className={`${outfit.variable} ${sourceSans.variable} flex min-h-screen flex-col antialiased`}
       >
