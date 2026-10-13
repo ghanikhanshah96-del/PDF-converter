@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { FAQ } from "@/components/FAQ";
 import { toolsById } from "@/lib/tools";
 
 const wordToPdf = toolsById["word-to-pdf"];
@@ -585,65 +586,68 @@ export function DownloadWordAsPdfArticle() {
         </p>
       </section>
 
-      <section className="mt-10" aria-labelledby="questions">
-        <h2 id="questions" className={h2Class}>
-          Common questions
-        </h2>
-        <div className="mt-4 space-y-6">
-          <div>
-            <h3 className={h3Class}>
-              Can I convert a DOCX file here without Word?
-            </h3>
-            <p className="mt-2 text-base leading-7 text-[var(--ink)]">
-              Yes, if the file is <code>.docx</code>, under 50 MB, and you
-              only need the extracted text. The page does not show a payment
-              step or an account form. It will not open a legacy{" "}
-              <code>.doc</code> file.
-            </p>
-          </div>
-          <div>
-            <h3 className={h3Class}>Does the PDF match the Word file?</h3>
-            <p className="mt-2 text-base leading-7 text-[var(--ink)]">
-              No. You get the words on new letter-size pages. Word and Google
-              Docs are the methods that try to keep the design. Even those
-              exports can change fonts or links, so open the PDF before you
-              send it.
-            </p>
-          </div>
-          <div>
-            <h3 className={h3Class}>
-              Does conversion change my original document?
-            </h3>
-            <p className="mt-2 text-base leading-7 text-[var(--ink)]">
-              On this site, no. The selected DOCX is read and a new PDF is
-              downloaded. On a Mac, Word can replace the document if you save
-              the PDF under the same name. In Google Docs, edits after Open
-              with Google Docs are written back to the Office file.
-            </p>
-          </div>
-          <div>
-            <h3 className={h3Class}>Can I convert several Word files at once?</h3>
-            <p className="mt-2 text-base leading-7 text-[var(--ink)]">
-              You can add up to 20 DOCX files and select Convert to PDF. Each
-              one becomes a separate PDF. Use Download all to save them, then{" "}
-              <In href={mergePdf.href}>Merge PDF</In> only if you want those
-              PDFs combined afterward.
-            </p>
-          </div>
-          <div>
-            <h3 className={h3Class}>
-              Is this appropriate for a confidential file?
-            </h3>
-            <p className="mt-2 text-base leading-7 text-[var(--ink)]">
-              Only if browser processing, as described in the{" "}
-              <In href="/privacy-policy">privacy policy</In>, fits the
-              sensitivity of the file. Conversion does not password-protect
-              the PDF. Desktop Word can add a password from its own PDF
-              options. This tool does not.
-            </p>
-          </div>
-        </div>
-      </section>
+      <FAQ
+        id="questions"
+        heading="Common questions"
+        faqs={[
+          {
+            question: "Can I convert a DOCX file here without Word?",
+            answer: (
+              <>
+                Yes, if the file is <code>.docx</code>, under 50 MB, and you
+                only need the extracted text. The page does not show a payment
+                step or an account form. It will not open a legacy{" "}
+                <code>.doc</code> file.
+              </>
+            ),
+          },
+          {
+            question: "Does the PDF match the Word file?",
+            answer: (
+              <>
+                No. You get the words on new letter-size pages. Word and Google
+                Docs are the methods that try to keep the design. Even those
+                exports can change fonts or links, so open the PDF before you
+                send it.
+              </>
+            ),
+          },
+          {
+            question: "Does conversion change my original document?",
+            answer: (
+              <>
+                On this site, no. The selected DOCX is read and a new PDF is
+                downloaded. On a Mac, Word can replace the document if you save
+                the PDF under the same name. In Google Docs, edits after Open
+                with Google Docs are written back to the Office file.
+              </>
+            ),
+          },
+          {
+            question: "Can I convert several Word files at once?",
+            answer: (
+              <>
+                You can add up to 20 DOCX files and select Convert to PDF. Each
+                one becomes a separate PDF. Use Download all to save them, then{" "}
+                <In href={mergePdf.href}>Merge PDF</In> only if you want those
+                PDFs combined afterward.
+              </>
+            ),
+          },
+          {
+            question: "Is this appropriate for a confidential file?",
+            answer: (
+              <>
+                Only if browser processing, as described in the{" "}
+                <In href="/privacy-policy">privacy policy</In>, fits the
+                sensitivity of the file. Conversion does not password-protect
+                the PDF. Desktop Word can add a password from its own PDF
+                options. This tool does not.
+              </>
+            ),
+          },
+        ]}
+      />
 
       <section className="mt-10 rounded-lg border border-[var(--line)] bg-white p-5 sm:p-6">
         <h2 className="font-display text-xl font-semibold text-[var(--ink)]">

@@ -1,32 +1,41 @@
 "use client";
 
-import { useState } from "react";
-import type { ToolFaq } from "@/lib/tools";
+import { useId, useState, type ReactNode } from "react";
 
 export function FAQ({
   faqs,
   heading = "Frequently asked questions",
+  id,
 }: {
-  faqs: ToolFaq[];
+  faqs: { question: string; answer: ReactNode }[];
   heading?: string;
+  /** Optional anchor so in-page links can scroll to this block. */
+  id?: string;
 }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const uid = useId();
+  const headingId = id ? `${id}-heading` : `${uid}-heading`;
+  const [openIndex, setOpenIndex] = useState<number | null>(
+    faqs.length > 0 ? 0 : null,
+  );
 
   return (
-    <section className="mt-12" aria-labelledby="faq-heading">
-      <h2 id="faq-heading" className="font-display text-xl font-bold">
+    <section id={id} className="mt-12 scroll-mt-28" aria-labelledby={headingId}>
+      <h2
+        id={headingId}
+        className="font-display text-xl font-bold sm:text-2xl"
+      >
         {heading}
       </h2>
       <div className="mt-4 space-y-3">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
-          const panelId = `faq-panel-${index}`;
-          const buttonId = `faq-button-${index}`;
+          const panelId = `${uid}-panel-${index}`;
+          const buttonId = `${uid}-button-${index}`;
 
           return (
             <div
               key={faq.question}
-              className={`rounded-2xl border border-[var(--line)] bg-white/70 px-4 py-3 ${
+              className={`rounded-2xl border border-[var(--line)] bg-white px-4 py-3 transition-shadow duration-300 ${
                 isOpen ? "shadow-[var(--shadow)]" : ""
               }`}
             >
@@ -43,25 +52,28 @@ export function FAQ({
                 >
                   <span>{faq.question}</span>
                   <span
-                    className={`shrink-0 text-[var(--brand)] transition ${
-                      isOpen ? "rotate-45" : ""
-                    }`}
+                    className="faq-plus shrink-0 text-lg leading-none text-[var(--brand)]"
+                    data-open={isOpen ? "true" : "false"}
                     aria-hidden
                   >
                     +
                   </span>
                 </button>
               </h3>
-              {isOpen && (
-                <p
-                  id={panelId}
-                  role="region"
-                  aria-labelledby={buttonId}
-                  className="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]"
-                >
-                  {faq.answer}
-                </p>
-              )}
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={buttonId}
+                aria-hidden={!isOpen}
+                className="faq-panel"
+                data-open={isOpen ? "true" : "false"}
+              >
+                <div className="faq-panel-inner" inert={isOpen ? undefined : true}>
+                  <p className="pt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
             </div>
           );
         })}

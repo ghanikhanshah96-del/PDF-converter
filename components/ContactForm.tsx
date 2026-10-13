@@ -57,35 +57,88 @@ function validateMessage(value: string): string | null {
   return null;
 }
 
+/** True while the address can still become valid by typing more characters. */
+function isStillTypingEmail(value: string): boolean {
+  const email = value.trim();
+  if (!email || /\s/.test(email)) return false;
+  const at = email.indexOf("@");
+  if (at === -1) return true;
+  if (email.indexOf("@", at + 1) !== -1) return false;
+  const domain = email.slice(at + 1);
+  if (!domain || domain.startsWith(".") || domain.includes("..")) return false;
+  if (!domain.includes(".")) return true;
+  const tld = domain.split(".").pop() ?? "";
+  return tld.length < 2;
+}
+
+function visibleNameError(value: string, blurred: boolean): string | null {
+  const error = validateName(value);
+  if (!error) return null;
+  if (!blurred && !value.trim()) return null;
+  return error;
+}
+
+function visibleEmailError(value: string, blurred: boolean): string | null {
+  const error = validateEmail(value);
+  if (!error) return null;
+  if (blurred) return error;
+  if (!value.trim() || isStillTypingEmail(value)) return null;
+  return error;
+}
+
+function visibleMessageError(value: string, blurred: boolean): string | null {
+  const error = validateMessage(value);
+  if (!error) return null;
+  if (!blurred && !value.trim()) return null;
+  return error;
+}
+
+function fieldClass(invalid: boolean, extra = "") {
+  return [
+    "rounded-lg border bg-white text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60",
+    invalid ? "border-[var(--danger)]" : "border-[var(--line)]",
+    extra,
+  ].join(" ");
+}
+
 export function ContactForm({ supportEmail }: { supportEmail: string }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<{
-    name?: string;
-    email?: string;
-    message?: string;
-    form?: string;
-  }>({});
+  const [blurred, setBlurred] = useState({
+    name: false,
+    email: false,
+    message: false,
+  });
+  const [formError, setFormError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+
+  const nameError = visibleNameError(name, blurred.name);
+  const emailError = visibleEmailError(email, blurred.email);
+  const messageError = visibleMessageError(message, blurred.message);
+
+  const markEdited = () => {
+    setFormError(null);
+    if (status === "sent") setStatus("idle");
+  };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (status === "sending") return;
 
     setStatus("idle");
+    setBlurred({ name: true, email: true, message: true });
 
     const nextErrors = {
-      name: validateName(name) ?? undefined,
-      email: validateEmail(email) ?? undefined,
-      message: validateMessage(message) ?? undefined,
+      name: validateName(name),
+      email: validateEmail(email),
+      message: validateMessage(message),
     };
 
-    setErrors(nextErrors);
     if (nextErrors.name || nextErrors.email || nextErrors.message) return;
 
     setStatus("sending");
-    setErrors({});
+    setFormError(null);
 
     try {
       const res = await fetch("/api/contact", {
@@ -107,24 +160,24 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
 
       if (!res.ok || !data.success) {
         setStatus("idle");
-        setErrors({
-          form:
-            data.message && res.status === 400
-              ? data.message
-              : "We couldn't send your message.\nPlease try again in a moment.",
-        });
+        setFormError(
+          data.message && res.status === 400
+            ? data.message
+            : "We couldn't send your message.\nPlease try again in a moment.",
+        );
         return;
       }
 
       setName("");
       setEmail("");
       setMessage("");
+      setBlurred({ name: false, email: false, message: false });
       setStatus("sent");
     } catch {
       setStatus("idle");
-      setErrors({
-        form: "We couldn't send your message.\nPlease try again in a moment.",
-      });
+      setFormError(
+        "We couldn't send your message.\nPlease try again in a moment.",
+      );
     }
   };
 
@@ -142,17 +195,17 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
           disabled={sending}
           onChange={(e) => {
             setName(e.target.value);
-            setErrors((prev) => ({ ...prev, name: undefined, form: undefined }));
-            if (status === "sent") setStatus("idle");
+            markEdited();
           }}
-          className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
+          onBlur={() => setBlurred((prev) => ({ ...prev, name: true }))}
+          className={fieldClass(Boolean(nameError), "min-h-12 px-4")}
           placeholder="Your name"
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? "name-error" : undefined}
+          aria-invalid={Boolean(nameError)}
+          aria-describedby={nameError ? "name-error" : undefined}
         />
-        {errors.name && (
+        {nameError && (
           <span id="name-error" className="text-sm font-normal text-[var(--danger)]" role="alert">
-            {errors.name}
+            {nameError}
           </span>
         )}
       </label>
@@ -167,17 +220,17 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
           disabled={sending}
           onChange={(e) => {
             setEmail(e.target.value);
-            setErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
-            if (status === "sent") setStatus("idle");
+            markEdited();
           }}
-          className="min-h-12 rounded-lg border border-[var(--line)] bg-white px-4 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
+          onBlur={() => setBlurred((prev) => ({ ...prev, email: true }))}
+          className={fieldClass(Boolean(emailError), "min-h-12 px-4")}
           placeholder="you@company.org"
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "email-error" : undefined}
+          aria-invalid={Boolean(emailError)}
+          aria-describedby={emailError ? "email-error" : undefined}
         />
-        {errors.email && (
+        {emailError && (
           <span id="email-error" className="text-sm font-normal text-[var(--danger)]" role="alert">
-            {errors.email}
+            {emailError}
           </span>
         )}
       </label>
@@ -191,40 +244,36 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
           disabled={sending}
           onChange={(e) => {
             setMessage(e.target.value);
-            setErrors((prev) => ({
-              ...prev,
-              message: undefined,
-              form: undefined,
-            }));
-            if (status === "sent") setStatus("idle");
+            markEdited();
           }}
-          className="contact-message rounded-lg border border-[var(--line)] bg-white px-4 py-3 text-base font-normal outline-none transition focus:border-[var(--brand)] disabled:opacity-60"
+          onBlur={() => setBlurred((prev) => ({ ...prev, message: true }))}
+          className={fieldClass(Boolean(messageError), "contact-message px-4 py-3")}
           placeholder="Tell us what happened or what you need."
-          aria-invalid={Boolean(errors.message)}
+          aria-invalid={Boolean(messageError)}
           aria-describedby={
-            errors.message ? "message-error" : "message-hint"
+            messageError ? "message-error" : "message-hint"
           }
         />
         <span id="message-hint" className="text-xs font-normal text-[var(--ink-muted)]">
           Fixed height — scroll inside the box when your message is longer.
         </span>
-        {errors.message && (
+        {messageError && (
           <span
             id="message-error"
             className="text-sm font-normal text-[var(--danger)]"
             role="alert"
           >
-            {errors.message}
+            {messageError}
           </span>
         )}
       </label>
 
-      {errors.form && (
+      {formError && (
         <p
           className="whitespace-pre-line rounded-xl bg-red-50 px-3 py-2 text-sm font-normal text-[var(--danger)]"
           role="alert"
         >
-          {errors.form}
+          {formError}
         </p>
       )}
 

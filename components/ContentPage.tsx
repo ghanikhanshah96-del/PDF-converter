@@ -12,14 +12,84 @@ export type ContentBlock =
   | { type: "email"; address: string }
   | { type: "link"; href: string; label: string; before?: string; after?: string };
 
-function richText(text: string): ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
+const DOC_LINK_CLASS =
+  "font-semibold text-[var(--brand)] underline underline-offset-2 hover:text-[var(--brand-deep)]";
+
+/** Emails, the site name, and documentation page names become real links. */
+const INLINE_TOKEN =
+  /(\*\*[^*]+\*\*|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|BestFreePDFConverter\.com|bestfreepdfconverter\.com|Privacy Policy|Terms and Conditions|Editorial Policy|\b[Cc]ontact [Uu]s\b|\bcontact form\b)/g;
+
+const PAGE_HREFS: Record<string, string> = {
+  "Privacy Policy": "/privacy-policy",
+  "Terms and Conditions": "/terms-and-conditions",
+  "Editorial Policy": "/editorial-policy",
+  "Contact Us": "/contact-us",
+  "contact us": "/contact-us",
+  "contact form": "/contact-us",
+};
+
+function DocAnchor({ href, children }: { href: string; children: ReactNode }) {
+  if (href.startsWith("mailto:")) {
+    return (
+      <a href={href} className={DOC_LINK_CLASS}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={DOC_LINK_CLASS}>
+      {children}
+    </Link>
+  );
+}
+
+function richText(text: string, keyPrefix = "t"): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const re = new RegExp(INLINE_TOKEN.source, "g");
+  let last = 0;
+  let match: RegExpExecArray | null;
+  let i = 0;
+
+  while ((match = re.exec(text))) {
+    if (match.index > last) {
+      nodes.push(text.slice(last, match.index));
     }
-    return <span key={i}>{part}</span>;
-  });
+
+    const token = match[0];
+    const key = `${keyPrefix}-${i}`;
+
+    if (token.startsWith("**") && token.endsWith("**")) {
+      nodes.push(
+        <strong key={key}>{richText(token.slice(2, -2), key)}</strong>,
+      );
+    } else if (token.includes("@")) {
+      nodes.push(
+        <DocAnchor key={key} href={`mailto:${token}`}>
+          {token}
+        </DocAnchor>,
+      );
+    } else if (/bestfreepdfconverter\.com/i.test(token)) {
+      nodes.push(
+        <DocAnchor key={key} href="/">
+          {token}
+        </DocAnchor>,
+      );
+    } else if (PAGE_HREFS[token]) {
+      nodes.push(
+        <DocAnchor key={key} href={PAGE_HREFS[token]}>
+          {token}
+        </DocAnchor>,
+      );
+    } else {
+      nodes.push(token);
+    }
+
+    last = match.index + token.length;
+    i += 1;
+  }
+
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
 }
 
 function bulletGridClass(count: number) {
@@ -97,14 +167,14 @@ function Block({ block }: { block: ContentBlock }) {
     case "link":
       return (
         <p className="text-[14px] leading-relaxed sm:text-[15px]">
-          {block.before}
+          {block.before ? richText(block.before, "before") : null}
           <Link
             href={block.href}
             className="font-semibold text-[var(--brand)] underline underline-offset-2 hover:text-[var(--brand-deep)]"
           >
             {block.label}
           </Link>
-          {block.after}
+          {block.after ? richText(block.after, "after") : null}
         </p>
       );
     case "h2":
@@ -291,7 +361,9 @@ function SectionBody({ blocks }: { blocks: ContentBlock[] }) {
                 <strong className="font-semibold text-[var(--ink)]">
                   {term.title}.{" "}
                 </strong>
-                <span className="text-[var(--ink-muted)]">{term.text}</span>
+                <span className="text-[var(--ink-muted)]">
+                  {richText(term.text, term.title)}
+                </span>
               </p>
             </li>
           ))}

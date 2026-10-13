@@ -71,7 +71,6 @@ export function Footer() {
             Free PDF utilities that process files in your browser. No uploads.
             No accounts required for core tools.
           </p>
-          <p className="mt-3 text-xs text-white/55">{SITE.domain}</p>
         </div>
 
         <div>

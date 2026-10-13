@@ -107,7 +107,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[var(--bg-a)] pt-12 pb-2 sm:pt-16 sm:pb-3">
         <div className="site-container">
           <h2 className="font-display text-2xl font-semibold text-[var(--ink)] sm:text-3xl">
             {homeContent.howItWorks.heading}
@@ -136,7 +136,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[var(--bg-a)] py-12 sm:py-16">
+      <section className="bg-[var(--bg-a)] pt-6 pb-12 sm:pt-8 sm:pb-16">
         <div className="site-container">
           <h2 className="font-display text-2xl font-semibold text-[var(--ink)] sm:text-3xl">
             {homeContent.capabilities.heading}

@@ -391,6 +391,37 @@ svg {
   background: var(--brand-deep);
 }
 
+/* FAQ answer: height animates instead of popping in and out */
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.faq-panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.faq-plus {
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-plus[data-open="true"] {
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-panel,
+  .faq-plus {
+    transition: none;
+  }
+}
+
 /* Center a lone card when it sits alone in the last row */
 @media (min-width: 640px) {
   .center-orphan-sm-2 > :last-child:nth-child(odd) {
