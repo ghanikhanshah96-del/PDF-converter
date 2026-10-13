@@ -54,19 +54,64 @@ textarea {
   cursor: text;
 }
 
+a[href],
+area[href],
+button,
+summary,
+label,
+[role="button"],
+[role="link"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
 select,
 select option,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
 input[type="checkbox"],
 input[type="radio"],
 input[type="file"],
 input[type="color"],
-input[type="range"] {
+input[type="range"],
+.btn,
+.dropzone,
+.pdf-tool-btn,
+.pdf-mode-pill,
+.pdf-save-btn,
+.pdf-editor-select,
+.pdf-float-nav button {
   cursor: pointer;
 }
 
+a[href]:hover,
+area[href]:hover,
+button:hover,
+summary:hover,
+label:hover,
+[role="button"]:hover,
+[role="link"]:hover,
+[role="tab"]:hover,
+[role="menuitem"]:hover,
+select:hover,
+.btn:hover,
+.dropzone:hover,
+.pdf-tool-btn:hover,
+.pdf-mode-pill:hover,
+.pdf-save-btn:hover,
+.pdf-editor-select:hover,
+.pdf-float-nav button:hover {
+  cursor: pointer;
+}
+
+button:disabled,
 input:disabled,
 textarea:disabled,
-select:disabled {
+select:disabled,
+.btn:disabled,
+.pdf-tool-btn:disabled,
+.pdf-save-btn:disabled,
+[aria-disabled="true"] {
   cursor: not-allowed;
 }
 
