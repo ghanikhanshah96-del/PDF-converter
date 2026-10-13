@@ -6,7 +6,7 @@ const content: ToolPageContent = {
       type: "bullets",
       heading: "What this Word to PDF tool does",
       intro:
-        "BestFreePDFConverter.com reads a DOCX file in your browser, extracts the text, and builds a new PDF. It does not copy the Word design.",
+        "BestFreePDFConverter.com reads a DOCX file in your browser and builds a new PDF that includes the text and pictures. It does not copy the Word design.",
       items: [
         "DOCX files only. Legacy DOC files are not accepted.",
         "Up to 50 MB per file and 20 files in one visit.",
@@ -22,8 +22,8 @@ const content: ToolPageContent = {
         "Getting a file named .pdf does not mean the Word layout was preserved.",
       items: [
         {
-          title: "Images",
-          text: "Pictures are not drawn. A document that contains only images can produce a PDF that says (Empty document).",
+          title: "Exact Word layout",
+          text: "Pictures are included. Columns, borders, headers, and the original page design are still simplified.",
         },
         {
           title: "Tables",
@@ -46,7 +46,7 @@ const content: ToolPageContent = {
         "After you select Convert to PDF, wait until the status says Ready.",
         "Then select Download, or Download all when more than one PDF is ready.",
         "Open the file and confirm the words you needed are there.",
-        "If images or table alignment matter, this output is the wrong tool for that document.",
+        "Open the PDF and confirm the words and pictures you needed are there.",
         "A step-by-step explanation is on the guide How to Download a Word Document as a PDF, linked above the tool.",
       ],
     },

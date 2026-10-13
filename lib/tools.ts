@@ -91,11 +91,11 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Does converting PDF to Word keep the original formatting?",
-                "answer": "Many elements such as text and headings can be preserved, but complex layouts, images, and tables may require additional adjustments."
+                "answer": "Each PDF page is included as an image, and selectable text is placed underneath it. Complex columns and tables may still need a quick check."
           },
           {
                 "question": "Can I convert scanned PDFs into Word files?",
-                "answer": "Scanned PDFs contain images instead of selectable text. They may require OCR technology to extract editable text."
+                "answer": "Scanned pages are included as images in the Word file. Editable text is extracted only when the PDF already has selectable text."
           },
           {
                 "question": "Is this PDF to Word converter free?",
@@ -118,14 +118,14 @@ export const tools: ToolDefinition[] = [
     name: "Word to PDF",
     shortName: "Word → PDF",
     category: "convert",
-    summary: "Extract text from a DOCX file and download a new PDF. Images and the original Word layout are not kept.",
-    description: "Convert a DOCX file to PDF in your browser. The tool extracts the document text and rebuilds US Letter pages. It does not keep images, table columns, headers, or the original Word layout. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
+    summary: "Convert a DOCX file to PDF in your browser, including the pictures in the document.",
+    description: "Convert a DOCX file to PDF in your browser. Text and images are placed on US Letter pages. Table borders, headers, and the original Word layout are simplified. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
     h1: "Free Word to PDF Converter Online",
     title: "Free Word to PDF Converter Online | Convert DOCX to PDF",
-    metaDescription: "Convert a DOCX file to PDF in your browser. Text is extracted onto new pages. Images and the original Word layout are not kept.",
+    metaDescription: "Convert a DOCX file to PDF in your browser. Text and images are included on new pages. The original Word layout is simplified.",
     howTo: [
           "Choose one or more DOCX files, up to 50 MB each and 20 files.",
-          "Select Convert to PDF. The page extracts the text in your browser and builds a new PDF.",
+          "Select Convert to PDF. The page reads the text and pictures in your browser and builds a new PDF.",
           "Select Download, or Download all if you converted more than one file, then open the PDF and check the text."
     ],
     faqs: [
@@ -139,7 +139,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Will my formatting and images stay the same?",
-                "answer": "No. The tool extracts text and places it on new letter-size pages. Images, table columns, headers, and the original layout are not preserved."
+                "answer": "Pictures are included. Text is placed on new letter-size pages, but table borders, headers, and the original Word layout are simplified."
           },
           {
                 "question": "Is there a file size limit?",

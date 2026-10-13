@@ -1,11 +1,13 @@
 import * as XLSX from "xlsx";
 import { getPdfjs } from "@/lib/pdfjs";
+import { addPageImages } from "@/lib/engines/xlsxImages";
 
 export async function pdfToExcel(file: File): Promise<ArrayBuffer> {
   const pdfjs = await getPdfjs();
   const data = new Uint8Array(await file.arrayBuffer());
   const pdf = await pdfjs.getDocument({ data }).promise;
   const allRows: string[][] = [];
+  const pageImages: { bytes: Uint8Array; width: number; height: number }[] = [];
 
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
@@ -51,10 +53,37 @@ export async function pdfToExcel(file: File): Promise<ArrayBuffer> {
       if (cols.length) allRows.push(cols);
     }
     allRows.push([]);
+
+    if (typeof document !== "undefined") {
+      const viewport = page.getViewport({ scale: 1.2 });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+        const blob = await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob((result) => resolve(result), "image/jpeg", 0.84);
+        });
+        if (blob) {
+          pageImages.push({
+            bytes: new Uint8Array(await blob.arrayBuffer()),
+            width: canvas.width,
+            height: canvas.height,
+          });
+        }
+      }
+    }
+    page.cleanup();
   }
 
   const sheet = XLSX.utils.aoa_to_sheet(allRows);
   const book = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(book, sheet, "Extracted");
-  return XLSX.write(book, { bookType: "xlsx", type: "array" });
+  const raw = XLSX.write(book, { bookType: "xlsx", type: "array" }) as
+    | ArrayBuffer
+    | Uint8Array;
+  return addPageImages(raw, pageImages);
 }

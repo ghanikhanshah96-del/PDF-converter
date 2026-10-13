@@ -142,8 +142,8 @@ export function DownloadWordAsPdfArticle() {
                   to 20 files, 50 MB each, processed in the browser.
                 </td>
                 <td className="px-3 py-3">
-                  Text is rebuilt on letter-size pages. Images, table grids,
-                  headers, and the original layout are not kept.{" "}
+                  Text and pictures are placed on letter-size pages. Table grids,
+                  headers, and the original layout are simplified.{" "}
                   <code>.doc</code> files are rejected.
                 </td>
               </tr>
@@ -314,8 +314,8 @@ export function DownloadWordAsPdfArticle() {
                   Images, headers, footers, page numbers
                 </th>
                 <td className="px-3 py-3">
-                  Not drawn. A file that is only pictures can come back as the
-                  words “(Empty document)”.
+                  Pictures from the DOCX are included. Headers, footers, and page
+                  numbers are not copied.
                 </td>
               </tr>
               <tr className="border-t border-[var(--line)] align-top">
@@ -445,12 +445,11 @@ export function DownloadWordAsPdfArticle() {
                   The PDF says “(Empty document)”
                 </th>
                 <td className="px-3 py-3">
-                  Mammoth found no text to extract. The file may contain only
-                  images, or the body is blank.
+                  The file had no readable text or pictures, or the body is blank.
                 </td>
                 <td className="px-3 py-3">
-                  This converter cannot recover those pictures. Export the PDF
-                  from Word or Google Docs instead.
+                  Open the DOCX and confirm it has content. Export from Word
+                  or Google Docs when the original layout has to match.
                 </td>
               </tr>
               <tr className="border-t border-[var(--line)] align-top">
