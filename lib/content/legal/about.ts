@@ -92,7 +92,7 @@ export const aboutBlocks: ContentBlock[] = [
   },
   {
     "type": "p",
-    "text": "For our core PDF tools, document processing is performed locally in your browser. Files selected for supported conversion, editing, compression, organization, signing, or unlocking tasks are not intentionally uploaded to our servers simply to perform the conversion."
+    "text": "For our core PDF tools, document processing is performed locally in your browser. Word to PDF is the exception: that file is sent to our server, converted, and deleted as soon as the PDF is ready. Other files selected for editing, compression, organization, signing, or unlocking are not uploaded to perform the task."
   },
   {
     "type": "p",

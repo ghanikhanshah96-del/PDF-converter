@@ -53,11 +53,11 @@ export const privacyBlocks: ContentBlock[] = [
   },
   {
     "type": "p",
-    "text": "are read and processed locally by your browser."
+    "text": "are read and processed locally by your browser. Word to PDF is the exception: that document is sent to our server so a document engine can print the original charts, colors, and pages."
   },
   {
     "type": "p",
-    "text": "We do not operate a file-upload API for these core PDF-processing operations, and these documents are not intentionally transmitted to or stored on our servers simply to perform the requested PDF task."
+    "text": "For every other core tool, we do not upload the file to perform the task. A Word file sent for PDF conversion is deleted from the server as soon as the PDF is returned. We do not keep the Word file or the PDF."
   },
   {
     "type": "h2",

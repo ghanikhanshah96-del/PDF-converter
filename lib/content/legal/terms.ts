@@ -96,11 +96,11 @@ export const termsBlocks: ContentBlock[] = [
   },
   {
     "type": "p",
-    "text": "Our core document tools are designed to process supported files locally in your browser."
+    "text": "Our core document tools are designed to process supported files locally in your browser. Word to PDF is sent to our server for conversion and deleted as soon as the PDF is ready."
   },
   {
     "type": "p",
-    "text": "Documents used with these core tools are not intentionally uploaded to our servers simply to perform the requested conversion or manipulation."
+    "text": "Documents used with these core tools are not intentionally uploaded to our servers simply to perform the requested conversion or manipulation, except a Word file that is converted to PDF and then deleted."
   },
   {
     "type": "p",

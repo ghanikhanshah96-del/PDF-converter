@@ -243,7 +243,7 @@ export const disclaimerBlocks: ContentBlock[] = [
   },
   {
     "type": "p",
-    "text": "Our core tools are designed to process supported files locally within your browser rather than uploading them to our server for conversion."
+    "text": "Our core tools are designed to process supported files locally within your browser. Word to PDF is sent to our server so the PDF can match the Word file, and that file is deleted when the PDF is returned."
   },
   {
     "type": "p",

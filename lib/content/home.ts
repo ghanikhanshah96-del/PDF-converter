@@ -19,7 +19,7 @@ export const homeContent = {
     h1: "Free PDF Converter Tools Online",
     paragraphs: [
       "Convert, edit, compress, and manage your PDF files with our free online PDF tools. Whether you need to convert documents, reduce file size, merge pages, or make quick edits, BestFreePDFConverter.com provides simple solutions that work directly from your browser.",
-      "No software installation. No complicated steps. Just select your file, choose your tool, and complete your PDF task quickly, with processing that stays in your browser.",
+      "No software installation. No complicated steps. Just select your file, choose your tool, and complete your PDF task quickly. Most tools stay in your browser. Word to PDF is converted on our server and deleted right away.",
     ],
     ctaLabel: "Start Using PDF Tools",
     ctaHref: "#tools",
@@ -94,7 +94,7 @@ export const homeContent = {
       },
       {
         title: "Private by Design",
-        text: "Core tools process files in your browser so documents stay on your device.",
+        text: "Most tools process files in your browser. Word to PDF is converted on our server and the file is deleted right away.",
       },
     ],
   },
@@ -188,7 +188,7 @@ export const homeContent = {
     {
       question: "Do my files leave my device?",
       answer:
-        "Core PDF tools process files in your browser. Your documents are not uploaded to our servers for conversion.",
+        "Most PDF tools process files in your browser. Word to PDF is uploaded, converted to match the Word file, and deleted from the server as soon as the PDF is ready.",
     },
   ] satisfies ToolFaq[],
   finalCta: {

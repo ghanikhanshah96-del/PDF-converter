@@ -86,7 +86,7 @@ export function Header() {
             </span>
           </span>
           <span className="truncate text-xs text-[var(--ink-muted)] group-hover:text-[var(--brand)]">
-            Private · client-side PDF tools
+            Most tools stay on your device
           </span>
         </Link>
 

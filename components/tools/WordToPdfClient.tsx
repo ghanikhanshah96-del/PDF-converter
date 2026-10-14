@@ -1,22 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import { ToolWorkspace } from "@/components/ToolWorkspace";
 import { basename } from "@/lib/download";
-import { toPdfBlob } from "@/lib/blob";
 import { toolsById } from "@/lib/tools";
 
 const tool = toolsById["word-to-pdf"];
 
 export function WordToPdfClient() {
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      void import("@/lib/engines/wordToPdf");
-    }, 350);
-
-    return () => window.clearTimeout(id);
-  }, []);
-
   return (
     <ToolWorkspace
       accept={tool.accept}
@@ -26,11 +16,20 @@ export function WordToPdfClient() {
       hint="Select one or more documents — or click to browse"
       processLabel="Convert to PDF"
       onProcess={async (files, onProgress) => {
-        onProgress(15, "Loading converters…");
-        const { wordToPdf } = await import("@/lib/engines/wordToPdf");
-        const bytes = await wordToPdf(files[0], onProgress);
+        onProgress(20, "Converting the original document…");
+        const body = new FormData();
+        body.append("file", files[0]);
+        const response = await fetch("/api/convert/word-to-pdf", {
+          method: "POST",
+          body,
+        });
+        if (!response.ok) {
+          const data = (await response.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(data?.error || "The document could not be converted.");
+        }
+        onProgress(92, "Preparing download…");
         return {
-          blob: toPdfBlob(bytes),
+          blob: await response.blob(),
           filename: `${basename(files[0].name)}.pdf`,
         };
       }}
