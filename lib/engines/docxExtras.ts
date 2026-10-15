@@ -483,16 +483,36 @@ function drawCartesian(
   if (chart.showLegend) drawBottomLegend(ctx, chart, plotX, height - legendH + 4, plotW);
 }
 
-function insertFigure(host: HTMLElement, src: string, alt: string, widthPx: number) {
+function imageAlreadyShown(host: HTMLElement, dataUrl: string) {
+  const comma = dataUrl.indexOf(",");
+  const needle = dataUrl.slice(comma + 1, comma + 96);
+  return [...host.querySelectorAll("img")].some((img) => {
+    const src = img.getAttribute("src") || "";
+    return src.includes(needle);
+  });
+}
+
+function insertFigure(
+  host: HTMLElement,
+  src: string,
+  alt: string,
+  widthPx: number,
+  heightPx = 0,
+) {
   const figure = document.createElement("figure");
-  figure.style.margin = "16px auto";
+  figure.style.margin = "12px auto";
   figure.style.textAlign = "center";
   const image = document.createElement("img");
   image.src = src;
-  image.alt = alt || "Chart";
+  image.alt = alt || "Picture";
+  image.style.display = "inline-block";
   image.style.maxWidth = "100%";
-  image.style.height = "auto";
-  if (widthPx) image.style.width = `${widthPx}px`;
+  if (widthPx) {
+    image.style.width = `${widthPx}px`;
+    image.style.maxWidth = "none";
+  }
+  if (heightPx) image.style.height = `${heightPx}px`;
+  else image.style.height = "auto";
   figure.appendChild(image);
 
   const article =
@@ -500,6 +520,13 @@ function insertFigure(host: HTMLElement, src: string, alt: string, widthPx: numb
     (host.querySelector("section.docx") as HTMLElement | null);
   if (!article) {
     host.appendChild(figure);
+    return;
+  }
+  if (heightPx > 500) {
+    const paragraphs = article.querySelectorAll("p");
+    const anchor = paragraphs[1] || null;
+    if (anchor) article.insertBefore(figure, anchor);
+    else article.insertBefore(figure, article.firstChild);
     return;
   }
   const table = article.querySelector("table");
@@ -600,34 +627,97 @@ async function findWatermark(
   return "";
 }
 
+function liftPageContent(section: HTMLElement) {
+  section.style.position = "relative";
+  section.style.overflow = "visible";
+  const article = section.querySelector("article");
+  if (article instanceof HTMLElement) {
+    article.style.position = "relative";
+    article.style.zIndex = "1";
+    article.style.background = "transparent";
+  }
+}
+
 function paintBackground(host: HTMLElement, url: string) {
   host.querySelectorAll("section.docx").forEach((node) => {
     const section = node as HTMLElement;
-    section.style.backgroundColor = "#ffffff";
-    section.style.backgroundImage = `url("${url}")`;
-    section.style.backgroundSize = "cover";
-    section.style.backgroundPosition = "center";
-    section.style.backgroundRepeat = "no-repeat";
+    liftPageContent(section);
+    const image = document.createElement("img");
+    image.src = url;
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    image.style.position = "absolute";
+    image.style.inset = "0";
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "cover";
+    image.style.pointerEvents = "none";
+    image.style.zIndex = "0";
+    section.insertBefore(image, section.firstChild);
   });
 }
 
 function paintWatermark(host: HTMLElement, url: string) {
   host.querySelectorAll("section.docx").forEach((node) => {
     const section = node as HTMLElement;
-    section.style.position = "relative";
+    liftPageContent(section);
+    const image = document.createElement("img");
+    image.src = url;
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    image.style.position = "absolute";
+    image.style.left = "50%";
+    image.style.top = "50%";
+    image.style.transform = "translate(-50%, -50%)";
+    image.style.width = "70%";
+    image.style.height = "auto";
+    image.style.opacity = "0.4";
+    image.style.pointerEvents = "none";
+    image.style.zIndex = "0";
+    section.insertBefore(image, section.firstChild);
+  });
+}
+
+function paintTextWatermark(host: HTMLElement, text: string) {
+  host.querySelectorAll("section.docx").forEach((node) => {
+    const section = node as HTMLElement;
+    liftPageContent(section);
     const layer = document.createElement("div");
     layer.setAttribute("aria-hidden", "true");
+    layer.textContent = text;
     layer.style.position = "absolute";
     layer.style.inset = "0";
-    layer.style.backgroundImage = `url("${url}")`;
-    layer.style.backgroundRepeat = "no-repeat";
-    layer.style.backgroundPosition = "center";
-    layer.style.backgroundSize = "58%";
-    layer.style.opacity = "0.28";
+    layer.style.display = "flex";
+    layer.style.alignItems = "center";
+    layer.style.justifyContent = "center";
+    layer.style.font = "700 72px Calibri, Carlito, sans-serif";
+    layer.style.letterSpacing = "0.08em";
+    layer.style.color = "rgba(160, 160, 160, 0.45)";
+    layer.style.transform = "rotate(-40deg)";
     layer.style.pointerEvents = "none";
     layer.style.zIndex = "0";
+    layer.style.whiteSpace = "nowrap";
     section.insertBefore(layer, section.firstChild);
   });
+}
+
+async function ensureEmbeddedPictures(
+  zip: JSZip,
+  documentXml: string,
+  rels: Map<string, string>,
+  host: HTMLElement,
+) {
+  for (const match of documentXml.matchAll(/<w:drawing>([\s\S]*?)<\/w:drawing>/g)) {
+    const block = match[1];
+    if (/<c:chart\b/.test(block)) continue;
+    const id = /r:embed="([^"]+)"/.exec(block)?.[1];
+    if (!id) continue;
+    const url = await imageByRel(zip, rels, id, "word");
+    if (!url || imageAlreadyShown(host, url)) continue;
+    const width = emuToPx(Number(/<wp:extent\b[^>]*cx="(\d+)"/.exec(block)?.[1] ?? 0));
+    const height = emuToPx(Number(/<wp:extent\b[^>]*cy="(\d+)"/.exec(block)?.[1] ?? 0));
+    insertFigure(host, url, "Picture", width, height);
+  }
 }
 
 /**
@@ -684,10 +774,27 @@ export async function enrichRenderedDocx(buffer: ArrayBuffer, host: HTMLElement)
   const watermarkUrl = await findWatermark(zip, documentXml, rels);
   if (watermarkUrl) paintWatermark(host, watermarkUrl);
 
-  if (picturesBeforeCharts === 0) {
+  const headerNames = Object.keys(zip.files).filter((name) =>
+    /^word\/header\d+\.xml$/.test(name),
+  );
+  for (const name of ["word/document.xml", ...headerNames]) {
+    const xml =
+      name === "word/document.xml"
+        ? documentXml
+        : ((await zip.file(name)?.async("string")) ?? "");
+    const text = /<v:textpath\b[^>]*string="([^"]+)"/i.exec(xml)?.[1];
+    if (text && /watermark/i.test(xml)) {
+      paintTextWatermark(host, decodeXml(text));
+      break;
+    }
+  }
+
+  await ensureEmbeddedPictures(zip, documentXml, rels, host);
+
+  if (picturesBeforeCharts === 0 && host.querySelectorAll("img").length === 0) {
     const bodyImages = await imagesFromPart(zip, "word/document.xml");
     bodyImages.forEach((url, index) => {
-      insertFigure(host, url, `Image ${index + 1}`, 480);
+      if (!imageAlreadyShown(host, url)) insertFigure(host, url, `Image ${index + 1}`, 0);
     });
   }
 }

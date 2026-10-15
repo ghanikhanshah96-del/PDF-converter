@@ -118,14 +118,14 @@ export const tools: ToolDefinition[] = [
     name: "Word to PDF",
     shortName: "Word → PDF",
     category: "convert",
-    summary: "Convert a DOCX file to PDF and keep the Word charts, colors, text, and page layout.",
-    description: "Convert a DOCX file to PDF with the original charts, colors, spacing, and pages. The document is converted on our server and deleted as soon as the PDF is ready. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
+    summary: "Convert a DOCX file to PDF in your browser and keep headings, tables, images, and page layout.",
+    description: "Convert a DOCX file to PDF in your browser. Headings, tables, pictures, headers, watermarks, and the Word page layout are kept in the PDF. DOCX only, up to 50 MB per file and 20 files at a time. Each file becomes its own PDF.",
     h1: "Free Word to PDF Converter Online",
     title: "Free Word to PDF Converter Online | Convert DOCX to PDF",
-    metaDescription: "Convert a DOCX file to PDF and keep the original charts, colors, text, and page layout.",
+    metaDescription: "Convert a DOCX file to PDF in your browser. Headings, tables, images, watermarks, and the Word page layout are kept in the PDF.",
     howTo: [
           "Choose one or more DOCX files, up to 50 MB each and 20 files.",
-          "Select Convert to PDF. The document engine prints the Word file, including charts and page layout.",
+          "Select Convert to PDF. The page keeps the Word layout, including pictures, watermarks, and background images, and builds the PDF in your browser.",
           "Select Download, or Download all if you converted more than one file, then open the PDF and check the text."
     ],
     faqs: [
@@ -139,7 +139,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Will my formatting and images stay the same?",
-                "answer": "Yes. The PDF is printed from the Word file, so charts, colors, tables, pictures, and page layout stay with the document."
+                "answer": "Yes. Headings, tables, pictures, watermarks, background images, and the page layout from the DOCX are kept in the PDF."
           },
           {
                 "question": "Is there a file size limit?",
@@ -147,7 +147,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Does conversion change the original DOCX?",
-                "answer": "No. The selected file is sent for conversion and a new PDF is downloaded. The Word file and the PDF are deleted from the server when the conversion finishes."
+                "answer": "No. The selected file is read in the browser and a new PDF is downloaded."
           },
           {
                 "question": "Can I use this on a phone?",

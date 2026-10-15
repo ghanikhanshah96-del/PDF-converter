@@ -68,9 +68,8 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/68">
-            Free PDF utilities. Most tools run in your browser. Word to PDF is
-            converted on our server and deleted right away. No accounts required
-            for core tools.
+            Free PDF utilities that process files in your browser. No uploads.
+            No accounts required for core tools.
           </p>
         </div>
 
@@ -141,7 +140,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10 px-4 py-4 text-center text-xs leading-relaxed text-white/50">
-        © {new Date().getFullYear()} {SITE.name}. Most tools stay on your device. Word to PDF is deleted after conversion.
+        © {new Date().getFullYear()} {SITE.name}. Files never leave your device.
       </div>
     </footer>
   );

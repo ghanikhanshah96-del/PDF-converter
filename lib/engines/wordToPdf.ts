@@ -82,6 +82,16 @@ export async function wordToPdf(
     await enrichRenderedDocx(buffer, host);
     separateBordersFromText(host);
     await waitForImages(host);
+    host.querySelectorAll("section.docx").forEach((node) => {
+      const section = node as HTMLElement;
+      const picture = [...section.querySelectorAll("img")].some(
+        (img) => img.offsetHeight > section.clientHeight * 0.85,
+      );
+      if (picture || section.scrollHeight > section.clientHeight + 8) {
+        section.style.overflow = "visible";
+        section.style.height = "auto";
+      }
+    });
     if (document.fonts?.ready) await document.fonts.ready;
     await new Promise<void>((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(() => resolve()));

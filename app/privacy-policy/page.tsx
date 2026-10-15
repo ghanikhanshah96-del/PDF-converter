@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       blocks={[
         {
           type: "note",
-          text: `**${SITE.name}** (${SITE.domain}) processes most PDF tools in your browser. Word to PDF is sent to our server for conversion and deleted as soon as the PDF is ready.`,
+          text: `**${SITE.name}** (${SITE.domain}) is built so core PDF tools process files in your browser. Documents are not intentionally uploaded to our servers for conversion.`,
         },
         ...privacyBlocks,
         {

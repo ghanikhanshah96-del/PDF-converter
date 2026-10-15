@@ -54,9 +54,8 @@ function HeroBlock({
         <aside className="rounded-2xl border border-[var(--line)] bg-[var(--brand-soft)] p-4 text-sm text-[var(--ink-muted)]">
           <p className="font-semibold text-[var(--ink)]">Quick tip</p>
           <p className="mt-2">
-            {tool.id === "word-to-pdf"
-              ? "Word to PDF prints the original document, including charts and page layout. The file is deleted from the server as soon as your PDF is ready. No account required."
-              : `${tool.name} runs in your browser. Select a file below, process it locally, then download the result — no account required.`}
+            {tool.name} runs in your browser. Select a file below, process it
+            locally, then download the result — no account required.
           </p>
         </aside>
       </header>
@@ -136,7 +135,7 @@ export async function ToolPageShell({
     hero: <HeroBlock tool={tool} variant={layout.hero} />,
     privacy: (
       <>
-        <PrivacyCallout className="mt-5" upload={tool.id === "word-to-pdf"} />
+        <PrivacyCallout className="mt-5" />
         {notice}
       </>
     ),

@@ -6,7 +6,7 @@ const content: ToolPageContent = {
       type: "bullets",
       heading: "What this Word to PDF tool does",
       intro:
-        "BestFreePDFConverter.com converts a DOCX file with a document engine so the PDF keeps the Word charts, colors, text, and pages.",
+        "BestFreePDFConverter.com reads a DOCX file in your browser and builds a PDF that keeps the document layout, including pictures, watermarks, and background images.",
       items: [
         "DOCX files only. Legacy DOC files are not accepted.",
         "Up to 50 MB per file and 20 files in one visit.",
@@ -19,7 +19,7 @@ const content: ToolPageContent = {
       type: "cards",
       heading: "What the PDF keeps",
       intro:
-        "The PDF is printed from the Word file, including its charts and page layout.",
+        "The PDF is built in your browser from the Word pages, including pictures and watermarks.",
       items: [
         {
           title: "Headings",
@@ -30,8 +30,8 @@ const content: ToolPageContent = {
           text: "Table rows, columns, and borders are kept in the PDF.",
         },
         {
-          title: "Charts and pictures",
-          text: "Charts, images, headers, and footers are printed with the page instead of being redrawn.",
+          title: "Pictures and watermarks",
+          text: "Images, background pictures, watermarks, headers, and footers from the DOCX are included with the page.",
         },
         {
           title: "Page layout",

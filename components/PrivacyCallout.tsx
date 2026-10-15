@@ -1,10 +1,4 @@
-export function PrivacyCallout({
-  className = "",
-  upload = false,
-}: {
-  className?: string;
-  upload?: boolean;
-}) {
+export function PrivacyCallout({ className = "" }: { className?: string }) {
   return (
     <div
       className={`flex items-start mt-7 gap-3 rounded-2xl border border-[rgba(215,25,32,0.2)] bg-[rgba(255,232,234,0.7)] px-4 py-3 text-sm text-[var(--ink)] ${className}`}
@@ -16,19 +10,11 @@ export function PrivacyCallout({
       >
         ✓
       </span>
-      {upload ? (
-        <p>
-          <strong className="font-semibold">Converted to match the Word file.</strong>{" "}
-          Word to PDF sends the document to our server, prints it with a document
-          engine, and deletes the file as soon as your PDF is ready.
-        </p>
-      ) : (
-        <p>
-          <strong className="font-semibold">Files never leave your device.</strong>{" "}
-          All processing runs in your browser. We do not upload, store, or scan
-          your documents on a server.
-        </p>
-      )}
+      <p>
+        <strong className="font-semibold">Files never leave your device.</strong>{" "}
+        All processing runs in your browser. We do not upload, store, or scan
+        your documents on a server.
+      </p>
     </div>
   );
 }
