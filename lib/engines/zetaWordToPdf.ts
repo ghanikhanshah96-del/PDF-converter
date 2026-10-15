@@ -1,6 +1,10 @@
+import { prepareDocxLayout } from "@/lib/engines/docxLayoutFixes";
+
 const MAX_BYTES = 50 * 1024 * 1024;
 const ENGINE_TIMEOUT_MS = 3 * 60 * 1000;
 const CONVERT_TIMEOUT_MS = 2 * 60 * 1000;
+const ENGINE_STAMP = "zetaoffice_latest-2025-05-13";
+const ENGINE_DB = "word-pdf-engine";
 
 type Progress = (percent: number, label?: string) => void;
 
@@ -46,6 +50,11 @@ let bootPromise: Promise<ZetaEngine> | null = null;
 let chain: Promise<unknown> = Promise.resolve();
 let jobId = 0;
 let pending: PendingJob | null = null;
+const progressListeners = new Set<Progress>();
+
+function emit(percent: number, label?: string) {
+  for (const listener of progressListeners) listener(percent, label);
+}
 
 function fail(message: string): Error {
   return new Error(message);
@@ -115,6 +124,59 @@ async function loadEngineFile(
 
 function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
+function openEngineDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(ENGINE_DB, 1);
+    request.onupgradeneeded = () => {
+      if (!request.result.objectStoreNames.contains("files")) {
+        request.result.createObjectStore("files");
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function readCachedEngine(): Promise<{ wasm: Uint8Array; data: Uint8Array } | null> {
+  try {
+    const db = await openEngineDb();
+    const record = await new Promise<
+      { stamp?: string; wasm?: ArrayBuffer; data?: ArrayBuffer } | undefined
+    >((resolve, reject) => {
+      const request = db.transaction("files").objectStore("files").get("engine");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+    if (!record || record.stamp !== ENGINE_STAMP || !record.wasm || !record.data) return null;
+    const wasm = new Uint8Array(record.wasm);
+    if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) return null;
+    return { wasm, data: new Uint8Array(record.data) };
+  } catch {
+    return null;
+  }
+}
+
+async function storeCachedEngine(wasm: Uint8Array, data: Uint8Array): Promise<void> {
+  try {
+    const db = await openEngineDb();
+    await new Promise<void>((resolve, reject) => {
+      const request = db
+        .transaction("files", "readwrite")
+        .objectStore("files")
+        .put(
+          { stamp: ENGINE_STAMP, wasm: asArrayBuffer(wasm), data: asArrayBuffer(data) },
+          "engine",
+        );
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+  } catch {
+    /* A full disk should not block conversion. */
+  }
 }
 
 function watchEngineDownload(
@@ -235,23 +297,31 @@ function attachDispatcher(engine: ZetaEngine): void {
   };
 }
 
-async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
+async function bootEngine(): Promise<ZetaEngine> {
   if (!wordEngineReady()) throw fail(isolationMessage());
-  onProgress?.(8, "Downloading the document engine. The first time this is about 85 MB.");
   ensureCanvas();
-  const wasm = await loadEngineFile(
-    "/engine/soffice.wasm.gz",
-    "Downloading the document engine…",
-    onProgress,
-  );
-  if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) {
-    throw fail(downloadFailedMessage());
+  emit(4, "Checking this browser for a saved document engine…");
+  const cached = await readCachedEngine();
+  let wasm: Uint8Array;
+  let data: Uint8Array;
+  if (cached) {
+    emit(30, "Opening the saved document engine…");
+    wasm = cached.wasm;
+    data = cached.data;
+  } else {
+    emit(8, "Downloading the document engine. The first time this is about 85 MB.");
+    wasm = await loadEngineFile("/engine/soffice.wasm.gz", "Downloading the document engine…", emit);
+    if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) {
+      throw fail(downloadFailedMessage());
+    }
+    data = await loadEngineFile(
+      "/engine/soffice.data.gz",
+      "Downloading document fonts and images…",
+      emit,
+    );
+    emit(36, "Saving the engine in this browser so the next conversion is faster…");
+    void storeCachedEngine(wasm, data);
   }
-  const data = await loadEngineFile(
-    "/engine/soffice.data.gz",
-    "Downloading document fonts and images…",
-    onProgress,
-  );
   const { ZetaHelperMain } = await loadHelper();
   const engine = new ZetaHelperMain("/office_thread.js", {
     threadJsType: "module",
@@ -260,6 +330,9 @@ async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
   });
   engine.Module.wasmBinary = asArrayBuffer(wasm);
   engine.Module.getPreloadedPackage = () => asArrayBuffer(data);
+
+  emit(45, "Starting the document engine. This is the slow step, then conversion itself is quick.");
+  await new Promise((resolve) => window.setTimeout(resolve, 40));
 
   const ready = new Promise<void>((resolve, reject) => {
     const timer = window.setTimeout(() => {
@@ -297,18 +370,27 @@ async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
   });
 
   await ready;
-  onProgress?.(40, "Document engine ready.");
+  emit(100, "Document engine ready.");
   return engine;
 }
 
 export function prepareWordEngine(onProgress?: Progress): Promise<void> {
+  if (onProgress) progressListeners.add(onProgress);
   if (!bootPromise) {
-    bootPromise = bootEngine(onProgress).catch((error) => {
+    bootPromise = bootEngine().catch((error) => {
       bootPromise = null;
       throw error;
     });
   }
-  return bootPromise.then(() => undefined);
+  return bootPromise.then(
+    () => {
+      if (onProgress) progressListeners.delete(onProgress);
+    },
+    (error) => {
+      if (onProgress) progressListeners.delete(onProgress);
+      throw error;
+    },
+  );
 }
 
 async function assertDocx(file: File): Promise<void> {
@@ -346,7 +428,7 @@ async function convertOne(file: File, onProgress?: Progress): Promise<Uint8Array
   const id = ++jobId;
   const from = `/tmp/input-${id}.docx`;
   const to = `/tmp/output-${id}.pdf`;
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const bytes = await prepareDocxLayout(new Uint8Array(await file.arrayBuffer()));
   rememberTmp(engine.FS);
   engine.FS.writeFile(from, bytes);
 

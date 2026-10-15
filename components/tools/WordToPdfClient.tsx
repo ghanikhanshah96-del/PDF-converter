@@ -17,17 +17,24 @@ const RELOAD_KEY = "word-pdf-engine-reload";
 export function WordToPdfClient() {
   const [blocked, setBlocked] = useState<string | null>(null);
   const [engineError, setEngineError] = useState<string | null>(null);
+  const [engineStatus, setEngineStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.crossOriginIsolated) {
       sessionStorage.removeItem(RELOAD_KEY);
-      void prepareWordEngine().catch((error: unknown) => {
-        setEngineError(
-          error instanceof Error
-            ? error.message
-            : "The document engine could not start on this computer.",
-        );
-      });
+      setEngineStatus("Preparing the document engine…");
+      void prepareWordEngine((percent, label) => {
+        setEngineStatus(label || `Preparing the document engine… ${percent}%`);
+      })
+        .then(() => setEngineStatus("Document engine ready. Conversion from here is much faster."))
+        .catch((error: unknown) => {
+          setEngineStatus(null);
+          setEngineError(
+            error instanceof Error
+              ? error.message
+              : "The document engine could not start on this computer.",
+          );
+        });
       return;
     }
     if (sessionStorage.getItem(RELOAD_KEY) !== "1") {
@@ -48,13 +55,17 @@ export function WordToPdfClient() {
         <p className="mb-4 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-800">
           {blocked || engineError}
         </p>
+      ) : engineStatus ? (
+        <p className="mb-4 rounded-xl bg-[var(--brand-soft)] px-3 py-2 text-sm leading-6 text-[var(--brand-deep)]">
+          {engineStatus}
+        </p>
       ) : null}
       <ToolWorkspace
         accept={tool.accept}
         multiple
         processMode="each"
         title="Drop Word (.docx) files"
-        hint="Your file stays in this browser. The first conversion downloads the document engine, about 85 MB."
+        hint="Your file stays in this browser. The first visit downloads the engine once. Later conversions in this browser skip that download."
         processLabel="Convert to PDF"
         onProcess={async (files, onProgress) => {
           if (!wordEngineReady()) {
