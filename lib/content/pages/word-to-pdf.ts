@@ -6,7 +6,7 @@ const content: ToolPageContent = {
       type: "bullets",
       heading: "What this Word to PDF tool does",
       intro:
-        "BestFreePDFConverter.com reads a DOCX file in your browser and builds a PDF that keeps the document layout, including pictures, watermarks, and background images.",
+        "BestFreePDFConverter.com converts a DOCX file in your browser with a document engine. Pictures, charts, headers, footers, watermarks, background images, and embedded fonts are written into the PDF. The DOCX is not uploaded.",
       items: [
         "DOCX files only. Legacy DOC files are not accepted.",
         "Up to 50 MB per file and 20 files in one visit.",
@@ -19,7 +19,7 @@ const content: ToolPageContent = {
       type: "cards",
       heading: "What the PDF keeps",
       intro:
-        "The PDF is built in your browser from the Word pages, including pictures and watermarks.",
+        "The PDF is built in your browser. The first conversion downloads the document engine. The Word file stays on this device.",
       items: [
         {
           title: "Headings",
@@ -53,7 +53,7 @@ const content: ToolPageContent = {
       type: "prose",
       heading: "File handling",
       paragraphs: [
-        "Conversion runs in the browser. The DOCX is not posted to a conversion API for this tool.",
+        "Conversion runs in the browser. The document engine is downloaded from the public ZetaOffice CDN. The DOCX is not posted to a conversion API.",
         "Refreshing the page can discard the in-memory PDF, so download it before you leave.",
         "Read the Privacy Policy for how this site describes local processing. Conversion does not encrypt the file or remove hidden information.",
       ],

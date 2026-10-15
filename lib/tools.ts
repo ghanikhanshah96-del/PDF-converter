@@ -125,7 +125,7 @@ export const tools: ToolDefinition[] = [
     metaDescription: "Convert a DOCX file to PDF in your browser. Headings, tables, images, watermarks, and the Word page layout are kept in the PDF.",
     howTo: [
           "Choose one or more DOCX files, up to 50 MB each and 20 files.",
-          "Select Convert to PDF. The page keeps the Word layout, including pictures, watermarks, and background images, and builds the PDF in your browser.",
+          "Select Convert to PDF. The first time, the browser downloads the document engine, then writes the PDF on this device, including pictures, watermarks, headers, and background images.",
           "Select Download, or Download all if you converted more than one file, then open the PDF and check the text."
     ],
     faqs: [
@@ -139,7 +139,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Will my formatting and images stay the same?",
-                "answer": "Yes. Headings, tables, pictures, watermarks, background images, and the page layout from the DOCX are kept in the PDF."
+                "answer": "The in-browser document engine keeps headings, tables, pictures, charts, headers, footers, watermarks, background images, and embedded fonts. A font that is not embedded in the DOCX may be substituted. The file is not uploaded."
           },
           {
                 "question": "Is there a file size limit?",
@@ -151,7 +151,7 @@ export const tools: ToolDefinition[] = [
           },
           {
                 "question": "Can I use this on a phone?",
-                "answer": "The page works in a browser that can select a local DOCX file and save a download. Where the PDF appears depends on that browser."
+                "answer": "A current Chrome, Edge, or Firefox on a computer is the reliable choice. The document engine is a large download and needs several hundred megabytes of memory, so some phones will fail to finish."
           }
     ],
     related: ["pdf-to-word","compress-pdf","merge-pdf"],

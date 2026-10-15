@@ -1,0 +1,272 @@
+const MAX_BYTES = 50 * 1024 * 1024;
+const ENGINE_TIMEOUT_MS = 3 * 60 * 1000;
+const CONVERT_TIMEOUT_MS = 2 * 60 * 1000;
+
+type Progress = (percent: number, label?: string) => void;
+
+type FsApi = {
+  mkdir: (path: string) => void;
+  writeFile: (path: string, data: Uint8Array) => void;
+  readFile: (path: string) => Uint8Array;
+  unlink: (path: string) => void;
+};
+
+type EnginePort = {
+  postMessage: (data: unknown) => void;
+  onmessage: ((event: MessageEvent) => void) | null;
+};
+
+type ZetaEngine = {
+  FS: FsApi;
+  thrPort: EnginePort;
+  start: (onReady: () => void) => void;
+};
+
+type ConvertResult = {
+  cmd?: string;
+  id?: number;
+  from?: string;
+  to?: string;
+  message?: string;
+};
+
+type PendingJob = {
+  id: number;
+  resolve: (bytes: Uint8Array) => void;
+  reject: (error: Error) => void;
+  timer: number;
+};
+
+let bootPromise: Promise<ZetaEngine> | null = null;
+let chain: Promise<unknown> = Promise.resolve();
+let jobId = 0;
+let pending: PendingJob | null = null;
+
+function fail(message: string): Error {
+  return new Error(message);
+}
+
+export function wordEngineReady(): boolean {
+  return typeof window !== "undefined" && window.crossOriginIsolated === true;
+}
+
+function isolationMessage(): string {
+  return "The document engine could not start because this page was not opened with the required browser security headers. Reload the Word to PDF page. If it still fails, redeploy the site so Cross-Origin-Opener-Policy and Cross-Origin-Embedder-Policy are sent on this page.";
+}
+
+function ensureCanvas(): void {
+  let canvas = document.getElementById("qtcanvas");
+  if (canvas) return;
+  canvas = document.createElement("canvas");
+  canvas.id = "qtcanvas";
+  canvas.setAttribute("width", "64");
+  canvas.setAttribute("height", "64");
+  canvas.setAttribute("aria-hidden", "true");
+  canvas.style.cssText =
+    "position:fixed;left:0;top:0;width:64px;height:64px;opacity:0;pointer-events:none;z-index:-1;";
+  document.body.appendChild(canvas);
+}
+
+function loadHelper(): Promise<{
+  ZetaHelperMain: new (
+    threadJs: string,
+    options: { threadJsType: string; wasmPkg: string; blockPageScroll: boolean },
+  ) => ZetaEngine;
+}> {
+  const importer = new Function(
+    "url",
+    "return import(url)",
+  ) as (url: string) => Promise<{
+    ZetaHelperMain: new (
+      threadJs: string,
+      options: { threadJsType: string; wasmPkg: string; blockPageScroll: boolean },
+    ) => ZetaEngine;
+  }>;
+  return importer("/zeta/zetaHelper.js");
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(fail(message)), ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timer);
+        reject(error instanceof Error ? error : fail(String(error)));
+      },
+    );
+  });
+}
+
+function attachDispatcher(engine: ZetaEngine): void {
+  engine.thrPort.onmessage = (event: MessageEvent<ConvertResult>) => {
+    const data = event.data || {};
+    if (!pending || data.id !== pending.id) return;
+    const job = pending;
+    pending = null;
+    window.clearTimeout(job.timer);
+    if (data.cmd === "converted" && data.to) {
+      try {
+        const raw = engine.FS.readFile(data.to);
+        const bytes = new Uint8Array(raw.byteLength);
+        bytes.set(raw);
+        try {
+          if (data.from) engine.FS.unlink(data.from);
+        } catch {
+          /* temporary input is already gone */
+        }
+        try {
+          engine.FS.unlink(data.to);
+        } catch {
+          /* temporary output is already gone */
+        }
+        if (bytes.byteLength < 5 || bytes[0] !== 0x25 || bytes[1] !== 0x50) {
+          job.reject(fail("The document engine did not produce a PDF. Try the file again."));
+          return;
+        }
+        job.resolve(bytes);
+      } catch (error) {
+        job.reject(
+          error instanceof Error
+            ? error
+            : fail("The converted PDF could not be read back."),
+        );
+      }
+      return;
+    }
+    if (data.cmd === "error") {
+      job.reject(fail(data.message || "This Word file could not be converted."));
+      return;
+    }
+    job.reject(fail("The document engine returned an unexpected result."));
+  };
+}
+
+async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
+  if (!wordEngineReady()) throw fail(isolationMessage());
+  onProgress?.(8, "Downloading the document engine. The first time this is about 50 MB.");
+  ensureCanvas();
+  const { ZetaHelperMain } = await loadHelper();
+  const engine = new ZetaHelperMain("/office_thread.js", {
+    threadJsType: "module",
+    wasmPkg: "free",
+    blockPageScroll: false,
+  });
+
+  const ready = new Promise<void>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(
+        fail(
+          "The document engine took too long to download. Check your connection and try again.",
+        ),
+      );
+    }, ENGINE_TIMEOUT_MS);
+
+    engine.start(() => {
+      engine.thrPort.onmessage = (event: MessageEvent<ConvertResult>) => {
+        if (event.data?.cmd !== "start") return;
+        window.clearTimeout(timer);
+        attachDispatcher(engine);
+        resolve();
+      };
+    });
+
+    const script = document.querySelector<HTMLScriptElement>(
+      'script[src*="cdn.zetaoffice.net"][src*="soffice.js"]',
+    );
+    if (script) {
+      script.onerror = () => {
+        window.clearTimeout(timer);
+        reject(
+          fail(
+            "The document engine could not be downloaded. Check your connection and try again.",
+          ),
+        );
+      };
+    }
+  });
+
+  await ready;
+  onProgress?.(40, "Document engine ready.");
+  return engine;
+}
+
+export function prepareWordEngine(onProgress?: Progress): Promise<void> {
+  if (!bootPromise) {
+    bootPromise = bootEngine(onProgress).catch((error) => {
+      bootPromise = null;
+      throw error;
+    });
+  }
+  return bootPromise.then(() => undefined);
+}
+
+async function assertDocx(file: File): Promise<void> {
+  const name = file.name.toLowerCase();
+  if (!name.endsWith(".docx")) {
+    throw fail("Choose a .docx file. Older .doc files need to be saved as DOCX first.");
+  }
+  if (file.size <= 0) throw fail("This file is empty.");
+  if (file.size > MAX_BYTES) throw fail("This file is larger than 50 MB.");
+  const header = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+  const zip =
+    header.length === 4 &&
+    header[0] === 0x50 &&
+    header[1] === 0x4b &&
+    (header[2] === 0x03 || header[2] === 0x05 || header[2] === 0x07);
+  if (!zip) throw fail("This file is not a valid DOCX document.");
+}
+
+function rememberTmp(fs: FsApi): void {
+  try {
+    fs.mkdir("/tmp");
+  } catch {
+    /* /tmp already exists */
+  }
+}
+
+async function convertOne(file: File, onProgress?: Progress): Promise<Uint8Array> {
+  await assertDocx(file);
+  if (!wordEngineReady()) throw fail(isolationMessage());
+  if (!bootPromise) await prepareWordEngine(onProgress);
+  const enginePromise = bootPromise;
+  if (!enginePromise) throw fail("The document engine did not start. Try again.");
+  const engine = await enginePromise;
+  onProgress?.(55, "Converting text, fonts, headers, images, and watermarks…");
+  const id = ++jobId;
+  const from = `/tmp/input-${id}.docx`;
+  const to = `/tmp/output-${id}.pdf`;
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  rememberTmp(engine.FS);
+  engine.FS.writeFile(from, bytes);
+
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      if (pending?.id === id) pending = null;
+      try {
+        engine.FS.unlink(from);
+      } catch {
+        /* input may already be removed */
+      }
+      reject(fail("Conversion took too long. Try a smaller document."));
+    }, CONVERT_TIMEOUT_MS);
+    pending = { id, resolve, reject, timer };
+    engine.thrPort.postMessage({ cmd: "convert", id, from, to });
+  });
+}
+
+export function wordToPdfWithEngine(file: File, onProgress?: Progress): Promise<Uint8Array> {
+  const run = chain.then(() => convertOne(file, onProgress));
+  chain = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return withTimeout(
+    run,
+    ENGINE_TIMEOUT_MS + CONVERT_TIMEOUT_MS,
+    "Conversion took too long. Check your connection and try again.",
+  );
+}

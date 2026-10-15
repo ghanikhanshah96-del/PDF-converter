@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-zeta.mjs",
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/copy-zeta.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -22,7 +24,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "resend": "^6.28.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zetajs": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
