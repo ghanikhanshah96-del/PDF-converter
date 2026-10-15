@@ -1,5 +1,6 @@
-import { PDFDocument, rgb } from "pdf-lib";
+import { rgb } from "pdf-lib";
 import { embedTextFont } from "@/lib/pdfFont";
+import { openUnencryptedPdf } from "@/lib/pdf/openPdf";
 
 export interface TextOverlay {
   pageIndex: number;
@@ -39,8 +40,8 @@ export async function applyPdfOverlays(
   images: ImageOverlay[] = [],
   shapes: ShapeOverlay[] = [],
 ): Promise<Uint8Array> {
-  const bytes = await file.arrayBuffer();
-  const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const doc = await openUnencryptedPdf(bytes);
   const { font, sanitize } = await embedTextFont(doc);
 
   for (const overlay of shapes) {

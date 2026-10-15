@@ -1,5 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import JSZip from "jszip";
+import { openUnencryptedPdf } from "@/lib/pdf/openPdf";
+import { assertPdfHasVisiblePages } from "@/lib/pdf/visiblePdf";
 
 export function parsePageRanges(
   input: string,
@@ -37,8 +39,8 @@ export async function splitPdfToSingle(
   file: File,
   rangeInput: string,
 ): Promise<{ bytes: Uint8Array; pageCount: number }> {
-  const bytes = await file.arrayBuffer();
-  const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const src = await openUnencryptedPdf(bytes);
   const pageCount = src.getPageCount();
   const pages = parsePageRanges(rangeInput, pageCount);
   if (pages.length === 0) throw new Error("No valid pages selected.");
@@ -48,15 +50,17 @@ export async function splitPdfToSingle(
     pages.map((p) => p - 1),
   );
   copied.forEach((p) => out.addPage(p));
-  return { bytes: await out.save(), pageCount };
+  const saved = await out.save();
+  await assertPdfHasVisiblePages(saved);
+  return { bytes: saved, pageCount };
 }
 
 export async function splitPdfToZip(
   file: File,
   rangeInput: string,
 ): Promise<Blob> {
-  const bytes = await file.arrayBuffer();
-  const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const src = await openUnencryptedPdf(bytes);
   const pageCount = src.getPageCount();
   const pages = parsePageRanges(rangeInput, pageCount);
   if (pages.length === 0) throw new Error("No valid pages selected.");
@@ -65,13 +69,15 @@ export async function splitPdfToZip(
     const out = await PDFDocument.create();
     const [copied] = await out.copyPages(src, [pageNum - 1]);
     out.addPage(copied);
-    zip.file(`page-${pageNum}.pdf`, await out.save());
+    const saved = await out.save();
+    await assertPdfHasVisiblePages(saved);
+    zip.file(`page-${pageNum}.pdf`, saved);
   }
   return zip.generateAsync({ type: "blob" });
 }
 
 export async function getPdfPageCount(file: File): Promise<number> {
-  const bytes = await file.arrayBuffer();
-  const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const src = await openUnencryptedPdf(bytes);
   return src.getPageCount();
 }

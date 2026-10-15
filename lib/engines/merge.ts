@@ -1,4 +1,6 @@
 import { PDFDocument } from "pdf-lib";
+import { openUnencryptedPdf } from "@/lib/pdf/openPdf";
+import { assertPdfHasVisiblePages } from "@/lib/pdf/visiblePdf";
 import { protectPdfBytes } from "@/lib/pdf-encryption";
 
 export type MergeOptions = {
@@ -15,13 +17,14 @@ export async function mergePdfs(
   }
   const merged = await PDFDocument.create();
   for (const file of files) {
-    const bytes = await file.arrayBuffer();
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const doc = await openUnencryptedPdf(bytes);
     const pages = await merged.copyPages(doc, doc.getPageIndices());
     pages.forEach((page) => merged.addPage(page));
   }
 
   const out = await merged.save();
+  await assertPdfHasVisiblePages(out);
   const password = options.outputPassword?.trim();
   if (password) {
     return protectPdfBytes(out, password);

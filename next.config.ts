@@ -44,7 +44,6 @@ const nextConfig: NextConfig = {
       { source: "/pdf-to-excel", destination: "/pdf-to-excel-converter", permanent: true },
       { source: "/rotate-pdf", destination: "/rotate-pdf-online", permanent: true },
       { source: "/unlock-pdf", destination: "/unlock-pdf-online", permanent: true },
-      // Content / legal pages
       { source: "/about", destination: "/about-us", permanent: true },
       { source: "/contact", destination: "/contact-us", permanent: true },
       { source: "/privacy", destination: "/privacy-policy", permanent: true },

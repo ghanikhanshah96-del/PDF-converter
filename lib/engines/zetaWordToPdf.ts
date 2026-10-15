@@ -1,5 +1,3 @@
-import { prepareDocxLayout } from "@/lib/engines/docxLayoutFixes";
-
 const MAX_BYTES = 50 * 1024 * 1024;
 const ENGINE_TIMEOUT_MS = 3 * 60 * 1000;
 const CONVERT_TIMEOUT_MS = 2 * 60 * 1000;
@@ -128,14 +126,28 @@ function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 
 function openEngineDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(ENGINE_DB, 1);
+    const timer = window.setTimeout(() => reject(fail("The saved document engine could not be opened.")), 4000);
+    let request: IDBOpenDBRequest;
+    try {
+      request = indexedDB.open(ENGINE_DB, 1);
+    } catch (error) {
+      window.clearTimeout(timer);
+      reject(error instanceof Error ? error : fail("The saved document engine could not be opened."));
+      return;
+    }
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains("files")) {
         request.result.createObjectStore("files");
       }
     };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      window.clearTimeout(timer);
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      window.clearTimeout(timer);
+      reject(request.error ?? fail("The saved document engine could not be opened."));
+    };
   });
 }
 
@@ -300,26 +312,23 @@ function attachDispatcher(engine: ZetaEngine): void {
 async function bootEngine(): Promise<ZetaEngine> {
   if (!wordEngineReady()) throw fail(isolationMessage());
   ensureCanvas();
-  emit(4, "Checking this browser for a saved document engine…");
   const cached = await readCachedEngine();
   let wasm: Uint8Array;
   let data: Uint8Array;
   if (cached) {
-    emit(30, "Opening the saved document engine…");
     wasm = cached.wasm;
     data = cached.data;
   } else {
-    emit(8, "Downloading the document engine. The first time this is about 85 MB.");
+    emit(8, "Downloading the document engine…");
     wasm = await loadEngineFile("/engine/soffice.wasm.gz", "Downloading the document engine…", emit);
     if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) {
       throw fail(downloadFailedMessage());
     }
     data = await loadEngineFile(
       "/engine/soffice.data.gz",
-      "Downloading document fonts and images…",
+      "Downloading fonts…",
       emit,
     );
-    emit(36, "Saving the engine in this browser so the next conversion is faster…");
     void storeCachedEngine(wasm, data);
   }
   const { ZetaHelperMain } = await loadHelper();
@@ -331,7 +340,7 @@ async function bootEngine(): Promise<ZetaEngine> {
   engine.Module.wasmBinary = asArrayBuffer(wasm);
   engine.Module.getPreloadedPackage = () => asArrayBuffer(data);
 
-  emit(45, "Starting the document engine. This is the slow step, then conversion itself is quick.");
+  emit(45, "Starting the document engine…");
   await new Promise((resolve) => window.setTimeout(resolve, 40));
 
   const ready = new Promise<void>((resolve, reject) => {
@@ -370,7 +379,6 @@ async function bootEngine(): Promise<ZetaEngine> {
   });
 
   await ready;
-  emit(100, "Document engine ready.");
   return engine;
 }
 
@@ -424,11 +432,11 @@ async function convertOne(file: File, onProgress?: Progress): Promise<Uint8Array
   const enginePromise = bootPromise;
   if (!enginePromise) throw fail("The document engine did not start. Try again.");
   const engine = await enginePromise;
-  onProgress?.(55, "Converting text, fonts, headers, images, and watermarks…");
+  onProgress?.(55, "Converting…");
   const id = ++jobId;
   const from = `/tmp/input-${id}.docx`;
   const to = `/tmp/output-${id}.pdf`;
-  const bytes = await prepareDocxLayout(new Uint8Array(await file.arrayBuffer()));
+  const bytes = new Uint8Array(await file.arrayBuffer());
   rememberTmp(engine.FS);
   engine.FS.writeFile(from, bytes);
 

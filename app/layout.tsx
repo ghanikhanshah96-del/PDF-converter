@@ -80,7 +80,7 @@ export default function RootLayout({
       <head>
         <meta
           name="google-site-verification"
-          content="ZcdlBZbglO8CYV5XtgL3lVXjJBebOXewBeemLbEf5Rg"
+          content="DitQAgl2NUL0gASsHbsDC7lX9Fbp7UcDc_nC33zPE-4"
         />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-MK79VBSCT9"
