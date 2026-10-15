@@ -53,16 +53,13 @@ export function Footer() {
             className="group inline-flex max-w-full items-center gap-2.5 rounded-lg outline-none transition hover:opacity-95 focus-visible:ring-2 focus-visible:ring-white/60"
             aria-label={`${SITE.name} home`}
           >
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white">
-              <Image
-                src="/logo.svg"
-                alt=""
-                width={32}
-                height={32}
-                unoptimized
-                className="h-8 w-8 object-contain"
-              />
-            </span>
+            <Image
+              src="/logo.png"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0 rounded-xl object-contain"
+            />
             <span className="min-w-0 truncate font-display text-lg font-bold group-hover:underline">
               {SITE.name}
             </span>

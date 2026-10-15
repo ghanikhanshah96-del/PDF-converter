@@ -19,6 +19,11 @@ type EnginePort = {
 type ZetaEngine = {
   FS: FsApi;
   thrPort: EnginePort;
+  Module: {
+    locateFile: (path: string, prefix?: string) => string;
+    wasmBinary?: ArrayBuffer;
+    getPreloadedPackage?: (name: string, size: number) => ArrayBuffer;
+  };
   start: (onReady: () => void) => void;
 };
 
@@ -52,6 +57,91 @@ export function wordEngineReady(): boolean {
 
 function isolationMessage(): string {
   return "The document engine could not start because this page was not opened with the required browser security headers. Reload the Word to PDF page. If it still fails, redeploy the site so Cross-Origin-Opener-Policy and Cross-Origin-Embedder-Policy are sent on this page.";
+}
+
+function downloadFailedMessage(): string {
+  return "This computer could not unpack the document engine. Reload the page. If it still fails, clear Chrome’s cached files and try again in Chrome or Edge.";
+}
+
+function concatBytes(parts: Uint8Array[]): Uint8Array {
+  const size = parts.reduce((total, part) => total + part.byteLength, 0);
+  const out = new Uint8Array(size);
+  let offset = 0;
+  for (const part of parts) {
+    out.set(part, offset);
+    offset += part.byteLength;
+  }
+  return out;
+}
+
+async function gunzip(bytes: Uint8Array): Promise<Uint8Array> {
+  if (!(bytes[0] === 0x1f && bytes[1] === 0x8b)) return bytes;
+  if (typeof DecompressionStream !== "function") {
+    throw fail("This browser cannot unpack the document engine. Use the latest Chrome, Edge, or Firefox.");
+  }
+  const source = new Blob([asArrayBuffer(bytes)])
+    .stream()
+    .pipeThrough(new DecompressionStream("gzip"));
+  return new Uint8Array(await new Response(source).arrayBuffer());
+}
+
+async function loadEngineFile(
+  url: string,
+  label: string,
+  onProgress?: Progress,
+): Promise<Uint8Array> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw fail(
+      "The document engine is not available on this site yet. Deploy the site again, then reload this page.",
+    );
+  }
+  const reader = response.body?.getReader();
+  if (!reader) throw fail("This browser could not download the document engine.");
+  const total = Number(response.headers.get("content-length") || 0);
+  const parts: Uint8Array[] = [];
+  let received = 0;
+  for (;;) {
+    const chunk = await reader.read();
+    if (chunk.done) break;
+    parts.push(chunk.value);
+    received += chunk.value.byteLength;
+    if (total > 0) {
+      onProgress?.(8 + Math.round((received / total) * 24), label);
+    }
+  }
+  return gunzip(concatBytes(parts));
+}
+
+function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
+function watchEngineDownload(
+  reject: (error: Error) => void,
+  timer: number,
+): () => void {
+  const failDownload = (text: string) => {
+    if (!/wasm|aborted|decoding/i.test(text)) return;
+    window.clearTimeout(timer);
+    cleanup();
+    reject(fail(downloadFailedMessage()));
+  };
+  const onError = (event: ErrorEvent) => failDownload(String(event.message || ""));
+  const onRejection = (event: PromiseRejectionEvent) => {
+    const reason = event.reason as { message?: string } | undefined;
+    const text = String(reason?.message || event.reason || "");
+    if (!/wasm|aborted|decoding/i.test(text)) return;
+    event.preventDefault();
+    failDownload(text);
+  };
+  const cleanup = () => {
+    window.removeEventListener("error", onError);
+    window.removeEventListener("unhandledrejection", onRejection);
+  };
+  window.addEventListener("error", onError);
+  window.addEventListener("unhandledrejection", onRejection);
+  return cleanup;
 }
 
 function ensureCanvas(): void {
@@ -147,14 +237,29 @@ function attachDispatcher(engine: ZetaEngine): void {
 
 async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
   if (!wordEngineReady()) throw fail(isolationMessage());
-  onProgress?.(8, "Downloading the document engine. The first time this is about 50 MB.");
+  onProgress?.(8, "Downloading the document engine. The first time this is about 85 MB.");
   ensureCanvas();
+  const wasm = await loadEngineFile(
+    "/engine/soffice.wasm.gz",
+    "Downloading the document engine…",
+    onProgress,
+  );
+  if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) {
+    throw fail(downloadFailedMessage());
+  }
+  const data = await loadEngineFile(
+    "/engine/soffice.data.gz",
+    "Downloading document fonts and images…",
+    onProgress,
+  );
   const { ZetaHelperMain } = await loadHelper();
   const engine = new ZetaHelperMain("/office_thread.js", {
     threadJsType: "module",
-    wasmPkg: "free",
+    wasmPkg: "url:/engine/",
     blockPageScroll: false,
   });
+  engine.Module.wasmBinary = asArrayBuffer(wasm);
+  engine.Module.getPreloadedPackage = () => asArrayBuffer(data);
 
   const ready = new Promise<void>((resolve, reject) => {
     const timer = window.setTimeout(() => {
@@ -164,18 +269,20 @@ async function bootEngine(onProgress?: Progress): Promise<ZetaEngine> {
         ),
       );
     }, ENGINE_TIMEOUT_MS);
+    const stopWatching = watchEngineDownload(reject, timer);
 
     engine.start(() => {
       engine.thrPort.onmessage = (event: MessageEvent<ConvertResult>) => {
         if (event.data?.cmd !== "start") return;
         window.clearTimeout(timer);
+        stopWatching();
         attachDispatcher(engine);
         resolve();
       };
     });
 
     const script = document.querySelector<HTMLScriptElement>(
-      'script[src*="cdn.zetaoffice.net"][src*="soffice.js"]',
+      'script[src*="/engine/soffice.js"]',
     );
     if (script) {
       script.onerror = () => {

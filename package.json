@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-zeta.mjs",
+    "predev": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/copy-zeta.mjs",
+    "prebuild": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

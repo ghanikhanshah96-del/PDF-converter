@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# Large document engine prepared by scripts/fetch-engine.mjs during dev and build.
+/public/engine/
+
 # env (never commit secrets)
 .env
 .env*.local

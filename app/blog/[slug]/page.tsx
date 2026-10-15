@@ -77,7 +77,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
       url: SITE.url,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE.url}/logo.svg`,
+        url: `${SITE.url}/logo.png`,
       },
     },
     mainEntityOfPage: {

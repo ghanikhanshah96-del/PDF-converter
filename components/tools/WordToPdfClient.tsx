@@ -16,12 +16,17 @@ const RELOAD_KEY = "word-pdf-engine-reload";
 
 export function WordToPdfClient() {
   const [blocked, setBlocked] = useState<string | null>(null);
+  const [engineError, setEngineError] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.crossOriginIsolated) {
       sessionStorage.removeItem(RELOAD_KEY);
-      void prepareWordEngine().catch(() => {
-        /* Conversion reports a download or startup failure. */
+      void prepareWordEngine().catch((error: unknown) => {
+        setEngineError(
+          error instanceof Error
+            ? error.message
+            : "The document engine could not start on this computer.",
+        );
       });
       return;
     }
@@ -39,9 +44,9 @@ export function WordToPdfClient() {
 
   return (
     <>
-      {blocked ? (
+      {blocked || engineError ? (
         <p className="mb-4 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-800">
-          {blocked}
+          {blocked || engineError}
         </p>
       ) : null}
       <ToolWorkspace
@@ -49,7 +54,7 @@ export function WordToPdfClient() {
         multiple
         processMode="each"
         title="Drop Word (.docx) files"
-        hint="Your file stays in this browser. The first conversion downloads the document engine, about 50 MB."
+        hint="Your file stays in this browser. The first conversion downloads the document engine, about 85 MB."
         processLabel="Convert to PDF"
         onProcess={async (files, onProgress) => {
           if (!wordEngineReady()) {

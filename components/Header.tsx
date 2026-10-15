@@ -70,17 +70,14 @@ export function Header() {
           onClick={() => setOpen(false)}
         >
           <span className="flex min-w-0 items-center gap-2.5">
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white">
-              <Image
-                src="/logo.svg"
-                alt=""
-                width={32}
-                height={32}
-                priority
-                unoptimized
-                className="h-8 w-8 object-contain"
-              />
-            </span>
+            <Image
+              src="/logo.png"
+              alt=""
+              width={40}
+              height={40}
+              priority
+              className="h-10 w-10 shrink-0 rounded-xl object-contain"
+            />
             <span className="min-w-0 truncate font-display text-base font-bold sm:text-xl">
               {SITE.name}
             </span>
