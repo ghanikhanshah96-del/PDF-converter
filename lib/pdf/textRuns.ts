@@ -177,7 +177,7 @@ export function groupTextLines(
       const bottom = Math.max(...ys);
       const padX = 1 / Math.max(viewport.width, 1);
       const padY = 1 / Math.max(viewport.height, 1);
-      let editable = angle !== null && !sizesDiffer && !rtl;
+      const editable = angle !== null && !sizesDiffer && !rtl;
       let reason: string | undefined;
       if (angle === null) reason = ODD_ANGLE;
       else if (rtl) reason = RTL;
