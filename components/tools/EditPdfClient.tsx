@@ -26,12 +26,15 @@ import {
   IconZoomIn,
   IconZoomOut,
 } from "@/components/pdf-editor/EditorIcons";
+import { PageTurnBar } from "@/components/pdf-editor/PageTurnBar";
 import { PdfPageBoard } from "@/components/pdf-editor/PdfPageBoard";
 import {
   fileToPngDataUrl,
+  guessEditorWidth,
   openPdfProgressive,
   type ProgressivePdf,
 } from "@/components/pdf-editor/renderPdfPages";
+import { sampleLineColors } from "@/components/pdf-editor/sampleCover";
 import {
   hexToRgb,
   uid,
@@ -43,6 +46,7 @@ import {
   type TextEditorOverlay,
 } from "@/components/pdf-editor/types";
 import { downloadBlob, basename } from "@/lib/download";
+import { turnFractionBox } from "@/lib/pdf/viewBox";
 import { toPdfBlob } from "@/lib/blob";
 import {
   formatBytes,
@@ -54,6 +58,7 @@ import {
   unlockPdfBytes,
   unlockedPdfFile,
 } from "@/lib/pdf-encryption";
+import type { LineEdit, TextLine } from "@/lib/pdf/textRuns";
 import { toolsById } from "@/lib/tools";
 
 const tool = toolsById["edit-pdf"];
@@ -75,8 +80,12 @@ export function EditPdfClient() {
   const inputId = useId();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<ProgressivePdf | null>(null);
-  const historyRef = useRef<EditorOverlay[][]>([]);
-  const futureRef = useRef<EditorOverlay[][]>([]);
+  const historyRef = useRef<Array<{ overlays: EditorOverlay[]; edits: LineEdit[] }>>([]);
+  const futureRef = useRef<Array<{ overlays: EditorOverlay[]; edits: LineEdit[] }>>([]);
+  const fitRef = useRef(guessEditorWidth());
+  const mainRef = useRef<HTMLElement>(null);
+  const saveGen = useRef(0);
+  const alive = useRef(true);
   const counters = useRef({ text: 0, image: 0, draw: 0, shape: 0 });
 
   const [file, setFile] = useState<File | null>(null);
@@ -88,12 +97,19 @@ export function EditPdfClient() {
   const [pageCache, setPageCache] = useState<Record<number, PagePreview>>({});
   const [currentPage, setCurrentPage] = useState(0);
   const [overlays, setOverlays] = useState<EditorOverlay[]>([]);
+  const [lineEdits, setLineEdits] = useState<LineEdit[]>([]);
+  const [linesByPage, setLinesByPage] = useState<Record<number, TextLine[]>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("edit");
   const [activeTool, setActiveTool] = useState<ToolId>("text");
   const [showShapesMenu, setShowShapesMenu] = useState(false);
-  const [zoom, setZoom] = useState(0.85);
-  const [fontSize, setFontSize] = useState(24);
+  const [zoom, setZoom] = useState(1);
+  const [fitEpoch, setFitEpoch] = useState(0);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [wasEncrypted, setWasEncrypted] = useState(false);
+  const [turned, setTurned] = useState(false);
+  const [fontSize, setFontSize] = useState(16);
+  const [placingText, setPlacingText] = useState(false);
   const [textColor, setTextColor] = useState("#33333b");
   const [drawColor, setDrawColor] = useState("#33333b");
   const [drawWidth, setDrawWidth] = useState(4);
@@ -106,13 +122,17 @@ export function EditPdfClient() {
   const selected = overlays.find((o) => o.id === selectedId) ?? null;
   const currentPreview = pageCache[currentPage] ?? null;
   const pageOverlays = overlays.filter((o) => o.pageIndex === currentPage);
+  const pageLines = linesByPage[currentPage] ?? [];
+  const pageLineEdits = lineEdits.filter((edit) => edit.pageIndex === currentPage);
+  const hasLineEdits = lineEdits.some((edit) => edit.text !== edit.original);
 
-  const pushHistory = useCallback((next: EditorOverlay[]) => {
-    historyRef.current.push(overlays);
+  const pushHistory = useCallback((next: EditorOverlay[], nextEdits?: LineEdit[]) => {
+    historyRef.current.push({ overlays, edits: lineEdits });
     if (historyRef.current.length > 40) historyRef.current.shift();
     futureRef.current = [];
     setOverlays(next);
-  }, [overlays]);
+    if (nextEdits) setLineEdits(nextEdits);
+  }, [overlays, lineEdits]);
 
   /** Live drag/resize updates — no undo snapshots (keeps editor fast). */
   const setOverlaysLive = useCallback(
@@ -125,16 +145,18 @@ export function EditPdfClient() {
   const undo = () => {
     const prev = historyRef.current.pop();
     if (!prev) return;
-    futureRef.current.push(overlays);
-    setOverlays(prev);
+    futureRef.current.push({ overlays, edits: lineEdits });
+    setOverlays(prev.overlays);
+    setLineEdits(prev.edits);
     setSelectedId(null);
   };
 
   const redo = () => {
     const next = futureRef.current.pop();
     if (!next) return;
-    historyRef.current.push(overlays);
-    setOverlays(next);
+    historyRef.current.push({ overlays, edits: lineEdits });
+    setOverlays(next.overlays);
+    setLineEdits(next.edits);
   };
 
   const resetDoc = () => {
@@ -149,9 +171,15 @@ export function EditPdfClient() {
     setPageCache({});
     setCurrentPage(0);
     setOverlays([]);
+    setLineEdits([]);
+    setLinesByPage({});
     setSelectedId(null);
-    setZoom(0.85);
+    setZoom(1);
+    setNotice(null);
+    setWasEncrypted(false);
+    setTurned(false);
     setError(null);
+    saveGen.current += 1;
     historyRef.current = [];
     futureRef.current = [];
     counters.current = { text: 0, image: 0, draw: 0, shape: 0 };
@@ -177,8 +205,46 @@ export function EditPdfClient() {
   }, [pageCache]);
 
   useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     if (workingFile) void ensurePage(currentPage);
-  }, [workingFile, currentPage, ensurePage]);
+  }, [workingFile, currentPage, ensurePage, fitEpoch]);
+
+  useEffect(() => {
+    const pdf = pdfRef.current;
+    if (!pdf || !workingFile) return;
+    let cancel = false;
+    void pdf
+      .getLines(currentPage)
+      .then((lines) => {
+        if (!cancel) setLinesByPage((prev) => ({ ...prev, [currentPage]: lines }));
+      })
+      .catch(() => {
+        if (!cancel) setLinesByPage((prev) => ({ ...prev, [currentPage]: [] }));
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [workingFile, currentPage]);
+
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el || !workingFile) return;
+    const observer = new ResizeObserver(() => {
+      const width = Math.max(280, Math.floor(el.clientWidth - 24));
+      if (Math.abs(fitRef.current - width) < 48) return;
+      fitRef.current = width;
+      setPageCache({});
+      setFitEpoch((n) => n + 1);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [workingFile]);
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -193,12 +259,20 @@ export function EditPdfClient() {
     setError(null);
     try {
       pdfRef.current?.destroy();
-      const progressive = await openPdfProgressive(pdfFile);
+      fitRef.current = guessEditorWidth();
+      const progressive = await openPdfProgressive(pdfFile, undefined, {
+        cssWidth: () => fitRef.current,
+        pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+      });
       pdfRef.current = progressive;
       setNumPages(progressive.numPages);
       setWorkingFile(pdfFile);
       setCurrentPage(0);
       setOverlays([]);
+      setLineEdits([]);
+      setLinesByPage({});
+      setNotice(null);
+      setTurned(false);
       setSelectedId(null);
       setPageCache({});
       const first = await progressive.getPage(0);
@@ -228,9 +302,11 @@ export function EditPdfClient() {
       setEncrypted(locked);
       if (locked) {
         setWorkingFile(null);
+        setWasEncrypted(false);
         setLoading(false);
         return;
       }
+      setWasEncrypted(false);
       await openUnlocked(next);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not read this PDF.");
@@ -246,6 +322,7 @@ export function EditPdfClient() {
       const bytes = await unlockPdfBytes(file, password);
       await openUnlocked(unlockedPdfFile(file, bytes));
       setEncrypted(false);
+      setWasEncrypted(true);
     } catch (e) {
       setPasswordError(
         e instanceof Error ? e.message : "Incorrect password.",
@@ -254,25 +331,34 @@ export function EditPdfClient() {
     }
   };
 
-  const addTextNow = () => {
+  const placeTextAt = (x: number, y: number) => {
     counters.current.text += 1;
     const overlay: TextEditorOverlay = {
       id: uid(),
       kind: "text",
       label: `New Text ${counters.current.text}`,
       pageIndex: currentPage,
-      x: 0.18,
-      y: 0.18,
-      w: 0.42,
-      h: 0.07,
-      text: "Your text here",
+      x: Math.min(Math.max(x, 0), 0.72),
+      y: Math.min(Math.max(y, 0), 0.92),
+      w: 0.28,
+      h: 0.045,
+      text: "",
       fontSize,
       color: textColor,
     };
     pushHistory([...overlays, overlay]);
     setSelectedId(overlay.id);
+    setPlacingText(false);
     setActiveTool("text");
     setMode("edit");
+  };
+
+  const escapeOverlay = (id: string) => {
+    const overlay = overlays.find((item) => item.id === id);
+    if (overlay?.kind === "text" && !overlay.text) {
+      pushHistory(overlays.filter((item) => item.id !== id));
+    }
+    setSelectedId(null);
   };
 
   const addShapeNow = (shape: ShapeEditorOverlay["shape"]) => {
@@ -352,8 +438,54 @@ export function EditPdfClient() {
   }, [selectedId, overlays, pushHistory]);
 
   const removeAllOnPage = () => {
-    pushHistory(overlays.filter((o) => o.pageIndex !== currentPage));
+    pushHistory(
+      overlays.filter((o) => o.pageIndex !== currentPage),
+      lineEdits.filter((edit) => edit.pageIndex !== currentPage),
+    );
     setSelectedId(null);
+  };
+
+  const commitLine = async (line: TextLine, text: string) => {
+    if (line.angle === null) return;
+    const value = text.replace(/\r?\n/g, "");
+    const existing = lineEdits.find((edit) => edit.id === line.id);
+    const original = existing?.original ?? line.text;
+    if (value === original) {
+      if (existing) pushHistory(overlays, lineEdits.filter((edit) => edit.id !== line.id));
+      return;
+    }
+    const preview = pageCache[line.pageIndex];
+    const sampled = preview
+      ? await sampleLineColors(preview.imageUrl, line.x, line.y, line.w, line.h)
+      : {
+          cover: { r: 1, g: 1, b: 1 },
+          color: { r: 0.1, g: 0.1, b: 0.12 },
+          uncertain: true,
+        };
+    const edit: LineEdit = {
+      id: line.id,
+      pageIndex: line.pageIndex,
+      original,
+      text: value,
+      items: line.items,
+      x: line.x,
+      y: line.y,
+      w: line.w,
+      h: line.h,
+      originX: line.originX,
+      originY: line.originY,
+      advance: line.advance,
+      fontSize: line.fontSize,
+      angle: line.angle,
+      cover: sampled.cover,
+      color: sampled.color,
+      coverUncertain: sampled.uncertain,
+    };
+    pushHistory(overlays, [
+      ...lineEdits.filter((item) => item.id !== line.id),
+      edit,
+    ]);
+    setNotice(null);
   };
 
   useEffect(() => {
@@ -370,7 +502,13 @@ export function EditPdfClient() {
           return;
         deleteSelected();
       }
-      if (e.key === "Escape") resetDoc();
+      if (e.key === "Escape") {
+        const t = e.target as HTMLElement | null;
+        if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT")) {
+          return;
+        }
+        resetDoc();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -386,14 +524,72 @@ export function EditPdfClient() {
     );
   };
 
-  const applyEdits = async () => {
-    if (!workingFile || !currentPreview) return;
-    if (!overlays.length) {
-      setError("Add text, an image, a shape, or a drawing first.");
-      return;
-    }
+  const replaceWorkingPdf = async (next: File) => {
+    pdfRef.current?.destroy();
+    const progressive = await openPdfProgressive(next, undefined, {
+      cssWidth: () => fitRef.current,
+      pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+    });
+    pdfRef.current = progressive;
+    setNumPages(progressive.numPages);
+    setWorkingFile(next);
+    setPageCache({});
+    setLinesByPage({});
+    const index = Math.min(currentPage, Math.max(progressive.numPages - 1, 0));
+    setCurrentPage(index);
+    const first = await progressive.getPage(index);
+    setPageCache({ [index]: first });
+    progressive.prefetch(index);
+  };
+
+  const turnPages = async (indexes: number[], delta: 90 | 270) => {
+    if (!workingFile || busy) return;
     setBusy(true);
     setError(null);
+    try {
+      const { turnPdfPages } = await import("@/lib/engines/rotate");
+      const turnedFile = await turnPdfPages(workingFile, indexes, delta);
+      const turnedPages = new Set(indexes);
+      setOverlays((prev) =>
+        prev.map((overlay) => {
+          const change = turnedFile.changes.find((item) => item.pageIndex === overlay.pageIndex);
+          if (!change) return overlay;
+          return {
+            ...overlay,
+            ...turnFractionBox(
+              overlay,
+              change.pageWidth,
+              change.pageHeight,
+              change.from,
+              change.to,
+            ),
+          };
+        }),
+      );
+      const clearedLine = lineEdits.some((edit) => turnedPages.has(edit.pageIndex));
+      setLineEdits((prev) => prev.filter((edit) => !turnedPages.has(edit.pageIndex)));
+      if (clearedLine) {
+        setNotice("This page was turned. Edit a line again if you still need to change its words.");
+      }
+      setTurned(true);
+      await replaceWorkingPdf(turnedFile.file);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not turn this page.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const applyEdits = async () => {
+    if (!workingFile || !currentPreview) return;
+    if (!overlays.length && !hasLineEdits && !turned) {
+      setError("Change a line, add something, or turn a page before downloading.");
+      return;
+    }
+    const gen = ++saveGen.current;
+    setBusy(true);
+    setError(null);
+    setNotice(null);
     try {
       // Ensure all pages that have overlays are rendered for size metrics
       const needed = [...new Set(overlays.map((o) => o.pageIndex))];
@@ -404,7 +600,7 @@ export function EditPdfClient() {
         }
       }
 
-      const { applyPdfOverlays } = await import("@/lib/engines/edit");
+      const { applyPdfEdits } = await import("@/lib/engines/edit");
       const texts = overlays
         .filter((o): o is TextEditorOverlay => o.kind === "text")
         .map((o) => {
@@ -449,12 +645,15 @@ export function EditPdfClient() {
             strokeWidth: o.strokeWidth,
           };
         });
-      const out = await applyPdfOverlays(workingFile, texts, images, shapes);
-      downloadBlob(toPdfBlob(out), `${basename(workingFile.name)}-edited.pdf`);
+      const out = await applyPdfEdits(workingFile, texts, images, shapes, lineEdits);
+      if (!alive.current || gen !== saveGen.current) return;
+      downloadBlob(toPdfBlob(out.bytes), `${basename(workingFile.name)}-edited.pdf`);
+      if (out.notices.length) setNotice(out.notices.join(" "));
     } catch (e) {
+      if (!alive.current || gen !== saveGen.current) return;
       setError(e instanceof Error ? e.message : "Could not apply edits.");
     } finally {
-      setBusy(false);
+      if (alive.current && gen === saveGen.current) setBusy(false);
     }
   };
 
@@ -595,7 +794,10 @@ export function EditPdfClient() {
                 className="pdf-tool-btn"
                 data-active={activeTool === "hand"}
                 title="Hand / pan"
-                onClick={() => setActiveTool("hand")}
+                onClick={() => {
+                  setPlacingText(false);
+                  setActiveTool("hand");
+                }}
               >
                 <IconHand />
               </button>
@@ -606,7 +808,9 @@ export function EditPdfClient() {
                 title="Add text"
                 onClick={() => {
                   setMode("edit");
-                  addTextNow();
+                  setActiveTool("text");
+                  setPlacingText(true);
+                  setSelectedId(null);
                 }}
               >
                 <IconText />
@@ -783,6 +987,11 @@ export function EditPdfClient() {
                   >
                     <IconUnderline className="h-4 w-4" />
                   </button>
+                  {placingText && (
+                    <span className="text-xs text-[var(--ink-muted)]">
+                      Click the page, then type.
+                    </span>
+                  )}
                 </>
               ) : activeTool === "draw" || selected?.kind === "shape" ? (
                 <>
@@ -819,7 +1028,9 @@ export function EditPdfClient() {
                 </>
               ) : (
                 <span className="text-xs text-[var(--ink-muted)]">
-                  Select a tool or an item on the page
+                  {placingText
+                    ? "Click the page, then type."
+                    : "Click a line to change it, or click A and then the page to add words."}
                 </span>
               )}
 
@@ -865,16 +1076,16 @@ export function EditPdfClient() {
           </div>
 
           {/* 3-column body */}
-          <div className="flex min-h-0 flex-1">
+          <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
             {/* Left thumbnails */}
-            <aside className="hidden w-[100px] shrink-0 overflow-y-auto border-r border-[var(--line)] bg-white p-2 sm:block md:w-[120px]">
+            <aside className="flex max-h-28 shrink-0 gap-2 overflow-x-auto border-b border-[var(--line)] bg-white p-2 lg:max-h-none lg:w-[120px] lg:flex-col lg:overflow-y-auto lg:border-b-0 lg:border-r">
               {Array.from({ length: numPages }, (_, i) => {
                 const thumb = pageCache[i]?.thumbUrl;
                 return (
                   <button
                     key={i}
                     type="button"
-                    className={`mb-2 block w-full overflow-hidden rounded border-2 bg-[var(--bg-a)] ${
+                    className={`mb-2 block w-16 shrink-0 overflow-hidden rounded border-2 bg-[var(--bg-a)] lg:w-full ${
                       currentPage === i
                         ? "border-[#3b82f6]"
                         : "border-transparent hover:border-[var(--line)]"
@@ -903,10 +1114,18 @@ export function EditPdfClient() {
             </aside>
 
             {/* Center canvas */}
-            <main className="relative min-w-0 flex-1 overflow-auto bg-[#e8e8ee] p-3 sm:p-6">
+            <main
+              ref={mainRef}
+              className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-[#e8e8ee] p-3 sm:p-6"
+            >
               {pageLoading && !currentPreview && (
                 <p className="text-center text-sm text-[var(--ink-muted)]">
                   Rendering page…
+                </p>
+              )}
+              {currentPreview && pageLines.length === 0 && linesByPage[currentPage] && (
+                <p className="mx-auto mb-3 max-w-md rounded-[var(--radius)] bg-white px-3 py-2 text-center text-xs text-[var(--ink-muted)]">
+                  This page is a picture. You can add text on top, but the picture itself cannot be edited.
                 </p>
               )}
               {currentPreview && (
@@ -922,19 +1141,15 @@ export function EditPdfClient() {
                   onSelect={setSelectedId}
                   onChangeOverlays={setOverlaysLive}
                   onDrawStroke={onDrawStroke}
+                  lines={pageLines}
+                  lineEdits={pageLineEdits}
+                  onCommitLine={(line, text) => void commitLine(line, text)}
+                  onRejectLine={(message) => setError(message)}
+                  placeMode={placingText}
+                  onPlaceText={placeTextAt}
+                  onEscapeOverlay={escapeOverlay}
+                  onStartLineEdit={() => setPlacingText(false)}
                 />
-              )}
-
-              {selected?.kind === "text" && (
-                <div className="mx-auto mt-3 max-w-md">
-            <input
-                    className="w-full rounded-[var(--radius)] border border-[var(--line)] bg-white px-3 py-2 text-sm shadow-sm"
-                    value={selected.text}
-                    onChange={(e) => patchSelected({ text: e.target.value })}
-                    placeholder="Your text here"
-                    autoFocus
-                  />
-                </div>
               )}
 
               {/* Floating page nav */}
@@ -986,7 +1201,7 @@ export function EditPdfClient() {
             </main>
 
             {/* Right sidebar */}
-            <aside className="flex w-full max-w-[100%] shrink-0 flex-col border-t border-[var(--line)] bg-white sm:w-[280px] sm:border-l sm:border-t-0 lg:w-[300px]">
+            <aside className="flex max-h-[40vh] w-full shrink-0 flex-col border-t border-[var(--line)] bg-white lg:max-h-none lg:w-[300px] lg:border-l lg:border-t-0">
               <div className="border-b border-[var(--line)] px-4 py-3">
                 <h2 className="font-display text-base font-bold text-[var(--ink)]">
                   Edit PDF
@@ -995,8 +1210,22 @@ export function EditPdfClient() {
               <div className="flex-1 overflow-y-auto p-4">
                 <div className="mb-3 flex gap-2 rounded-[var(--radius)] border border-[#cfe3ff] bg-[#eef5ff] px-3 py-2 text-xs text-[#2a4a7a]">
                   <IconInfo className="mt-0.5 h-4 w-4 shrink-0" />
-                  <p>Reorder items to move them to the back or front.</p>
+                  <p>
+                    Click a line to change its words. The font, size, and color stay as they are.
+                    To add words, click A, then click the page, and type in the box.
+                  </p>
                 </div>
+
+                <PageTurnBar
+                  disabled={busy}
+                  onTurnPage={(delta) => void turnPages([currentPage], delta)}
+                  onTurnAll={(delta) =>
+                    void turnPages(
+                      Array.from({ length: numPages }, (_, index) => index),
+                      delta,
+                    )
+                  }
+                />
 
                 <div className="mb-2 flex items-center justify-between">
                   <p className="text-sm font-semibold">Page {currentPage + 1}</p>
@@ -1012,12 +1241,23 @@ export function EditPdfClient() {
                 </div>
 
                 <ul className="space-y-1">
-                  {pageOverlays.length === 0 && (
+                  {pageOverlays.length === 0 && pageLineEdits.length === 0 && (
                     <li className="text-xs text-[var(--ink-muted)]">
-                      No items on this page yet. Use the toolbar icons to add
-                      text, images, drawings, or shapes — they appear instantly.
+                      Click a line on the page, or use the toolbar to add text,
+                      images, drawings, or shapes.
                     </li>
                   )}
+                  {pageLineEdits.map((edit) => (
+                    <li
+                      key={edit.id}
+                      className="rounded-[var(--radius)] border border-[var(--line)] bg-white px-2 py-2 text-sm"
+                    >
+                      <p className="truncate font-medium">{edit.text || "(deleted line)"}</p>
+                      <p className="text-[11px] text-[var(--ink-muted)]">
+                        Edited line. The original font and size are kept.
+                      </p>
+                    </li>
+                  ))}
                   {[...pageOverlays].reverse().map((o) => (
                     <li
                       key={o.id}
@@ -1051,13 +1291,21 @@ export function EditPdfClient() {
               </div>
 
               <div className="border-t border-[var(--line)] p-4">
+                {wasEncrypted && (
+                  <p className="mb-2 text-xs text-[var(--ink-muted)]">
+                    This file was unlocked. The download will not be password-protected.
+                  </p>
+                )}
+                {notice && (
+                  <p className="mb-2 text-xs text-[var(--ink-muted)]">{notice}</p>
+                )}
                 {error && (
                   <p className="mb-2 text-xs text-[var(--danger)]">{error}</p>
                 )}
                 <button
                   type="button"
                   className="pdf-save-btn"
-                  disabled={busy || !overlays.length}
+                  disabled={busy || (!overlays.length && !hasLineEdits && !turned)}
                   onClick={() => void applyEdits()}
                 >
                   {busy ? "Saving…" : "Save changes"}

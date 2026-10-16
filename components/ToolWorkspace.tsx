@@ -45,6 +45,7 @@ export type ToolWorkspaceProps = {
   processLabel?: string;
   disabled?: boolean;
   options?: ReactNode;
+  onFilesChange?: (files: File[]) => void;
   validate?: (files: File[]) => void | Promise<void>;
   onProcess: (
     files: File[],
@@ -116,6 +117,7 @@ export function ToolWorkspace({
   processLabel = "Process",
   disabled = false,
   options,
+  onFilesChange,
   validate,
   onProcess,
   minFiles = 1,
@@ -137,6 +139,12 @@ export function ToolWorkspace({
   const [results, setResults] = useState<ResultEntry[]>([]);
 
   const files = useMemo(() => entries.map((e) => e.file), [entries]);
+  const onFilesChangeRef = useRef(onFilesChange);
+  onFilesChangeRef.current = onFilesChange;
+
+  useEffect(() => {
+    onFilesChangeRef.current?.(files);
+  }, [files]);
   const slotsLeft = Math.max(0, maxFiles - entries.length);
 
   const lockedPending = useMemo(

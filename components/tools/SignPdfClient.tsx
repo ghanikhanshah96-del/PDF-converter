@@ -10,6 +10,7 @@ import {
   IconZoomOut,
   IconArrowRight,
 } from "@/components/pdf-editor/EditorIcons";
+import { PageTurnBar } from "@/components/pdf-editor/PageTurnBar";
 import { PdfPageBoard } from "@/components/pdf-editor/PdfPageBoard";
 import {
   canvasToPngBuffer,
@@ -36,6 +37,7 @@ import {
   unlockPdfBytes,
   unlockedPdfFile,
 } from "@/lib/pdf-encryption";
+import { turnFractionBox } from "@/lib/pdf/viewBox";
 import { toolsById } from "@/lib/tools";
 
 const tool = toolsById["sign-pdf"];
@@ -60,12 +62,8 @@ export function SignPdfClient() {
   const [zoom, setZoom] = useState(0.85);
   const [sigTab, setSigTab] = useState<SigTab>("draw");
   const [typedName, setTypedName] = useState("");
-  const [readySig, setReadySig] = useState<{
-    src: string;
-    bytes: ArrayBuffer;
-    aspect: number;
-  } | null>(null);
   const [sigCount, setSigCount] = useState(0);
+  const [turned, setTurned] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -125,8 +123,8 @@ export function SignPdfClient() {
     setCurrentPage(0);
     setOverlays([]);
     setSelectedId(null);
-    setReadySig(null);
     setSigCount(0);
+    setTurned(false);
     setError(null);
   };
 
@@ -245,7 +243,6 @@ export function SignPdfClient() {
     };
     setOverlays((prev) => [...prev, overlay]);
     setSelectedId(overlay.id);
-    setReadySig(sig);
   };
 
   const applyAndPlace = () => {
@@ -289,10 +286,61 @@ export function SignPdfClient() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedId]);
 
+  const replaceWorkingPdf = async (next: File) => {
+    pdfRef.current?.destroy();
+    const progressive = await openPdfProgressive(next);
+    pdfRef.current = progressive;
+    setNumPages(progressive.numPages);
+    setWorkingFile(next);
+    setPageCache({});
+    const index = Math.min(currentPage, Math.max(progressive.numPages - 1, 0));
+    setCurrentPage(index);
+    const first = await progressive.getPage(index);
+    setPageCache({ [index]: first });
+    progressive.prefetch(index);
+  };
+
+  const turnPages = async (indexes: number[], delta: 90 | 270) => {
+    if (!workingFile || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const { turnPdfPages } = await import("@/lib/engines/rotate");
+      const turnedFile = await turnPdfPages(workingFile, indexes, delta);
+      setOverlays((prev) =>
+        prev.map((overlay) => {
+          const change = turnedFile.changes.find((item) => item.pageIndex === overlay.pageIndex);
+          if (!change) return overlay;
+          return {
+            ...overlay,
+            ...turnFractionBox(
+              overlay,
+              change.pageWidth,
+              change.pageHeight,
+              change.from,
+              change.to,
+            ),
+          };
+        }),
+      );
+      setTurned(true);
+      await replaceWorkingPdf(turnedFile.file);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not turn this page.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const signPdf = async () => {
     if (!workingFile) return;
-    if (!overlays.length) {
+    if (!overlays.length && !turned) {
       setError("Place a signature on the page first.");
+      return;
+    }
+    if (!overlays.length) {
+      const bytes = new Uint8Array(await workingFile.arrayBuffer());
+      downloadBlob(toPdfBlob(bytes), `${basename(workingFile.name)}-turned.pdf`);
       return;
     }
     setBusy(true);
@@ -437,6 +485,16 @@ export function SignPdfClient() {
 
           <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
             <aside className="max-h-[42vh] shrink-0 overflow-y-auto border-b border-[var(--line)] bg-white p-4 lg:max-h-none lg:w-[300px] lg:border-b-0 lg:border-r">
+              <PageTurnBar
+                disabled={busy}
+                onTurnPage={(delta) => void turnPages([currentPage], delta)}
+                onTurnAll={(delta) =>
+                  void turnPages(
+                    Array.from({ length: numPages }, (_, index) => index),
+                    delta,
+                  )
+                }
+              />
               <p className="text-sm font-semibold">Create signature</p>
               <div className="mt-2 flex gap-1 rounded-full border border-[var(--line)] bg-[var(--bg-a)] p-0.5">
                 {(["draw", "type", "upload"] as SigTab[]).map((tab) => (
@@ -540,16 +598,6 @@ export function SignPdfClient() {
                 </button>
               )}
 
-              {readySig && (
-                <button
-                  type="button"
-                  className="btn btn-secondary mt-2 w-full !min-h-10 !py-2 text-sm"
-                  onClick={() => placeSignatureNow(readySig)}
-                >
-                  Place another
-                </button>
-              )}
-
               <ul className="mt-4 space-y-1">
                 {overlays.map((o) => (
                   <li
@@ -586,10 +634,10 @@ export function SignPdfClient() {
               <button
                 type="button"
                 className="pdf-save-btn mt-4"
-                disabled={busy || !overlays.length}
+                disabled={busy || (!overlays.length && !turned)}
                 onClick={() => void signPdf()}
               >
-                {busy ? "Signing…" : "Sign PDF"}
+                {busy ? "Saving…" : overlays.length ? "Sign PDF" : "Save turned PDF"}
                 <IconArrowRight className="h-6 w-6" />
               </button>
               {error && (

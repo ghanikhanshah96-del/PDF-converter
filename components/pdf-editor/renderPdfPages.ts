@@ -1,4 +1,5 @@
 import { getPdfjs } from "@/lib/pdfjs";
+import { groupTextLines, type RawTextItem, type TextLine } from "@/lib/pdf/textRuns";
 import type { PagePreview } from "./types";
 
 type PdfjsDoc = Awaited<
@@ -7,30 +8,78 @@ type PdfjsDoc = Awaited<
 
 const MAIN_WIDTH = 900;
 const THUMB_WIDTH = 120;
+export const MAX_BITMAP_EDGE = 1600;
+export const MAX_BITMAP_PIXELS = 1_600_000;
 
-async function canvasToObjectUrl(canvas: HTMLCanvasElement): Promise<string> {
-  const blob = await new Promise<Blob>((resolve, reject) => {
+export function guessEditorWidth(): number {
+  if (typeof window === "undefined") return 720;
+  const width = window.innerWidth;
+  if (width < 1024) return Math.max(280, width - 16);
+  return Math.max(320, Math.min(900, width - 420));
+}
+
+/** CSS page size times a capped pixel ratio, limited so a phone cannot allocate an unbounded bitmap. */
+export function bitmapSize(cssWidth: number, cssHeight: number, pixelRatio: number) {
+  const ratio = Math.min(Math.max(pixelRatio || 1, 1), 2);
+  let width = Math.max(1, Math.floor(cssWidth * ratio));
+  let height = Math.max(1, Math.floor(cssHeight * ratio));
+  if (width > MAX_BITMAP_EDGE) {
+    height = Math.max(1, Math.floor((height * MAX_BITMAP_EDGE) / width));
+    width = MAX_BITMAP_EDGE;
+  }
+  if (height > MAX_BITMAP_EDGE) {
+    width = Math.max(1, Math.floor((width * MAX_BITMAP_EDGE) / height));
+    height = MAX_BITMAP_EDGE;
+  }
+  if (width * height > MAX_BITMAP_PIXELS) {
+    const scale = Math.sqrt(MAX_BITMAP_PIXELS / (width * height));
+    width = Math.max(1, Math.floor(width * scale));
+    height = Math.max(1, Math.floor(height * scale));
+  }
+  if (width < 1 || height < 1) {
+    throw new Error("This page is too large to edit here.");
+  }
+  return { width, height };
+}
+
+export const MAIN_PAGE_MIME = "image/png";
+export const THUMB_MIME = "image/jpeg";
+
+function canvasToObjectUrl(
+  canvas: HTMLCanvasElement,
+  type: "image/png" | "image/jpeg",
+): Promise<string> {
+  return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("Failed to encode page."))),
-      "image/jpeg",
-      0.82,
+      (blob) => (blob ? resolve(URL.createObjectURL(blob)) : reject(new Error("Failed to encode page."))),
+      type,
+      type === "image/jpeg" ? 0.72 : undefined,
     );
   });
-  return URL.createObjectURL(blob);
 }
 
 async function renderOnePage(
   doc: PdfjsDoc,
   pageNumber: number,
+  cssWidth?: number,
+  pixelRatio = 1,
 ): Promise<PagePreview> {
   const page = await doc.getPage(pageNumber);
   const base = page.getViewport({ scale: 1 });
+  const layoutWidth = cssWidth ?? MAIN_WIDTH;
+  const layoutHeight = layoutWidth * (base.height / Math.max(base.width, 1));
+  const pixels = cssWidth
+    ? bitmapSize(layoutWidth, layoutHeight, pixelRatio)
+    : {
+        width: Math.max(1, Math.floor(layoutWidth)),
+        height: Math.max(1, Math.floor(layoutHeight)),
+      };
 
-  const mainScale = MAIN_WIDTH / base.width;
+  const mainScale = pixels.width / base.width;
   const mainVp = page.getViewport({ scale: mainScale });
   const mainCanvas = document.createElement("canvas");
-  mainCanvas.width = Math.floor(mainVp.width);
-  mainCanvas.height = Math.floor(mainVp.height);
+  mainCanvas.width = pixels.width;
+  mainCanvas.height = pixels.height;
   const mainCtx = mainCanvas.getContext("2d", { alpha: false });
   if (!mainCtx) throw new Error("Canvas not available.");
   await page.render({
@@ -53,16 +102,16 @@ async function renderOnePage(
   }).promise;
 
   const [imageUrl, thumbUrl] = await Promise.all([
-    canvasToObjectUrl(mainCanvas),
-    canvasToObjectUrl(thumbCanvas),
+    canvasToObjectUrl(mainCanvas, MAIN_PAGE_MIME),
+    canvasToObjectUrl(thumbCanvas, THUMB_MIME),
   ]);
 
   return {
     pageIndex: pageNumber - 1,
     pdfWidth: base.width,
     pdfHeight: base.height,
-    displayWidth: mainCanvas.width,
-    displayHeight: mainCanvas.height,
+    displayWidth: cssWidth ? layoutWidth : mainCanvas.width,
+    displayHeight: cssWidth ? layoutHeight : mainCanvas.height,
     imageUrl,
     thumbUrl,
   };
@@ -72,6 +121,7 @@ export type ProgressivePdf = {
   numPages: number;
   /** Renders a 1-based page if not already cached; returns preview */
   getPage: (pageIndex0: number) => Promise<PagePreview>;
+  getLines: (pageIndex0: number) => Promise<TextLine[]>;
   /** Prefetch nearby pages in background */
   prefetch: (centerIndex0: number) => void;
   destroy: () => void;
@@ -80,6 +130,7 @@ export type ProgressivePdf = {
 export async function openPdfProgressive(
   file: File,
   password?: string,
+  options?: { cssWidth?: () => number; pixelRatio?: number },
 ): Promise<ProgressivePdf> {
   const pdfjs = await getPdfjs();
   const data = new Uint8Array(await file.arrayBuffer());
@@ -88,27 +139,75 @@ export async function openPdfProgressive(
     ...(password ? { password } : {}),
   }).promise;
 
-  const cache = new Map<number, PagePreview>();
-  const inflight = new Map<number, Promise<PagePreview>>();
+  const cache = new Map<string, PagePreview>();
+  const inflight = new Map<string, Promise<PagePreview>>();
+  const lineCache = new Map<number, TextLine[]>();
   let destroyed = false;
+  const pixelRatio =
+    options?.pixelRatio ??
+    (typeof window === "undefined" ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+
+  const pageKey = (pageIndex0: number) => {
+    const width = options?.cssWidth ? Math.round(options.cssWidth()) : 0;
+    return `${pageIndex0}:${width}`;
+  };
 
   const getPage = async (pageIndex0: number) => {
     if (destroyed) throw new Error("Document closed.");
-    if (cache.has(pageIndex0)) return cache.get(pageIndex0)!;
-    if (inflight.has(pageIndex0)) return inflight.get(pageIndex0)!;
-    const p = renderOnePage(doc, pageIndex0 + 1).then((preview) => {
-      cache.set(pageIndex0, preview);
-      inflight.delete(pageIndex0);
-      return preview;
-    });
-    inflight.set(pageIndex0, p);
+    const key = pageKey(pageIndex0);
+    if (cache.has(key)) return cache.get(key)!;
+    if (inflight.has(key)) return inflight.get(key)!;
+    const cssWidth = options?.cssWidth?.();
+    const p = renderOnePage(doc, pageIndex0 + 1, cssWidth, pixelRatio)
+      .then((preview) => {
+        for (const [cachedKey, previous] of cache) {
+          if (!cachedKey.startsWith(`${pageIndex0}:`) || cachedKey === key) continue;
+          URL.revokeObjectURL(previous.imageUrl);
+          URL.revokeObjectURL(previous.thumbUrl);
+          cache.delete(cachedKey);
+        }
+        cache.set(key, preview);
+        inflight.delete(key);
+        return preview;
+      })
+      .catch((error: unknown) => {
+        inflight.delete(key);
+        if (error instanceof Error && /memory|allocation|too large/i.test(error.message)) {
+          throw new Error("This page is too large to edit here.");
+        }
+        throw error;
+      });
+    inflight.set(key, p);
     return p;
+  };
+
+  const getLines = async (pageIndex0: number) => {
+    if (destroyed) throw new Error("Document closed.");
+    const cached = lineCache.get(pageIndex0);
+    if (cached) return cached;
+    const page = await doc.getPage(pageIndex0 + 1);
+    const viewport = page.getViewport({ scale: 1 });
+    const content = await page.getTextContent();
+    const raw: RawTextItem[] = [];
+    for (const item of content.items) {
+      if (!("str" in item) || !item.str) continue;
+      raw.push({
+        str: item.str,
+        transform: item.transform,
+        width: item.width,
+        height: item.height,
+        dir: item.dir,
+      });
+    }
+    const lines = groupTextLines(raw, pageIndex0, viewport);
+    lineCache.set(pageIndex0, lines);
+    return lines;
   };
 
   const prefetch = (centerIndex0: number) => {
     const targets = [centerIndex0 - 1, centerIndex0 + 1, centerIndex0 + 2]
       .filter((i) => i >= 0 && i < doc.numPages)
-      .filter((i) => !cache.has(i) && !inflight.has(i));
+      .filter((i) => !cache.has(pageKey(i)) && !inflight.has(pageKey(i)));
     for (const i of targets) {
       void getPage(i);
     }
@@ -121,12 +220,14 @@ export async function openPdfProgressive(
       URL.revokeObjectURL(p.thumbUrl);
     }
     cache.clear();
+    lineCache.clear();
     void doc.cleanup();
   };
 
   return {
     numPages: doc.numPages,
     getPage,
+    getLines,
     prefetch,
     destroy,
   };

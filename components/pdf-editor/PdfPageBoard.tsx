@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import type { LineEdit, TextLine } from "@/lib/pdf/textRuns";
 import type { EditorOverlay, PagePreview } from "./types";
 
 type Props = {
@@ -17,6 +18,14 @@ type Props = {
     updater: (prev: EditorOverlay[]) => EditorOverlay[],
   ) => void;
   onDrawStroke?: (dataUrl: string, bytes: ArrayBuffer) => void;
+  lines?: TextLine[];
+  lineEdits?: LineEdit[];
+  onCommitLine?: (line: TextLine, text: string) => void;
+  onRejectLine?: (message: string) => void;
+  placeMode?: boolean;
+  onPlaceText?: (x: number, y: number) => void;
+  onEscapeOverlay?: (id: string) => void;
+  onStartLineEdit?: () => void;
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -35,7 +44,20 @@ export function PdfPageBoard({
   onSelect,
   onChangeOverlays,
   onDrawStroke,
+  lines = [],
+  lineEdits = [],
+  onCommitLine,
+  onRejectLine,
+  placeMode = false,
+  onPlaceText,
+  onEscapeOverlay,
+  onStartLineEdit,
 }: Props) {
+  const [editingLineId, setEditingLineId] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const lineCommitted = useRef(false);
+  const focusedLine = useRef<string | null>(null);
+  const focusedOverlay = useRef<string | null>(null);
   const dragRef = useRef<{
     id: string;
     kind: "move" | "resize";
@@ -90,12 +112,25 @@ export function PdfPageBoard({
       }}
     >
       <div
-        className="relative overflow-hidden bg-white shadow-[var(--shadow)]"
+        className={`relative overflow-hidden bg-white shadow-[var(--shadow)] ${
+          placeMode && !drawMode && !panMode ? "cursor-crosshair" : ""
+        }`}
         style={{
           aspectRatio: `${page.displayWidth} / ${page.displayHeight}`,
         }}
+        onPointerDown={(e) => {
+          if (!placeMode || drawMode || panMode) return;
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-line], [data-overlay]")) return;
+          e.preventDefault();
+          const rect = e.currentTarget.getBoundingClientRect();
+          onPlaceText?.(
+            (e.clientX - rect.left) / rect.width,
+            (e.clientY - rect.top) / rect.height,
+          );
+        }}
         onClick={(e) => {
-          if (drawMode || panMode) return;
+          if (drawMode || panMode || placeMode) return;
           if (e.target === e.currentTarget) onSelect(null);
         }}
       >
@@ -106,6 +141,107 @@ export function PdfPageBoard({
           className="pointer-events-none block h-auto w-full select-none"
           draggable={false}
         />
+
+        {lines.map((line) => {
+          const edit = lineEdits.find((item) => item.id === line.id);
+          const shown = edit?.text ?? line.text;
+          const editing = editingLineId === line.id;
+          const fontPx = Math.max(
+            8,
+            line.fontSize * zoom * (page.displayWidth / page.pdfWidth),
+          );
+          return (
+            <div
+              key={line.id}
+              data-line="true"
+              className={`absolute ${drawMode || panMode ? "pointer-events-none" : ""}`}
+              style={{
+                left: `${line.x * 100}%`,
+                top: `${line.y * 100}%`,
+                width: `${Math.max(line.w, 0.04) * 100}%`,
+                height: `${Math.max(line.h, 0.02) * 100}%`,
+              }}
+            >
+              {editing ? (
+                <input
+                  className="h-full w-full border border-[#3b82f6] bg-white px-0.5 text-[var(--ink)] outline-none"
+                  style={{ fontSize: `${fontPx}px` }}
+                  value={draft}
+                  aria-label={`Edit line: ${line.text}`}
+                  ref={(node) => {
+                    if (!node) {
+                      if (focusedLine.current === line.id) focusedLine.current = null;
+                      return;
+                    }
+                    if (focusedLine.current === line.id) return;
+                    focusedLine.current = line.id;
+                    node.focus({ preventScroll: true });
+                  }}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditingLineId(null);
+                    }
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      lineCommitted.current = true;
+                      onCommitLine?.(line, draft);
+                      setEditingLineId(null);
+                    }
+                  }}
+                  onBlur={() => {
+                    if (lineCommitted.current) {
+                      lineCommitted.current = false;
+                      return;
+                    }
+                    onCommitLine?.(line, draft);
+                    setEditingLineId(null);
+                  }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  className={`h-full w-full overflow-hidden text-left ${
+                    line.editable
+                      ? "hover:outline-1 hover:outline-[#3b82f6]"
+                      : "cursor-not-allowed"
+                  }`}
+                  style={{
+                    fontSize: `${fontPx}px`,
+                    lineHeight: 1,
+                    color: edit
+                      ? `rgb(${Math.round(edit.color.r * 255)}, ${Math.round(edit.color.g * 255)}, ${Math.round(edit.color.b * 255)})`
+                      : "transparent",
+                    background: edit
+                      ? `rgb(${Math.round(edit.cover.r * 255)}, ${Math.round(edit.cover.g * 255)}, ${Math.round(edit.cover.b * 255)})`
+                      : "transparent",
+                  }}
+                  title={line.editable ? "Edit this line" : line.reason}
+                  aria-label={line.editable ? `Edit ${line.text}` : line.reason}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (drawMode || panMode) return;
+                    if (!line.editable) {
+                      onRejectLine?.(line.reason ?? "This text can't be edited.");
+                      return;
+                    }
+                    onStartLineEdit?.();
+                    onSelect(null);
+                    setDraft(shown);
+                    setEditingLineId(line.id);
+                  }}
+                >
+                  {edit ? shown || " " : ""}
+                </button>
+              )}
+            </div>
+          );
+        })}
 
         {drawMode && (
           <canvas
@@ -172,6 +308,7 @@ export function PdfPageBoard({
           return (
             <div
               key={overlay.id}
+              data-overlay="true"
               className={`absolute ${
                 drawMode || panMode
                   ? "pointer-events-none"
@@ -211,22 +348,58 @@ export function PdfPageBoard({
                 };
               }}
             >
-              {overlay.kind === "text" && (
-                <div
-                  className="h-full w-full overflow-hidden px-1 leading-tight"
-                  style={{
-                    fontSize: `${Math.max(10, overlay.fontSize * zoom * (page.displayWidth / page.pdfWidth))}px`,
-                    color: overlay.color,
-                    fontWeight: overlay.bold ? 700 : 400,
-                    fontStyle: overlay.italic ? "italic" : "normal",
-                    textDecoration: overlay.underline ? "underline" : "none",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {overlay.text || "Your text here"}
-                </div>
-              )}
+              {overlay.kind === "text" &&
+                (selected ? (
+                  <input
+                    className="h-full w-full bg-transparent px-1 text-[var(--ink)] outline-none"
+                    style={{
+                      fontSize: `${Math.max(10, overlay.fontSize * zoom * (page.displayWidth / page.pdfWidth))}px`,
+                      color: overlay.color,
+                      fontWeight: overlay.bold ? 700 : 400,
+                    }}
+                    value={overlay.text}
+                    placeholder="Type here"
+                    aria-label="New text"
+                    ref={(node) => {
+                      if (!node) {
+                        if (focusedOverlay.current === overlay.id) focusedOverlay.current = null;
+                        return;
+                      }
+                      if (focusedOverlay.current === overlay.id) return;
+                      focusedOverlay.current = overlay.id;
+                      node.focus({ preventScroll: true });
+                    }}
+                    onChange={(e) => updateOverlay(overlay.id, { text: e.target.value })}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        e.currentTarget.blur();
+                      }
+                      if (e.key === "Escape") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onEscapeOverlay?.(overlay.id);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="h-full w-full overflow-hidden px-1 leading-tight"
+                    style={{
+                      fontSize: `${Math.max(10, overlay.fontSize * zoom * (page.displayWidth / page.pdfWidth))}px`,
+                      color: overlay.color,
+                      fontWeight: overlay.bold ? 700 : 400,
+                      fontStyle: overlay.italic ? "italic" : "normal",
+                      textDecoration: overlay.underline ? "underline" : "none",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {overlay.text || "Type here"}
+                  </div>
+                ))}
 
               {(overlay.kind === "image" || overlay.kind === "draw") && (
                 // eslint-disable-next-line @next/next/no-img-element

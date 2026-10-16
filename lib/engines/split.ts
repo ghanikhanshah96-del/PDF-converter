@@ -15,19 +15,32 @@ export function parsePageRanges(
   }
   for (const part of parts) {
     if (part.includes("-")) {
-      const [a, b] = part.split("-").map((n) => parseInt(n.trim(), 10));
-      if (!Number.isFinite(a) || !Number.isFinite(b)) {
-        throw new Error(`Invalid range: ${part}`);
+      const ends = part.split("-");
+      if (ends.length !== 2) {
+        throw new Error(`"${part}" is not a page range. Use numbers like 1-3.`);
+      }
+      const a = parseInt(ends[0].trim(), 10);
+      const b = parseInt(ends[1].trim(), 10);
+      if (!Number.isFinite(a) || !Number.isFinite(b) || a < 1 || b < 1 || !/^\d+$/.test(ends[0].trim()) || !/^\d+$/.test(ends[1].trim())) {
+        throw new Error(`"${part}" is not a page range. Use numbers like 1-3.`);
       }
       const start = Math.min(a, b);
       const end = Math.max(a, b);
-      for (let i = start; i <= end; i++) {
-        if (i >= 1 && i <= pageCount) pages.add(i);
+      if (start > pageCount || end > pageCount) {
+        throw new Error(
+          `This PDF has ${pageCount} page${pageCount === 1 ? "" : "s"}. The range ${part} goes past page ${pageCount}.`,
+        );
       }
+      for (let i = start; i <= end; i++) pages.add(i);
     } else {
       const n = parseInt(part, 10);
-      if (!Number.isFinite(n) || n < 1 || n > pageCount) {
-        throw new Error(`Invalid page number: ${part}`);
+      if (!/^\d+$/.test(part) || !Number.isFinite(n)) {
+        throw new Error(`"${part}" is not a page number.`);
+      }
+      if (n < 1 || n > pageCount) {
+        throw new Error(
+          `This PDF has ${pageCount} page${pageCount === 1 ? "" : "s"}. Page ${part} is outside 1 to ${pageCount}.`,
+        );
       }
       pages.add(n);
     }

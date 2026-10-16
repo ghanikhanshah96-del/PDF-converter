@@ -3,6 +3,58 @@ import * as fontkit from "@pdf-lib/fontkit";
 
 let cachedFontBytes: ArrayBuffer | null = null;
 
+/** Tests and the editor can supply the font when fetch is unavailable. */
+export function primeEditorFont(bytes: ArrayBuffer) {
+  cachedFontBytes = bytes;
+}
+
+export async function editorFontBytes(): Promise<ArrayBuffer> {
+  const bytes = await loadUnicodeFontBytes();
+  if (!bytes) {
+    throw new Error("The text font failed to load. No file was saved.");
+  }
+  return bytes;
+}
+
+/** Embed Noto Sans. Missing font is an error, so edits are not rewritten as "?". */
+export async function embedEditorFont(pdf: PDFDocument): Promise<PDFFont> {
+  const bytes = await editorFontBytes();
+  try {
+    pdf.registerFontkit(fontkitApi() as never);
+    return await pdf.embedFont(bytes, { subset: true });
+  } catch {
+    throw new Error("The text font failed to load. No file was saved.");
+  }
+}
+
+function fontkitApi(): {
+  create: (bytes: Uint8Array) => { glyphForCodePoint: (code: number) => { id: number } };
+} {
+  const mod = fontkit as unknown as {
+    create?: (bytes: Uint8Array) => { glyphForCodePoint: (code: number) => { id: number } };
+    default?: {
+      create: (bytes: Uint8Array) => { glyphForCodePoint: (code: number) => { id: number } };
+    };
+  };
+  if (typeof mod.create === "function") return { create: mod.create };
+  if (mod.default && typeof mod.default.create === "function") return mod.default;
+  throw new Error("The text font failed to load. No file was saved.");
+}
+
+export function assertEditorGlyphs(fontBytes: ArrayBuffer, text: string) {
+  const font = fontkitApi().create(new Uint8Array(fontBytes));
+  for (const ch of text) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (code <= 32) continue;
+    const glyph = font.glyphForCodePoint(code);
+    if (!glyph || glyph.id === 0) {
+      throw new Error(
+        `This editor can't draw "${ch}". The original text was left unchanged. No file was saved.`,
+      );
+    }
+  }
+}
+
 async function loadUnicodeFontBytes(): Promise<ArrayBuffer | null> {
   if (cachedFontBytes) return cachedFontBytes;
   if (typeof fetch === "undefined") return null;
