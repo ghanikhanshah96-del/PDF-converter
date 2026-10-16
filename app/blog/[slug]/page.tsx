@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ComponentType } from "react";
 import { DownloadWordAsPdfArticle } from "@/components/blog/DownloadWordAsPdfArticle";
+import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
+import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
 import { blogPosts, getBlogPost } from "@/lib/blog";
 import { SITE } from "@/lib/site";
+
+const articles: Record<string, ComponentType> = {
+  "how-to-download-word-document-as-pdf": DownloadWordAsPdfArticle,
+  "how-to-split-pdf-pages": SplitPdfArticle,
+  "how-to-merge-pdf-files": MergePdfArticle,
+};
 
 interface BlogArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -53,7 +62,9 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
   const { slug } = await params;
   const post = getBlogPost(slug);
 
-  if (!post) {
+  const Article = articles[slug];
+
+  if (!post || !Article) {
     notFound();
   }
 
@@ -169,7 +180,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
       </header>
 
       <div className="site-container pb-16">
-        <DownloadWordAsPdfArticle />
+        <Article />
       </div>
     </article>
   );

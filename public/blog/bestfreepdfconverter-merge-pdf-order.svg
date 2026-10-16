@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">PDF files are combined in the order you arrange</title>
+  <desc id="desc">Illustration of three PDFs moved into order and saved as one merged.pdf. This is not a screenshot of the tool.</desc>
+  <rect width="960" height="420" rx="16" fill="#f7f7fb"/>
+  <rect x="36" y="48" width="520" height="324" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="36" y="48" width="520" height="52" rx="12" fill="#fff0f0"/>
+  <rect x="36" y="88" width="520" height="12" fill="#fff0f0"/>
+  <text x="56" y="82" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">Arrange, then merge</text>
+  <rect x="64" y="128" width="464" height="56" rx="8" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="84" y="162" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">1. Cover-Letter.pdf</text>
+  <rect x="64" y="198" width="464" height="56" rx="8" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="84" y="232" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">2. Resume.pdf</text>
+  <rect x="64" y="268" width="464" height="56" rx="8" fill="#ffffff" stroke="#e7e7ee"/>
+  <text x="84" y="302" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="16">3. Certificates.pdf</text>
+  <text x="64" y="350" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Up and down controls set the page order. At least two PDFs.</text>
+  <polygon points="580,200 618,184 618,216" fill="#e5322d"/>
+  <rect x="644" y="48" width="280" height="324" rx="12" fill="#ffffff" stroke="#e7e7ee"/>
+  <rect x="644" y="48" width="280" height="52" rx="12" fill="#fff0f0"/>
+  <rect x="644" y="88" width="280" height="12" fill="#fff0f0"/>
+  <text x="664" y="82" fill="#c82420" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">One new file</text>
+  <text x="664" y="140" fill="#33333b" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">merged.pdf</text>
+  <text x="664" y="176" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">Cover letter pages</text>
+  <text x="664" y="200" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">then resume pages</text>
+  <text x="664" y="224" fill="#707078" font-family="Segoe UI, sans-serif" font-size="14">then certificates</text>
+  <text x="664" y="268" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Original files stay on</text>
+  <text x="664" y="288" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">your device.</text>
+  <text x="664" y="328" fill="#707078" font-family="Segoe UI, sans-serif" font-size="13">Illustration, not a screenshot.</text>
+</svg>

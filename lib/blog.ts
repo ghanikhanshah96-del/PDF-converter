@@ -19,6 +19,42 @@ export interface BlogPost {
 
 const blogInput: BlogPost[] = [
   {
+    slug: "how-to-split-pdf-pages",
+    title: "How to Split PDF Pages Online for Free: A Step-by-Step Guide",
+    seoTitle:
+      "How to Split PDF Pages Online for Free (Step-by-Step) | BestFreePDFConverter",
+    description:
+      "Learn how to split PDF pages online for free, select exact page ranges, save separate PDFs, and avoid common errors. No account needed.",
+    excerpt:
+      "Save selected pages as one PDF or as a ZIP of single pages. Page ranges, two-part splits, passwords, and the 50 MB limit.",
+    category: "Organize",
+    readTime: "12 min read",
+    image: "/blog/bestfreepdfconverter-split-pdf-modes.svg",
+    imageAlt:
+      "Diagram of a page range saved as one PDF or as separate page files in a ZIP",
+    published: "2026-10-17",
+    updated: "2026-10-17",
+    toolId: "split-pdf",
+  },
+  {
+    slug: "how-to-merge-pdf-files",
+    title: "Merge PDF Online Free: How to Combine Multiple PDF Files Into One",
+    seoTitle:
+      "Merge PDF Online Free: Combine Multiple PDF Files | BestFreePDFConverter",
+    description:
+      "Combine PDF files online for free. Arrange the order, unlock protected PDFs, set an optional password, and download one merged PDF.",
+    excerpt:
+      "Put two to twenty PDFs in order, handle locked files, and download merged.pdf without installing software.",
+    category: "Organize",
+    readTime: "11 min read",
+    image: "/blog/bestfreepdfconverter-merge-pdf-order.svg",
+    imageAlt:
+      "Diagram of a cover letter, resume, and certificates combined into one merged PDF",
+    published: "2026-10-17",
+    updated: "2026-10-17",
+    toolId: "merge-pdf",
+  },
+  {
     slug: "how-to-download-word-document-as-pdf",
     title: "How to Download a Word Document as a PDF",
     seoTitle:

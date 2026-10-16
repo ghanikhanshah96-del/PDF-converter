@@ -6,12 +6,12 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: `Blog | ${SITE.name}`,
   description:
-    "How to download a Word document as a PDF on Windows, Mac, Word for the web, Google Docs, or in the browser.",
+    "Guides for splitting PDF pages, merging PDF files, and downloading a Word document as a PDF.",
   alternates: { canonical: `${SITE.url}/blog` },
   openGraph: {
     title: `Blog | ${SITE.name}`,
     description:
-      "How to download a Word document as a PDF on Windows, Mac, Word for the web, Google Docs, or in the browser.",
+      "Guides for splitting PDF pages, merging PDF files, and downloading a Word document as a PDF.",
     url: `${SITE.url}/blog`,
     type: "website",
   },
@@ -26,8 +26,8 @@ export default function BlogPage() {
             Blog
           </h1>
           <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
-            Practical instructions for saving or downloading a Word document
-            as a PDF, including formatting problems and privacy tradeoffs.
+            Step-by-step guides for splitting pages, combining PDF files, and
+            saving a Word document as a PDF.
           </p>
         </div>
       </section>

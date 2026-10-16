@@ -48,6 +48,8 @@ const nextConfig: NextConfig = {
       { source: "/contact", destination: "/contact-us", permanent: true },
       { source: "/privacy", destination: "/privacy-policy", permanent: true },
       { source: "/terms", destination: "/terms-and-conditions", permanent: true },
+      { source: "/how-to-split-pdf-pages", destination: "/blog/how-to-split-pdf-pages", permanent: true },
+      { source: "/how-to-merge-pdf-files", destination: "/blog/how-to-merge-pdf-files", permanent: true },
     ];
   },
 };
