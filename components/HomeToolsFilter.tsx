@@ -11,6 +11,7 @@ const categoryOrder: ToolCategory[] = [
   "optimize",
   "edit",
   "secure",
+  "view",
 ];
 
 type ActiveCategory = "all" | ToolCategory;

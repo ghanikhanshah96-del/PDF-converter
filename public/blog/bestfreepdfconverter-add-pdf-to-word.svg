@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="525" viewBox="0 0 1200 525" role="img" aria-labelledby="title desc">
+  <title id="title">Three ways to add a PDF to a Word document</title>
+  <desc id="desc">Attach a PDF as an object, convert PDF to editable Word content, or open the PDF in Microsoft Word.</desc>
+  <rect width="1200" height="525" rx="18" fill="#f7f7fb"/>
+  <rect x="40" y="40" width="350" height="400" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="40" y="40" width="350" height="58" rx="14" fill="#fff0f0"/>
+  <rect x="40" y="82" width="350" height="16" fill="#fff0f0"/>
+  <text x="60" y="78" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">1. Attach PDF</text>
+  <rect x="80" y="130" width="200" height="250" rx="10" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="100" y="155" width="160" height="12" rx="3" fill="#33333b"/>
+  <rect x="100" y="180" width="130" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="100" y="200" width="145" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="100" y="220" width="120" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="300" y="220" width="70" height="90" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="314" y="258" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">PDF</text>
+  <text x="318" y="280" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="12">icon</text>
+  <text x="70" y="410" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">Insert - Object in Word</text>
+  <rect x="425" y="40" width="350" height="400" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="425" y="40" width="350" height="58" rx="14" fill="#fff0f0"/>
+  <rect x="425" y="82" width="350" height="16" fill="#fff0f0"/>
+  <text x="445" y="78" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">2. Convert to Word</text>
+  <rect x="470" y="145" width="90" height="120" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="492" y="215" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PDF</text>
+  <polygon points="590,200 628,182 628,218" fill="#e5322d"/>
+  <rect x="650" y="145" width="90" height="120" rx="10" fill="#ffffff" stroke="#2b579a" stroke-width="2"/>
+  <text x="662" y="215" fill="#2b579a" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">DOCX</text>
+  <rect x="470" y="295" width="260" height="12" rx="3" fill="#33333b"/>
+  <rect x="470" y="320" width="220" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="470" y="340" width="240" height="10" rx="3" fill="#c8c8d2"/>
+  <text x="455" y="410" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">Then copy into your document</text>
+  <rect x="810" y="40" width="350" height="400" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="810" y="40" width="350" height="58" rx="14" fill="#fff0f0"/>
+  <rect x="810" y="82" width="350" height="16" fill="#fff0f0"/>
+  <text x="830" y="78" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">3. Open in Word</text>
+  <rect x="860" y="140" width="250" height="200" rx="10" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="860" y="140" width="250" height="40" rx="10" fill="#2b579a"/>
+  <text x="880" y="166" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">File - Open - PDF</text>
+  <rect x="885" y="205" width="200" height="12" rx="3" fill="#33333b"/>
+  <rect x="885" y="230" width="170" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="885" y="250" width="185" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="885" y="270" width="150" height="10" rx="3" fill="#c8c8d2"/>
+  <rect x="885" y="295" width="100" height="28" rx="6" fill="#e5322d"/>
+  <text x="905" y="314" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Edit</text>
+  <text x="840" y="410" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">Word converts a working copy</text>
+  <text x="40" y="490" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">BestFreePDFConverter illustration - topic guide, not a screenshot.</text>
+</svg>

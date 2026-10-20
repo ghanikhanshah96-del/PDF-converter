@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Outfit, Source_Sans_3 } from "next/font/google";
+import { Analytics } from "@/components/Analytics";
 import { SiteChrome } from "@/components/SiteChrome";
 import { SITE } from "@/lib/site";
 import "./globals.css";
@@ -81,22 +81,11 @@ export default function RootLayout({
           name="google-site-verification"
           content="DitQAgl2NUL0gASsHbsDC7lX9Fbp7UcDc_nC33zPE-4"
         />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-MK79VBSCT9"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-MK79VBSCT9');
-          `}
-        </Script>
       </head>
       <body
         className={`${outfit.variable} ${sourceSans.variable} flex min-h-screen flex-col antialiased`}
       >
+        <Analytics />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

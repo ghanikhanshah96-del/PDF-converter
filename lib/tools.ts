@@ -12,14 +12,16 @@ export type ToolId =
   | "excel-to-pdf"
   | "pdf-to-excel"
   | "rotate-pdf"
-  | "protect-pdf";
+  | "protect-pdf"
+  | "view-pdf";
 
 export type ToolCategory =
   | "convert"
   | "organize"
   | "optimize"
   | "edit"
-  | "secure";
+  | "secure"
+  | "view";
 
 export interface ToolFaq {
   question: string;
@@ -52,6 +54,7 @@ export const CATEGORY_LABELS: Record<ToolCategory, string> = {
   optimize: "Optimize",
   edit: "Edit & Sign",
   secure: "Secure",
+  view: "View",
 };
 
 export const tools: ToolDefinition[] = [
@@ -842,6 +845,58 @@ export const tools: ToolDefinition[] = [
     accept: "application/pdf,.pdf",
     multiple: true,
     keywords: ["protect pdf online free","password protect pdf online","lock pdf with password","secure pdf file online","encrypt pdf browser","add password to pdf free"],
+  },
+  {
+    id: "view-pdf",
+    slug: "pdf-viewer-online-free",
+    href: "/pdf-viewer-online-free",
+    name: "PDF Viewer",
+    shortName: "View PDF",
+    category: "view",
+    summary: "Open and scroll through PDF files online for free with our fast browser PDF Viewer.",
+    description:
+      "Open and scroll through PDF files online for free with our fast browser PDF Viewer. Select a PDF, read every page smoothly on your device, and keep your file private — viewing runs in your browser.",
+    h1: "Free PDF Viewer Online",
+    title: "Free PDF Viewer Online | View PDF Files in Your Browser",
+    metaDescription:
+      "View PDF files online for free. Open a PDF in your browser, scroll pages smoothly, and read documents without installing software.",
+    howTo: [
+      "Select the PDF file you want to view.",
+      "Wait a moment while pages open in the viewer.",
+      "Scroll through the document at your own pace.",
+      "Close the viewer when you are finished — nothing is uploaded.",
+    ],
+    faqs: [
+      {
+        question: "Can I view a PDF online for free?",
+        answer:
+          "Yes. Open the PDF Viewer, select your file, and scroll through the pages in your browser.",
+      },
+      {
+        question: "Does the PDF Viewer upload my file?",
+        answer:
+          "Viewing runs in your browser. Your PDF is not sent to a conversion server for this step.",
+      },
+      {
+        question: "Can I view multi-page PDFs?",
+        answer:
+          "Yes. Pages load progressively so you can scroll through long documents smoothly.",
+      },
+      {
+        question: "Is this PDF Viewer free?",
+        answer: "Yes. You can view PDFs without creating an account.",
+      },
+    ],
+    related: ["merge-pdf", "split-pdf", "edit-pdf"],
+    accept: "application/pdf,.pdf",
+    multiple: false,
+    keywords: [
+      "pdf viewer online free",
+      "view pdf online",
+      "open pdf in browser",
+      "free pdf reader online",
+      "scroll pdf online",
+    ],
   },
 ];
 

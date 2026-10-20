@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HomeToolsFilter } from "@/components/HomeToolsFilter";
 import { FAQ } from "@/components/FAQ";
+import { ReviewsSection } from "@/components/ReviewsSection";
 import { homeContent } from "@/lib/content/home";
 import { SITE } from "@/lib/site";
 
@@ -106,6 +107,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <ReviewsSection />
 
       <section className="bg-[var(--bg-a)] pt-12 pb-2 sm:pt-16 sm:pb-3">
         <div className="site-container">

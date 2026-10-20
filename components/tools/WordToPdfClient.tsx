@@ -14,12 +14,37 @@ import { toolsById } from "@/lib/tools";
 const tool = toolsById["word-to-pdf"];
 const RELOAD_KEY = "word-pdf-engine-reload";
 
+function isolationBlockMessage(): string {
+  const host = typeof window !== "undefined" ? window.location.hostname : "";
+  const isLanIp = /^\d+\.\d+\.\d+\.\d+$/.test(host);
+  const insecure =
+    typeof window !== "undefined" && window.isSecureContext === false;
+
+  if (isLanIp || insecure) {
+    return (
+      "Word to PDF needs a secure browser context. Open this tool on " +
+      "http://localhost:" +
+      (typeof window !== "undefined" ? window.location.port || "3000" : "3000") +
+      "/word-to-pdf-converter-free (not a Wi‑Fi/LAN IP like 192.168.x.x). " +
+      "On the live site it must be HTTPS with the Word→PDF security headers."
+    );
+  }
+
+  return (
+    "The document engine could not start on this page. Open Word to PDF in a " +
+    "fresh tab from the address bar (full load), or use the latest Chrome/Edge. " +
+    "The live site also needs Cross-Origin-Opener-Policy and " +
+    "Cross-Origin-Embedder-Policy on this route."
+  );
+}
+
 export function WordToPdfClient() {
   const [blocked, setBlocked] = useState<string | null>(null);
   const [engineError, setEngineError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+
     if (window.crossOriginIsolated) {
       sessionStorage.removeItem(RELOAD_KEY);
       void prepareWordEngine().catch((error: unknown) => {
@@ -34,16 +59,18 @@ export function WordToPdfClient() {
         cancelled = true;
       };
     }
+
+    // Client-side navigations keep the previous document headers. One hard
+    // reload picks up COOP/COEP for this route.
     if (sessionStorage.getItem(RELOAD_KEY) !== "1") {
       sessionStorage.setItem(RELOAD_KEY, "1");
-      window.location.assign(
-        window.location.pathname + window.location.search + window.location.hash,
+      window.location.replace(
+        `${window.location.pathname}${window.location.search}${window.location.hash}`,
       );
       return;
     }
-    setBlocked(
-      "Reload this page to start the document engine. If a reload does not fix it, the live site is missing the two security headers required for in-browser conversion.",
-    );
+
+    setBlocked(isolationBlockMessage());
   }, []);
 
   return (
@@ -60,11 +87,12 @@ export function WordToPdfClient() {
         title="Drop Word (.docx) files"
         hint="Your file stays in this browser."
         processLabel="Convert to PDF"
+        toolName={tool.name}
         onProcess={async (files, onProgress) => {
           if (!wordEngineReady()) {
             throw new Error(
               blocked ||
-                "Reload this page so the document engine can start, then convert the file again.",
+                "Open Word to PDF on http://localhost (or HTTPS production), reload once, then convert again.",
             );
           }
           onProgress(5, "Converting…");

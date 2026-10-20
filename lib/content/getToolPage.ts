@@ -37,6 +37,8 @@ export async function getToolPage(
       return (await import("./pages/rotate-pdf")).default;
     case "protect-pdf":
       return (await import("./pages/protect-pdf")).default;
+    case "view-pdf":
+      return (await import("./pages/view-pdf")).default;
     default:
       return undefined;
   }

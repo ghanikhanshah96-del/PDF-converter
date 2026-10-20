@@ -173,6 +173,14 @@ const icons: Record<ToolId, ReactNode> = {
       <path d="M19 7l2 2M21 7l-2 2" />
     </Svg>
   ),
+  "view-pdf": (
+    <Svg>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <circle cx="11" cy="14" r="3" />
+      <path d="M16 19l-2.5-2.5" />
+    </Svg>
+  ),
 };
 
 const iconColors: Record<ToolId, string> = {
@@ -190,6 +198,7 @@ const iconColors: Record<ToolId, string> = {
   "rotate-pdf": "#b45aa0",
   "protect-pdf": "#4d78a8",
   "pdf-password-remover": "#4d78a8",
+  "view-pdf": "#6b7280",
 };
 
 export function ToolIcon({ id }: { id: ToolId }) {

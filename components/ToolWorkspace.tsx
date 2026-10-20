@@ -25,6 +25,19 @@ import {
   unlockedPdfFile,
 } from "@/lib/pdf-encryption";
 import { PasswordInput } from "@/components/PasswordInput";
+import { PdfViewer } from "@/components/PdfViewer";
+import { PdfViewerOverlay } from "@/components/PdfViewerOverlay";
+import { ReviewPrompt } from "@/components/ReviewPrompt";
+import {
+  IconClear,
+  IconDownload,
+  IconExpand,
+  IconEye,
+  IconRefresh,
+  IconTrash,
+} from "@/components/icons";
+import { isPdfBlob, setPreviewPayload } from "@/lib/preview-session";
+import { shouldAskForReview } from "@/lib/reviews";
 
 export type ProcessResult = {
   blob: Blob;
@@ -50,6 +63,8 @@ export type ToolWorkspaceProps = {
   title?: string;
   hint?: string;
   processLabel?: string;
+  /** Friendly tool name for the optional review prompt. */
+  toolName?: string;
   disabled?: boolean;
   options?: ReactNode;
   onFilesChange?: (files: File[]) => void;
@@ -144,6 +159,7 @@ export function ToolWorkspace({
   title = "Drop files here",
   hint = "or click to browse",
   processLabel = "Process",
+  toolName,
   disabled = false,
   options,
   onFilesChange,
@@ -168,6 +184,20 @@ export function ToolWorkspace({
   const [results, setResults] = useState<ResultEntry[]>([]);
   const [duplicateAck, setDuplicateAck] = useState(false);
   const duplicateAckId = useId();
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewTarget, setPreviewTarget] = useState<{
+    blob: Blob;
+    filename: string;
+  } | null>(null);
+  const [inlinePreview, setInlinePreview] = useState<{
+    id: string;
+    blob: Blob;
+    filename: string;
+    buffer: ArrayBuffer;
+  } | null>(null);
+  const [downloadedIds, setDownloadedIds] = useState<string[]>([]);
+  const reviewTimerRef = useRef<number | null>(null);
 
   const files = useMemo(() => entries.map((e) => e.file), [entries]);
   const onFilesChangeRef = useRef(onFilesChange);
@@ -562,6 +592,36 @@ export function ToolWorkspace({
     });
   };
 
+  const scheduleReviewPrompt = () => {
+    if (reviewTimerRef.current) window.clearTimeout(reviewTimerRef.current);
+    if (!shouldAskForReview()) return;
+    reviewTimerRef.current = window.setTimeout(() => {
+      setReviewOpen(true);
+    }, 900);
+  };
+
+  const showInlinePdfPreview = async (result: ResultEntry) => {
+    if (!isPdfBlob(result.blob, result.filename)) return;
+    try {
+      const buffer = await result.blob.arrayBuffer();
+      setInlinePreview({
+        id: result.id,
+        blob: result.blob,
+        filename: result.filename,
+        buffer,
+      });
+      setPreviewPayload({ blob: result.blob, filename: result.filename });
+    } catch {
+      setStatus("Could not prepare the PDF preview.");
+    }
+  };
+
+  const openFullPdfView = (blob: Blob, filename: string) => {
+    setPreviewPayload({ blob, filename });
+    setPreviewTarget({ blob, filename });
+    setPreviewOpen(true);
+  };
+
   const downloadOne = (result: ResultEntry) => {
     const ext =
       result.filename.match(/(\.[a-z0-9]{2,8})$/i)?.[1] ||
@@ -570,8 +630,16 @@ export function ToolWorkspace({
         : result.blob.type.includes("word")
           ? ".docx"
           : "");
-    downloadBlob(result.blob, ensureExtension(result.filename, ext));
-    setStatus(`Downloaded “${ensureExtension(result.filename, ext)}”.`);
+    const name = ensureExtension(result.filename, ext);
+    downloadBlob(result.blob, name);
+    setStatus(`Downloaded “${name}”.`);
+    setDownloadedIds((prev) =>
+      prev.includes(result.id) ? prev : [...prev, result.id],
+    );
+    if (isPdfBlob(result.blob, name)) {
+      void showInlinePdfPreview({ ...result, filename: name });
+    }
+    scheduleReviewPrompt();
   };
 
   const downloadAll = () => {
@@ -892,16 +960,33 @@ export function ToolWorkspace({
                 <div className="flex shrink-0 flex-wrap gap-2">
                   <button
                     type="button"
-                    className="btn btn-primary !min-h-10 !px-4 !py-2 text-sm"
+                    className="btn btn-primary btn-icon !min-h-10 !px-3 !py-2 text-sm"
                     onClick={() => downloadOne(result)}
                   >
+                    <IconDownload />
                     Download
                   </button>
+                  {isPdfBlob(result.blob, result.filename) && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-icon !min-h-10 !px-3 !py-2 text-sm"
+                      onClick={() => void showInlinePdfPreview(result)}
+                    >
+                      <IconEye />
+                      Preview
+                    </button>
+                  )}
                   <button
                     type="button"
-                    className="btn btn-secondary !min-h-10 !px-4 !py-2 text-sm text-[var(--danger)]"
-                    onClick={() => removeResult(result.id)}
+                    className="btn btn-secondary btn-icon !min-h-10 !px-3 !py-2 text-sm text-[var(--danger)]"
+                    onClick={() => {
+                      removeResult(result.id);
+                      setInlinePreview((prev) =>
+                        prev?.id === result.id ? null : prev,
+                      );
+                    }}
                   >
+                    <IconTrash />
                     Delete
                   </button>
                 </div>
@@ -912,11 +997,37 @@ export function ToolWorkspace({
           {results.length === 1 && (
             <button
               type="button"
-              className="btn btn-primary w-full sm:w-auto"
+              className="btn btn-primary btn-icon w-full sm:w-auto"
               onClick={downloadAll}
             >
+              <IconDownload />
               Download {results[0].filename}
             </button>
+          )}
+
+          {inlinePreview && (
+            <div className="rounded-xl border border-[var(--brand)]/25 bg-gradient-to-br from-[var(--brand-soft)] to-white p-3 sm:p-4">
+              <PdfViewer
+                data={inlinePreview.buffer}
+                filename={inlinePreview.filename}
+                onePageHeight
+                toolbar={
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-icon !min-h-10 !px-4 !py-2 text-sm"
+                    onClick={() =>
+                      openFullPdfView(
+                        inlinePreview.blob,
+                        inlinePreview.filename,
+                      )
+                    }
+                  >
+                    <IconExpand />
+                    Full view
+                  </button>
+                }
+              />
+            </div>
           )}
         </div>
       )}
@@ -925,7 +1036,7 @@ export function ToolWorkspace({
         {results.length === 0 && (
           <button
             type="button"
-            className="btn btn-primary w-full sm:w-auto"
+            className="btn btn-primary btn-icon w-full sm:w-auto"
             onClick={run}
             disabled={!canProcess}
           >
@@ -935,25 +1046,30 @@ export function ToolWorkspace({
         {results.length > 0 && (
           <button
             type="button"
-            className="btn btn-secondary w-full sm:w-auto"
+            className="btn btn-secondary btn-icon w-full sm:w-auto"
             onClick={() => {
               setResults([]);
+              setDownloadedIds([]);
+              setInlinePreview(null);
               setProgress(0);
               setProgressLabel("");
               setStatus("Ready to process again.");
             }}
             disabled={busy}
           >
+            <IconRefresh />
             Process again
           </button>
         )}
         {entries.length > 0 && !busy && (
           <button
             type="button"
-            className="btn btn-secondary w-full sm:w-auto"
+            className="btn btn-secondary btn-icon w-full sm:w-auto"
             onClick={() => {
               setEntries([]);
               setResults([]);
+              setDownloadedIds([]);
+              setInlinePreview(null);
               setError(null);
               setStatus(null);
               setProgress(0);
@@ -961,10 +1077,23 @@ export function ToolWorkspace({
               setDuplicateAck(false);
             }}
           >
+            <IconClear />
             Clear all
           </button>
         )}
       </div>
+
+      <PdfViewerOverlay
+        open={previewOpen}
+        blob={previewTarget?.blob ?? null}
+        filename={previewTarget?.filename ?? "document.pdf"}
+        onClose={() => setPreviewOpen(false)}
+      />
+      <ReviewPrompt
+        open={reviewOpen}
+        toolName={toolName || processLabel}
+        onClose={() => setReviewOpen(false)}
+      />
     </div>
   );
 }

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ComponentType } from "react";
+import { AddPdfToWordArticle } from "@/components/blog/AddPdfToWordArticle";
 import { CmsArticleBody } from "@/components/blog/CmsArticleBody";
 import { DownloadWordAsPdfArticle } from "@/components/blog/DownloadWordAsPdfArticle";
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
+import { OpenPdfInWordArticle } from "@/components/blog/OpenPdfInWordArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
 import {
   getBlogCoverImageSrc,
@@ -20,6 +22,8 @@ const staticArticles: Record<string, ComponentType> = {
   "how-to-download-word-document-as-pdf": DownloadWordAsPdfArticle,
   "how-to-split-pdf-pages": SplitPdfArticle,
   "how-to-merge-pdf-files": MergePdfArticle,
+  "add-pdf-to-word-document": AddPdfToWordArticle,
+  "how-can-i-open-pdf-file-in-word": OpenPdfInWordArticle,
 };
 
 interface BlogArticlePageProps {

@@ -79,6 +79,7 @@ const TOOL_IDS: ToolId[] = [
   "pdf-to-excel",
   "rotate-pdf",
   "protect-pdf",
+  "view-pdf",
 ];
 
 /** Every tool uses the same layout as PDF to Word. */
