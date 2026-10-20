@@ -12,7 +12,7 @@ export type ToolId =
   | "excel-to-pdf"
   | "pdf-to-excel"
   | "rotate-pdf"
-  | "unlock-pdf";
+  | "protect-pdf";
 
 export type ToolCategory =
   | "convert"
@@ -553,7 +553,7 @@ export const tools: ToolDefinition[] = [
                 "answer": "The original file remains unchanged unless you replace it. It is recommended to keep a backup copy."
           }
     ],
-    related: ["unlock-pdf","sign-pdf","compress-pdf"],
+    related: ["protect-pdf","sign-pdf","compress-pdf"],
     accept: "application/pdf,.pdf",
     multiple: false,
     keywords: ["how to remove password from pdf","how do i remove a password from a pdf","remove password from pdf","unlock password protected pdf","pdf unlock tool online","remove pdf security free"],
@@ -610,7 +610,7 @@ export const tools: ToolDefinition[] = [
                 "answer": "A signed PDF can still have different editing options depending on how the signature was applied and document restrictions."
           }
     ],
-    related: ["edit-pdf","unlock-pdf","merge-pdf"],
+    related: ["edit-pdf","protect-pdf","merge-pdf"],
     accept: "application/pdf,.pdf",
     multiple: false,
     keywords: ["sign pdf online","add signature to pdf online free","electronic signature pdf","esign pdf online free","free pdf signer online","how to sign a pdf document","create digital signature for pdf"],
@@ -787,61 +787,61 @@ export const tools: ToolDefinition[] = [
     keywords: ["rotate pdf document online","rotate pdf pages online free","rotate PDF file free","change PDF page orientation online","turn PDF pages clockwise","PDF page rotator online","rotate PDF pages and save"],
   },
   {
-    id: "unlock-pdf",
-    slug: "unlock-pdf-online",
-    href: "/unlock-pdf-online",
-    name: "Unlock PDF",
-    shortName: "Unlock",
+    id: "protect-pdf",
+    slug: "protect-pdf-online",
+    href: "/protect-pdf-online",
+    name: "Protect PDF",
+    shortName: "Protect",
     category: "secure",
-    summary: "Unlock your PDF files quickly with our free Unlock PDF Online tool.",
-    description: "Unlock your PDF files quickly with our free Unlock PDF Online tool. Remove restrictions from your PDF documents and make them easier to access, edit, copy, or share when you have the required permission.",
-    h1: "Unlock PDF Online Free",
-    title: "Unlock PDF Online Free | Remove PDF Restrictions Easily",
-    metaDescription: "Unlock PDF files online for free. Remove PDF restrictions and access your documents easily with our simple PDF unlock tool.",
+    summary: "Protect your PDF files with a password using our free Protect PDF Online tool.",
+    description: "Protect your PDF files with a password using our free Protect PDF Online tool. Choose a password, lock the document in your browser, and download a secured PDF that opens only with the password you set.",
+    h1: "Protect PDF Online Free",
+    title: "Protect PDF Online Free | Password Protect PDF Files",
+    metaDescription: "Protect PDF files online for free. Add a password to your PDF in the browser and download a locked document that only opens with your password.",
     howTo: [
-          "Select your locked PDF file.",
-          "Start the unlocking process.",
-          "Wait while restrictions are removed.",
-          "Download your unlocked PDF document."
+          "Select the PDF file you want to protect.",
+          "Enter a new password and confirm it.",
+          "Start the protection process.",
+          "Download your password-protected PDF."
     ],
     faqs: [
           {
-                "question": "How do I unlock a PDF online?",
-                "answer": "Select your PDF file, start the unlocking process, and download the document after restrictions are removed."
+                "question": "How do I password protect a PDF online?",
+                "answer": "Select your PDF, enter and confirm a password, then download the protected file."
           },
           {
-                "question": "Can I unlock a PDF for free?",
-                "answer": "Yes. You can unlock PDF documents online without purchasing additional software."
+                "question": "Can I protect a PDF for free?",
+                "answer": "Yes. You can add a password to PDF documents online without paid software."
           },
           {
-                "question": "What does unlocking a PDF do?",
-                "answer": "Unlocking removes certain restrictions that limit actions such as editing, copying, or printing."
+                "question": "What does protecting a PDF do?",
+                "answer": "Protection locks the file with a password so others need that password to open it."
           },
           {
-                "question": "Can I unlock a password protected PDF?",
-                "answer": "If you have the correct authorization or password, you can remove protection from your own PDF document."
+                "question": "Will anyone be able to open my protected PDF?",
+                "answer": "Only people who know the password you set can open the protected file."
           },
           {
-                "question": "Is an unlocked PDF editable?",
-                "answer": "If editing restrictions were removed, the document may become easier to modify with a PDF editor."
+                "question": "Can I protect PDF files on my phone?",
+                "answer": "Yes. The tool works in a mobile browser without installing software."
           },
           {
-                "question": "Can I unlock PDF documents on my phone?",
-                "answer": "Yes. Online PDF unlock tools work on smartphones and tablets."
+                "question": "Does password protection change the PDF content?",
+                "answer": "No. Protection adds a password. The pages and content stay the same."
           },
           {
-                "question": "Does unlocking PDF reduce quality?",
-                "answer": "No. Unlocking changes document permissions but does not reduce the quality of text or images."
+                "question": "What if I forget the password?",
+                "answer": "We cannot recover forgotten passwords. Keep a safe copy of the password and an unlocked backup if needed."
           },
           {
-                "question": "What is the difference between locked and unlocked PDF?",
-                "answer": "A locked PDF has security restrictions, while an unlocked PDF allows authorized users to access more document features."
+                "question": "How do I remove a PDF password later?",
+                "answer": "Use our PDF Password Remover tool with the correct password to create an unlocked copy."
           }
     ],
     related: ["pdf-password-remover","sign-pdf","edit-pdf"],
     accept: "application/pdf,.pdf",
-    multiple: false,
-    keywords: ["unlock pdf document online","unlock password protected pdf","remove pdf restrictions online","pdf unlocker online free","unlock secured pdf file","open locked pdf online"],
+    multiple: true,
+    keywords: ["protect pdf online free","password protect pdf online","lock pdf with password","secure pdf file online","encrypt pdf browser","add password to pdf free"],
   },
 ];
 

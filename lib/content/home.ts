@@ -56,9 +56,9 @@ export const homeContent = {
         href: "/sign-pdf-online-free",
       },
       {
-        title: "Unlock PDF Online",
-        text: "Remove PDF restrictions from documents you are authorized to access.",
-        href: "/unlock-pdf-online",
+        title: "Protect PDF Online",
+        text: "Add a password to your PDF so only people with the password can open it.",
+        href: "/protect-pdf-online",
       },
       {
         title: "PDF Password Remover",

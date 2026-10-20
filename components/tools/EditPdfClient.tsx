@@ -82,6 +82,9 @@ export function EditPdfClient() {
   const pdfRef = useRef<ProgressivePdf | null>(null);
   const historyRef = useRef<Array<{ overlays: EditorOverlay[]; edits: LineEdit[] }>>([]);
   const futureRef = useRef<Array<{ overlays: EditorOverlay[]; edits: LineEdit[] }>>([]);
+  const overlaysRef = useRef<EditorOverlay[]>([]);
+  const editsRef = useRef<LineEdit[]>([]);
+  const editGen = useRef(0);
   const fitRef = useRef(guessEditorWidth());
   const mainRef = useRef<HTMLElement>(null);
   const saveGen = useRef(0);
@@ -119,6 +122,9 @@ export function EditPdfClient() {
   const [error, setError] = useState<string | null>(null);
   const [dropActive, setDropActive] = useState(false);
 
+  overlaysRef.current = overlays;
+  editsRef.current = lineEdits;
+
   const selected = overlays.find((o) => o.id === selectedId) ?? null;
   const currentPreview = pageCache[currentPage] ?? null;
   const pageOverlays = overlays.filter((o) => o.pageIndex === currentPage);
@@ -127,12 +133,18 @@ export function EditPdfClient() {
   const hasLineEdits = lineEdits.some((edit) => edit.text !== edit.original);
 
   const pushHistory = useCallback((next: EditorOverlay[], nextEdits?: LineEdit[]) => {
-    historyRef.current.push({ overlays, edits: lineEdits });
+    editGen.current += 1;
+    historyRef.current.push({
+      overlays: overlaysRef.current,
+      edits: editsRef.current,
+    });
     if (historyRef.current.length > 40) historyRef.current.shift();
     futureRef.current = [];
+    overlaysRef.current = next;
+    if (nextEdits) editsRef.current = nextEdits;
     setOverlays(next);
     if (nextEdits) setLineEdits(nextEdits);
-  }, [overlays, lineEdits]);
+  }, []);
 
   /** Live drag/resize updates — no undo snapshots (keeps editor fast). */
   const setOverlaysLive = useCallback(
@@ -145,7 +157,13 @@ export function EditPdfClient() {
   const undo = () => {
     const prev = historyRef.current.pop();
     if (!prev) return;
-    futureRef.current.push({ overlays, edits: lineEdits });
+    editGen.current += 1;
+    futureRef.current.push({
+      overlays: overlaysRef.current,
+      edits: editsRef.current,
+    });
+    overlaysRef.current = prev.overlays;
+    editsRef.current = prev.edits;
     setOverlays(prev.overlays);
     setLineEdits(prev.edits);
     setSelectedId(null);
@@ -154,10 +172,21 @@ export function EditPdfClient() {
   const redo = () => {
     const next = futureRef.current.pop();
     if (!next) return;
-    historyRef.current.push({ overlays, edits: lineEdits });
+    editGen.current += 1;
+    historyRef.current.push({
+      overlays: overlaysRef.current,
+      edits: editsRef.current,
+    });
+    overlaysRef.current = next.overlays;
+    editsRef.current = next.edits;
     setOverlays(next.overlays);
     setLineEdits(next.edits);
   };
+
+  const undoRef = useRef(undo);
+  const redoRef = useRef(redo);
+  undoRef.current = undo;
+  redoRef.current = redo;
 
   const resetDoc = () => {
     pdfRef.current?.destroy();
@@ -445,23 +474,22 @@ export function EditPdfClient() {
     setSelectedId(null);
   };
 
-  const commitLine = async (line: TextLine, text: string) => {
+  const commitLine = (line: TextLine, text: string) => {
     if (line.angle === null) return;
     const value = text.replace(/\r?\n/g, "");
-    const existing = lineEdits.find((edit) => edit.id === line.id);
+    const existing = editsRef.current.find((edit) => edit.id === line.id);
     const original = existing?.original ?? line.text;
     if (value === original) {
-      if (existing) pushHistory(overlays, lineEdits.filter((edit) => edit.id !== line.id));
+      if (existing) {
+        pushHistory(
+          overlaysRef.current,
+          editsRef.current.filter((edit) => edit.id !== line.id),
+        );
+      }
       return;
     }
     const preview = pageCache[line.pageIndex];
-    const sampled = preview
-      ? await sampleLineColors(preview.imageUrl, line.x, line.y, line.w, line.h)
-      : {
-          cover: { r: 1, g: 1, b: 1 },
-          color: { r: 0.1, g: 0.1, b: 0.12 },
-          uncertain: true,
-        };
+    const extra = preview ? (line.fontSize * 1.05) / preview.pdfHeight : line.h;
     const edit: LineEdit = {
       id: line.id,
       pageIndex: line.pageIndex,
@@ -469,51 +497,90 @@ export function EditPdfClient() {
       text: value,
       items: line.items,
       x: line.x,
-      y: line.y,
+      y: Math.max(0, line.y - line.fontSize * 0.2 / (preview?.pdfHeight ?? 1)),
       w: line.w,
-      h: line.h,
+      h: Math.min(1, line.h + extra),
       originX: line.originX,
       originY: line.originY,
       advance: line.advance,
       fontSize: line.fontSize,
       angle: line.angle,
-      cover: sampled.cover,
-      color: sampled.color,
-      coverUncertain: sampled.uncertain,
+      cover: { r: 1, g: 1, b: 1 },
+      color: { r: 0.1, g: 0.1, b: 0.12 },
+      coverUncertain: true,
     };
-    pushHistory(overlays, [
-      ...lineEdits.filter((item) => item.id !== line.id),
+    pushHistory(overlaysRef.current, [
+      ...editsRef.current.filter((item) => item.id !== line.id),
       edit,
     ]);
     setNotice(null);
+    if (!preview) return;
+    const gen = editGen.current;
+    void sampleLineColors(
+      preview.imageUrl,
+      line.x,
+      line.y,
+      line.w,
+      line.h,
+      line.fontSize / preview.pdfHeight,
+    ).then((sampled) => {
+      if (!alive.current || editGen.current !== gen) return;
+      setLineEdits((prev) => {
+        const next = prev.map((item) =>
+          item.id === line.id && item.text === value
+            ? {
+                ...item,
+                cover: sampled.cover,
+                color: sampled.color,
+                coverUncertain: sampled.uncertain,
+                ...(sampled.ink
+                  ? {
+                      x: sampled.ink.x,
+                      y: sampled.ink.y,
+                      w: Math.max(sampled.ink.w, line.w),
+                      h: sampled.ink.h,
+                    }
+                  : {}),
+              }
+            : item,
+        );
+        editsRef.current = next;
+        return next;
+      });
+    });
   };
 
   useEffect(() => {
+    const typingTarget = (target: EventTarget | null) => {
+      const node = target as HTMLElement | null;
+      return Boolean(
+        node &&
+          (node.tagName === "INPUT" ||
+            node.tagName === "TEXTAREA" ||
+            node.tagName === "SELECT" ||
+            node.isContentEditable),
+      );
+    };
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        if (typingTarget(e.target)) return;
         e.preventDefault();
-        if (e.shiftKey) redo();
-        else undo();
+        if (e.shiftKey) redoRef.current();
+        else undoRef.current();
         return;
       }
       if (e.key === "Delete" || e.key === "Backspace") {
-        const t = e.target as HTMLElement | null;
-        if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT"))
-          return;
+        if (typingTarget(e.target)) return;
         deleteSelected();
       }
       if (e.key === "Escape") {
-        const t = e.target as HTMLElement | null;
-        if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT")) {
-          return;
-        }
+        if (typingTarget(e.target)) return;
         resetDoc();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteSelected, overlays]);
+  }, [deleteSelected]);
 
   const patchSelected = (patch: Partial<EditorOverlay>) => {
     if (!selectedId) return;
@@ -1038,6 +1105,10 @@ export function EditPdfClient() {
               <button
                 type="button"
                 className="pdf-tool-btn !h-[34px] !w-[34px]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("editor-line-gesture", { detail: "commit" }));
+                }}
                 onClick={undo}
                 title="Undo"
               >
@@ -1046,6 +1117,10 @@ export function EditPdfClient() {
               <button
                 type="button"
                 className="pdf-tool-btn !h-[34px] !w-[34px]"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("editor-line-gesture", { detail: "cancel" }));
+                }}
                 onClick={redo}
                 title="Redo"
               >
@@ -1254,7 +1329,7 @@ export function EditPdfClient() {
                     >
                       <p className="truncate font-medium">{edit.text || "(deleted line)"}</p>
                       <p className="text-[11px] text-[var(--ink-muted)]">
-                        Edited line. The original font and size are kept.
+                        Edited line. Undo removes this change. Save replaces the original words.
                       </p>
                     </li>
                   ))}

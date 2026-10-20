@@ -6,12 +6,17 @@ import {
   PDFNumber,
   PDFRawStream,
   StandardFonts,
+  degrees,
+  rgb,
+  type PDFFont,
   type PDFPage,
 } from "pdf-lib";
+import { assertEditorGlyphs, editorFontBytes, embedEditorFont } from "@/lib/pdfFont";
 import { assertPdfHasVisiblePages } from "@/lib/pdf/visiblePdf";
 import { getPdfjs } from "@/lib/pdfjs";
-import { replaceSimpleLiteral } from "@/lib/pdf/textOps";
+import { blankLines, blankTextAt, replaceSimpleLiteral } from "@/lib/pdf/textOps";
 import type { CardinalAngle, LineEdit } from "@/lib/pdf/textRuns";
+import { uprightImage, viewSize, viewportPointToPdf } from "@/lib/pdf/viewBox";
 
 const CANNOT =
   "This font can't take those letters. The line was left unchanged. No file was saved.";
@@ -125,6 +130,43 @@ function roomFor(
   return Math.max(4, pageWidth - originX - 2);
 }
 
+function paintReplacement(page: PDFPage, edit: LineEdit, font: PDFFont) {
+  const { width, height } = page.getSize();
+  const rotation = page.getRotation().angle;
+  const view = viewSize(rotation, width, height);
+  const bleed = Math.max(1.5, edit.fontSize * 0.16);
+  const vx = edit.x * view.width - bleed;
+  const vy = edit.y * view.height - bleed;
+  const vw = Math.max(edit.w * view.width, edit.advance) + bleed * 2;
+  const vh = edit.h * view.height + bleed * 2;
+  const box = uprightImage(rotation, width, height, vx, vy, vw, vh);
+  const cover = edit.coverUncertain ? { r: 1, g: 1, b: 1 } : edit.cover;
+  page.drawRectangle({
+    x: box.x,
+    y: box.y,
+    width: Math.max(box.width, 1),
+    height: Math.max(box.height, 1),
+    rotate: degrees(box.rotate),
+    color: rgb(cover.r, cover.g, cover.b),
+  });
+  if (!edit.text) return;
+  const baseline = viewportPointToPdf(
+    rotation,
+    width,
+    height,
+    edit.originX,
+    view.height - edit.originY,
+  );
+  page.drawText(edit.text, {
+    x: baseline.x,
+    y: baseline.y,
+    size: edit.fontSize,
+    font,
+    color: rgb(edit.color.r, edit.color.g, edit.color.b),
+    rotate: degrees(edit.angle),
+  });
+}
+
 export async function rewriteLines(
   doc: PDFDocument,
   edits: LineEdit[],
@@ -134,6 +176,7 @@ export async function rewriteLines(
 
   const applied: AppliedLine[] = [];
   const writes: Array<{ page: PDFPage; source: string }> = [];
+  const redraws: Array<{ page: PDFPage; edit: LineEdit }> = [];
   const byPage = new Map<number, LineEdit[]>();
   for (const edit of pending) {
     const list = byPage.get(edit.pageIndex) ?? [];
@@ -144,33 +187,73 @@ export async function rewriteLines(
   for (const [pageIndex, pageEdits] of byPage) {
     const page = doc.getPage(pageIndex);
     const { width, height } = page.getSize();
-    let source = await readPageSource(page);
-    if (source === null) throw new Error(CANNOT);
+    const read = await readPageSource(page);
+    if (read === null) throw new Error(CANNOT);
+    let source: string = read;
     for (const edit of pageEdits) {
-      if (edit.items.length !== 1 || edit.items[0] !== edit.original) {
-        throw new Error(CANNOT);
+      const single =
+        edit.items.length === 1 && edit.items[0] === edit.original
+          ? replaceSimpleLiteral(source, edit.original, edit.text)
+          : null;
+      const standard = single ? standardFont(page, single.fontResource) : null;
+      if (single && standard) {
+        const probe = await PDFDocument.create();
+        const font = await probe.embedFont(standard);
+        const textWidth = edit.text ? font.widthOfTextAtSize(edit.text, single.fontSize) : 0;
+        const limit = roomFor(edit.angle, edit.originX, edit.originY, width, height);
+        if (textWidth > limit + 0.5) throw new Error(FIT);
+        source = single.content;
+        applied.push({
+          pageIndex,
+          original: edit.original,
+          drawn: edit.text,
+          removed: true,
+        });
+        continue;
       }
-      const replaced = replaceSimpleLiteral(source, edit.original, edit.text);
-      if (!replaced) throw new Error(CANNOT);
-      const standard = standardFont(page, replaced.fontResource);
-      if (!standard) throw new Error(CANNOT);
-      const probe = await PDFDocument.create();
-      const font = await probe.embedFont(standard);
-      const textWidth = edit.text ? font.widthOfTextAtSize(edit.text, replaced.fontSize) : 0;
-      const limit = roomFor(edit.angle, edit.originX, edit.originY, width, height);
-      if (textWidth > limit + 0.5) throw new Error(FIT);
-      source = replaced.content;
+
+      const pieces = edit.items.filter((item) => item.trim().length > 0);
+      const sameLine = pieces.join("") === edit.original || pieces.length === 0;
+      let blanked = blankLines(source, [pieces.length ? pieces : [edit.original]]);
+      if (!blanked.removed[0] && sameLine && pieces.length !== 1) {
+        blanked = blankLines(source, [[edit.original]]);
+      }
+      if (!blanked.removed[0] && sameLine && edit.angle === 0) {
+        const positioned = blankTextAt(source, {
+          x: edit.originX,
+          y: edit.originY,
+          advance: edit.advance,
+          fontSize: edit.fontSize,
+        });
+        if (positioned.removed) blanked = { content: positioned.content, removed: [true] };
+      }
+      if (!blanked.removed[0] && !sameLine) throw new Error(CANNOT);
+      if (blanked.removed[0]) source = blanked.content;
+      redraws.push({ page, edit });
       applied.push({
         pageIndex,
         original: edit.original,
         drawn: edit.text,
-        removed: true,
+        removed: blanked.removed[0],
       });
     }
     writes.push({ page, source });
   }
 
   for (const write of writes) writePageSource(write.page, write.source);
+
+  if (redraws.length > 0) {
+    const fontBytes = await editorFontBytes();
+    const drawn = redraws.map((item) => item.edit.text).join("");
+    try {
+      if (drawn) assertEditorGlyphs(fontBytes, drawn);
+    } catch {
+      throw new Error(CANNOT);
+    }
+    const font = await embedEditorFont(doc);
+    for (const item of redraws) paintReplacement(item.page, item.edit, font);
+  }
+
   return { notices: [], applied };
 }
 

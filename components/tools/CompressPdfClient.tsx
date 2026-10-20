@@ -4,10 +4,25 @@ import { useState } from "react";
 import { ToolWorkspace } from "@/components/ToolWorkspace";
 import { basename } from "@/lib/download";
 import { toPdfBlob } from "@/lib/blob";
+import { formatBytes } from "@/lib/limits";
 import { toolsById } from "@/lib/tools";
 import type { CompressQuality } from "@/lib/engines/compress";
 
 const tool = toolsById["compress-pdf"];
+
+function savingsNotice(originalBytes: number, compressedBytes: number): string {
+  const before = formatBytes(originalBytes);
+  const after = formatBytes(compressedBytes);
+  if (compressedBytes < originalBytes) {
+    const pct = Math.round((1 - compressedBytes / originalBytes) * 100);
+    const saved = formatBytes(originalBytes - compressedBytes);
+    return `Compressed from ${before} to ${after} — about ${pct}% smaller (saved ${saved}).`;
+  }
+  if (compressedBytes === originalBytes) {
+    return `File size stayed at ${after}. Try a lower quality setting for a smaller file.`;
+  }
+  return `Result is ${after} (was ${before}). This PDF was already compact — try a lower quality setting.`;
+}
 
 export function CompressPdfClient() {
   const [level, setLevel] = useState<CompressQuality>("medium");
@@ -25,9 +40,9 @@ export function CompressPdfClient() {
           <legend className="mb-1 w-full font-medium">Quality</legend>
           {(
             [
-              ["high", "High (larger)"],
-              ["medium", "Medium"],
-              ["low", "Low (smaller)"],
+              ["high", "High (larger file, sharper pages)"],
+              ["medium", "Medium (balanced)"],
+              ["low", "Low (smallest file)"],
             ] as const
           ).map(([value, label]) => (
             <label key={value} className="inline-flex items-center gap-2">
@@ -43,14 +58,17 @@ export function CompressPdfClient() {
         </fieldset>
       }
       onProcess={async (files, onProgress) => {
-        onProgress(10, "Loading libraries…");
+        const file = files[0];
+        onProgress(5, "Getting ready to compress…");
         const { compressPdf } = await import("@/lib/engines/compress");
-        onProgress(35, "Re-encoding pages…");
-        const bytes = await compressPdf(files[0], level);
-        onProgress(90, "Saving…");
+        const bytes = await compressPdf(file, level, onProgress);
+        const blob = toPdfBlob(bytes);
         return {
-          blob: toPdfBlob(bytes),
-          filename: `${basename(files[0].name)}-compressed.pdf`,
+          blob,
+          filename: `${basename(file.name)}-compressed.pdf`,
+          originalBytes: file.size,
+          resultBytes: blob.size,
+          notice: savingsNotice(file.size, blob.size),
         };
       }}
     />

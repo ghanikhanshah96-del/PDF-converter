@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LineEdit, TextLine } from "@/lib/pdf/textRuns";
 import type { EditorOverlay, PagePreview } from "./types";
 
@@ -56,6 +56,8 @@ export function PdfPageBoard({
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const lineCommitted = useRef(false);
+  const draftRef = useRef("");
+  draftRef.current = draft;
   const focusedLine = useRef<string | null>(null);
   const focusedOverlay = useRef<string | null>(null);
   const dragRef = useRef<{
@@ -75,6 +77,19 @@ export function PdfPageBoard({
   } | null>(null);
 
   const pageOverlays = overlays.filter((o) => o.pageIndex === page.pageIndex);
+
+  useEffect(() => {
+    const onGesture = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail;
+      if (!editingLineId) return;
+      const line = lines.find((item) => item.id === editingLineId);
+      lineCommitted.current = true;
+      if (detail === "commit" && line) onCommitLine?.(line, draftRef.current);
+      setEditingLineId(null);
+    };
+    window.addEventListener("editor-line-gesture", onGesture);
+    return () => window.removeEventListener("editor-line-gesture", onGesture);
+  }, [editingLineId, lines, onCommitLine]);
   const width = page.displayWidth * zoom;
 
   const updateOverlay = (id: string, patch: Partial<EditorOverlay>) => {
@@ -150,22 +165,51 @@ export function PdfPageBoard({
             8,
             line.fontSize * zoom * (page.displayWidth / page.pdfWidth),
           );
+          const mask = Boolean(edit) || editing;
+          const emH = line.fontSize / page.pdfHeight;
+          const emW = line.fontSize / page.pdfWidth;
+          const grow = mask && (!edit || edit.coverUncertain || editing);
+          const rise = grow ? emH * 0.28 : emH * 0.08;
+          const drop = grow ? emH * 1.05 : emH * 0.28;
+          const side = grow ? emW * 0.16 : emW * 0.08;
+          const top0 = edit ? Math.min(line.y, edit.y) : line.y;
+          const left0 = edit ? Math.min(line.x, edit.x) : line.x;
+          const right0 = edit ? Math.max(line.x + line.w, edit.x + edit.w) : line.x + line.w;
+          const bottom0 = edit ? Math.max(line.y + line.h, edit.y + edit.h) : line.y + line.h;
+          const top = Math.max(0, top0 - (mask ? rise : 0));
+          const left = Math.max(0, left0 - (mask ? side : 0));
+          const width = Math.min(1 - left, Math.max(right0 - left0, 0.04) + (mask ? side * 2 : 0));
+          const height = Math.min(1 - top, Math.max(bottom0 - top0, 0.02) + (mask ? rise + drop : 0));
+          const textPad = Math.max(0, (line.y - top) * page.displayHeight);
+          const ink = edit
+            ? `rgb(${Math.round(edit.color.r * 255)}, ${Math.round(edit.color.g * 255)}, ${Math.round(edit.color.b * 255)})`
+            : "transparent";
+          const paper = edit
+            ? `rgb(${Math.round((edit.coverUncertain ? 1 : edit.cover.r) * 255)}, ${Math.round((edit.coverUncertain ? 1 : edit.cover.g) * 255)}, ${Math.round((edit.coverUncertain ? 1 : edit.cover.b) * 255)})`
+            : "transparent";
           return (
             <div
               key={line.id}
               data-line="true"
               className={`absolute ${drawMode || panMode ? "pointer-events-none" : ""}`}
               style={{
-                left: `${line.x * 100}%`,
-                top: `${line.y * 100}%`,
-                width: `${Math.max(line.w, 0.04) * 100}%`,
-                height: `${Math.max(line.h, 0.02) * 100}%`,
+                left: `${left * 100}%`,
+                top: `${top * 100}%`,
+                width: `${width * 100}%`,
+                height: `${height * 100}%`,
+                zIndex: mask ? 2 : 1,
               }}
             >
               {editing ? (
                 <input
                   className="h-full w-full border border-[#3b82f6] bg-white px-0.5 text-[var(--ink)] outline-none"
-                  style={{ fontSize: `${fontPx}px` }}
+                  style={{
+                    fontSize: `${fontPx}px`,
+                    lineHeight: 1,
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    paddingTop: `${textPad}px`,
+                    boxSizing: "border-box",
+                  }}
                   value={draft}
                   aria-label={`Edit line: ${line.text}`}
                   ref={(node) => {
@@ -205,7 +249,7 @@ export function PdfPageBoard({
               ) : (
                 <button
                   type="button"
-                  className={`h-full w-full overflow-hidden text-left ${
+                  className={`flex h-full w-full items-start overflow-hidden text-left ${
                     line.editable
                       ? "hover:outline-1 hover:outline-[#3b82f6]"
                       : "cursor-not-allowed"
@@ -213,12 +257,11 @@ export function PdfPageBoard({
                   style={{
                     fontSize: `${fontPx}px`,
                     lineHeight: 1,
-                    color: edit
-                      ? `rgb(${Math.round(edit.color.r * 255)}, ${Math.round(edit.color.g * 255)}, ${Math.round(edit.color.b * 255)})`
-                      : "transparent",
-                    background: edit
-                      ? `rgb(${Math.round(edit.cover.r * 255)}, ${Math.round(edit.cover.g * 255)}, ${Math.round(edit.cover.b * 255)})`
-                      : "transparent",
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    boxSizing: "border-box",
+                    paddingTop: edit ? `${textPad}px` : undefined,
+                    color: ink,
+                    background: paper,
                   }}
                   title={line.editable ? "Edit this line" : line.reason}
                   aria-label={line.editable ? `Edit ${line.text}` : line.reason}

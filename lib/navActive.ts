@@ -10,6 +10,7 @@ const TOOL_PREFIXES = [
   "/sign-pdf",
   "/rotate-pdf",
   "/unlock-pdf",
+  "/protect-pdf",
   "/pdf-password-remover",
 ];
 

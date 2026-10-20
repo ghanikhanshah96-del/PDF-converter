@@ -6,24 +6,19 @@ import { basename } from "@/lib/download";
 import { toPdfBlob } from "@/lib/blob";
 import { toolsById } from "@/lib/tools";
 
-function UnlockForm({
-  title,
-  processLabel,
-}: {
-  title: string;
-  processLabel: string;
-}) {
+/** Password remover — keep unlock UX for users who already know the password. */
+export function PasswordRemoverClient() {
   const [password, setPassword] = useState("");
-  const tool = toolsById["unlock-pdf"];
+  const tool = toolsById["pdf-password-remover"];
 
   return (
     <ToolWorkspace
       accept={tool.accept}
       multiple
       processMode="each"
-      title={title}
+      title="Drop a password-protected PDF"
       hint="Select one or more locked PDFs — or click to browse"
-      processLabel={processLabel}
+      processLabel="Remove password"
       passwordGate={false}
       options={
         <>
@@ -49,30 +44,17 @@ function UnlockForm({
         if (!password.trim()) throw new Error("Enter the PDF password.");
       }}
       onProcess={async (files, onProgress) => {
-        onProgress(20, "Loading unlocker…");
+        onProgress(20, "Opening the locked PDF…");
         const { unlockPdf } = await import("@/lib/engines/unlock");
-        onProgress(50, "Removing protection…");
+        onProgress(55, "Removing the password…");
         const bytes = await unlockPdf(files[0], password);
+        onProgress(90, "Saving an unlocked copy…");
         return {
           blob: toPdfBlob(bytes),
           filename: `${basename(files[0].name)}-unlocked.pdf`,
+          notice: "Password removed. Your unlocked PDF is ready to download.",
         };
       }}
-    />
-  );
-}
-
-export function UnlockPdfClient() {
-  return (
-    <UnlockForm title="Drop a protected PDF" processLabel="Unlock PDF" />
-  );
-}
-
-export function PasswordRemoverClient() {
-  return (
-    <UnlockForm
-      title="Drop a password-protected PDF"
-      processLabel="Remove password"
     />
   );
 }

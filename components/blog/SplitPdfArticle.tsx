@@ -78,7 +78,7 @@ export function SplitPdfArticle() {
           Decide whether the selected pages should stay together or become
           separate files.
         </p>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ul className="point-grid">
           <li>
             <strong>One PDF with selected pages.</strong> Use this for a
             chapter, a report section, or a few contract pages.
@@ -226,7 +226,7 @@ export function SplitPdfArticle() {
           A 20-page file that should become pages 1–10 and pages 11–20 needs
           two runs. One operation cannot produce two grouped multi-page PDFs.
         </p>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ol className="point-grid point-grid-ordered">
           <li>
             Select the original, enter <code>1-10</code>, choose{" "}
             <strong>One PDF</strong>, and download it. Rename it{" "}
@@ -278,7 +278,7 @@ export function SplitPdfArticle() {
         <p className="mt-3 text-base leading-7 text-[var(--ink)]">
           The new PDF does not keep every feature of the original:
         </p>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ul className="point-grid">
           <li>Bookmarks</li>
           <li>Document information, including title and author</li>
           <li>Working interactive forms</li>
@@ -378,7 +378,7 @@ export function SplitPdfArticle() {
         <h2 id="before-sharing" className={h2Class}>
           What to check before you share the result
         </h2>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ol className="point-grid point-grid-ordered">
           <li>Confirm the PDF or ZIP contains every page you meant to keep.</li>
           <li>Confirm the ascending order is the order you want.</li>
           <li>Check that text and images are readable.</li>

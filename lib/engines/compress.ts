@@ -10,17 +10,29 @@ const QUALITY_MAP: Record<CompressQuality, { scale: number; quality: number }> =
     low: { scale: 0.9, quality: 0.5 },
   };
 
+export type CompressProgress = (pct: number, label: string) => void;
+
 export async function compressPdf(
   file: File,
   level: CompressQuality = "medium",
+  onProgress?: CompressProgress,
 ): Promise<Uint8Array> {
   const { scale, quality } = QUALITY_MAP[level];
+  onProgress?.(8, "Opening your PDF…");
   const pdfjs = await getPdfjs();
   const data = new Uint8Array(await file.arrayBuffer());
   const src = await pdfjs.getDocument({ data }).promise;
+  const total = src.numPages;
   const out = await PDFDocument.create();
 
-  for (let i = 1; i <= src.numPages; i++) {
+  for (let i = 1; i <= total; i++) {
+    const pct = 12 + Math.round((i / Math.max(total, 1)) * 72);
+    onProgress?.(
+      pct,
+      total === 1
+        ? "Compressing your page…"
+        : `Compressing page ${i} of ${total}…`,
+    );
     const page = await src.getPage(i);
     const viewport = page.getViewport({ scale });
     const canvas = document.createElement("canvas");
@@ -46,5 +58,8 @@ export async function compressPdf(
     });
   }
 
-  return out.save({ useObjectStreams: true });
+  onProgress?.(90, "Building your smaller PDF…");
+  const bytes = await out.save({ useObjectStreams: true });
+  onProgress?.(98, "Almost done — packing the file…");
+  return bytes;
 }

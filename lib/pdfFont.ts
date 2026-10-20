@@ -1,19 +1,23 @@
 import { PDFDocument, StandardFonts, type PDFFont } from "pdf-lib";
 import * as fontkit from "@pdf-lib/fontkit";
 
+const SHARED_FONT = "__bestfreepdfEditorFont";
+
 let cachedFontBytes: ArrayBuffer | null = null;
 
 /** Tests and the editor can supply the font when fetch is unavailable. */
 export function primeEditorFont(bytes: ArrayBuffer) {
-  cachedFontBytes = bytes;
+  const copy = bytes.slice(0);
+  cachedFontBytes = copy;
+  (globalThis as unknown as Record<string, ArrayBuffer>)[SHARED_FONT] = copy;
 }
 
 export async function editorFontBytes(): Promise<ArrayBuffer> {
   const bytes = await loadUnicodeFontBytes();
-  if (!bytes) {
+  if (!bytes || bytes.byteLength < 100) {
     throw new Error("The text font failed to load. No file was saved.");
   }
-  return bytes;
+  return bytes.slice(0);
 }
 
 /** Embed Noto Sans. Missing font is an error, so edits are not rewritten as "?". */
@@ -56,7 +60,12 @@ export function assertEditorGlyphs(fontBytes: ArrayBuffer, text: string) {
 }
 
 async function loadUnicodeFontBytes(): Promise<ArrayBuffer | null> {
-  if (cachedFontBytes) return cachedFontBytes;
+  if (cachedFontBytes && cachedFontBytes.byteLength > 100) return cachedFontBytes;
+  const shared = (globalThis as unknown as Record<string, ArrayBuffer | undefined>)[SHARED_FONT];
+  if (shared && shared.byteLength > 100) {
+    cachedFontBytes = shared;
+    return shared;
+  }
   if (typeof fetch === "undefined") return null;
 
   try {

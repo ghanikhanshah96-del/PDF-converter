@@ -21,7 +21,7 @@ const TOOL_PRIORITY: Partial<Record<ToolId, number>> = {
   "edit-pdf": 0.9,
   "sign-pdf": 0.88,
   "pdf-password-remover": 0.85,
-  "unlock-pdf": 0.85,
+  "protect-pdf": 0.85,
   "excel-to-pdf": 0.88,
   "pdf-to-excel": 0.9,
   "rotate-pdf": 0.82,

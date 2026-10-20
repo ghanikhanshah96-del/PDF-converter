@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
-import { primeEditorFont } from "../lib/pdfFont.ts";
-import { blankLines, blankUniqueOperands, replaceSimpleLiteral } from "../lib/pdf/textOps.ts";
+import { primeEditorFont } from "@/lib/pdfFont";
+import { blankLines, blankTextAt, blankUniqueOperands, replaceSimpleLiteral } from "../lib/pdf/textOps.ts";
 import { groupTextLines } from "../lib/pdf/textRuns.ts";
 import { bitmapSize, MAIN_PAGE_MIME, MAX_BITMAP_PIXELS, THUMB_MIME } from "../components/pdf-editor/renderPdfPages.ts";
 import { applyPdfEdits } from "../lib/engines/edit.ts";
@@ -176,11 +176,66 @@ check("custom encoding is refused and nothing is saved", refused && refusedBytes
 
 let glyphFailed = false;
 try {
-  await applyPdfEdits(fileFrom(source), [], [], [], [lineEdit({ text: "مرحبا" })]);
+  await applyPdfEdits(fileFrom(source), [], [], [], [lineEdit({ text: "😀" })]);
 } catch (error) {
   glyphFailed = error instanceof Error && /can't take those letters/.test(error.message) && /No file was saved/.test(error.message);
 }
 check("missing glyphs save nothing", glyphFailed);
+
+const positioned = blankTextAt("BT /F1 18 Tf 72 660 Td (SecretWord) Tj 72 620 Td (Neighbor) Tj ET", {
+  x: 72,
+  y: 660,
+  advance: 140,
+  fontSize: 18,
+});
+check(
+  "position blank removes only the line at that baseline",
+  positioned.removed && !positioned.content.includes("SecretWord") && positioned.content.includes("Neighbor"),
+  positioned.content,
+);
+
+const subsetBytes = await made.save({ useObjectStreams: false });
+const subsetRaw = Buffer.from(subsetBytes).toString("latin1").replace("/BaseFont /Helvetica", "/BaseFont /AAAAAA+Calibri");
+const subsetFile = fileFrom(new Uint8Array(Buffer.from(subsetRaw, "latin1")));
+const subsetEdit = await applyPdfEdits(subsetFile, [], [], [], [lineEdit({})]);
+const subsetText = await textOf(subsetEdit.bytes);
+check(
+  "subset font line is redrawn and the old words are gone",
+  subsetText.includes("Manchester") && subsetText.includes("KeepMe") && !subsetText.includes("OriginalLine"),
+  subsetText,
+);
+
+function rawPdf(stream) {
+  const objects = [
+    "1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n",
+    "2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n",
+    "3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj\n",
+    `4 0 obj<</Length ${stream.length}>>stream\n${stream}\nendstream\nendobj\n`,
+    "5 0 obj<</Type/Font/Subtype/Type1/BaseFont/AAAAAA+Calibri>>endobj\n",
+  ];
+  let body = "%PDF-1.4\n";
+  const offsets = [0];
+  for (const object of objects) {
+    offsets.push(body.length);
+    body += object;
+  }
+  const xrefAt = body.length;
+  body += "xref\n0 6\n0000000000 65535 f \n";
+  for (let index = 1; index <= 5; index += 1) {
+    body += `${String(offsets[index]).padStart(10, "0")} 00000 n \n`;
+  }
+  body += `trailer<</Size 6/Root 1 0 R>>\nstartxref\n${xrefAt}\n%%EOF`;
+  return new Uint8Array(Buffer.from(body, "latin1"));
+}
+
+const encoded = rawPdf("BT /F1 18 Tf 72 720 Td (KeepMe) Tj 72 660 Td <58595A58595A> Tj ET");
+const encodedEdit = await applyPdfEdits(fileFrom(encoded), [], [], [], [lineEdit({})]);
+const encodedText = await textOf(encodedEdit.bytes);
+check(
+  "custom encoded line is replaced on save",
+  encodedText.includes("Manchester") && encodedText.includes("KeepMe") && !encodedText.includes("XYZXYZ"),
+  encodedText,
+);
 
 const locked = await protectPdfBytes(source, "secret");
 let lockedFailed = false;

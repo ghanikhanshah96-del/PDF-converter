@@ -34,6 +34,8 @@ function luminanceSpread(pixels: number[][]): number {
   return Math.sqrt(variance);
 }
 
+export type LineInk = { x: number; y: number; w: number; h: number };
+
 /** Sample a cover color from just outside a line. A varied ring is marked uncertain. */
 export async function sampleLineColors(
   imageUrl: string,
@@ -41,7 +43,8 @@ export async function sampleLineColors(
   y: number,
   w: number,
   h: number,
-): Promise<{ cover: Rgb; color: Rgb; uncertain: boolean }> {
+  fontFraction = h,
+): Promise<{ cover: Rgb; color: Rgb; uncertain: boolean; ink: LineInk | null }> {
   try {
     const image = new Image();
     image.src = imageUrl;
@@ -51,7 +54,7 @@ export async function sampleLineColors(
     canvas.height = image.naturalHeight;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx || canvas.width < 2 || canvas.height < 2) {
-      return { cover: WHITE, color: INK, uncertain: true };
+      return { cover: WHITE, color: INK, uncertain: true, ink: null };
     }
     ctx.drawImage(image, 0, 0);
     const left = Math.max(0, Math.floor(x * canvas.width));
@@ -82,12 +85,45 @@ export async function sampleLineColors(
       const dist = Math.abs(r - coverPx[0]) + Math.abs(g - coverPx[1]) + Math.abs(b - coverPx[2]);
       return dist > 80;
     });
+    const em = Math.max(fontFraction, h, 0.01);
+    const scanTop = Math.max(0, Math.floor((y - em * 0.35) * canvas.height));
+    const scanBottom = Math.min(canvas.height - 1, Math.ceil((y + h + em * 1.15) * canvas.height));
+    const scanLeft = Math.max(0, Math.floor((x - em * 0.15) * canvas.width));
+    const scanRight = Math.min(canvas.width - 1, Math.ceil((x + w + em * 0.2) * canvas.width));
+    let minX = scanRight;
+    let minY = scanBottom;
+    let maxX = scanLeft;
+    let maxY = scanTop;
+    let hits = 0;
+    for (let py = scanTop; py <= scanBottom; py += 1) {
+      for (let px = scanLeft; px <= scanRight; px += 1) {
+        const [r, g, b] = at(px, py);
+        const dist = Math.abs(r - coverPx[0]) + Math.abs(g - coverPx[1]) + Math.abs(b - coverPx[2]);
+        if (dist < 70) continue;
+        hits += 1;
+        if (px < minX) minX = px;
+        if (py < minY) minY = py;
+        if (px > maxX) maxX = px;
+        if (py > maxY) maxY = py;
+      }
+    }
+    const pad = 2;
+    const inkBox =
+      hits > 6
+        ? {
+            x: Math.max(0, (minX - pad) / canvas.width),
+            y: Math.max(0, (minY - pad) / canvas.height),
+            w: Math.min(1, (maxX - minX + pad * 2) / canvas.width),
+            h: Math.min(1, (maxY - minY + pad * 2) / canvas.height),
+          }
+        : null;
     return {
       cover,
       color: ink ? { r: ink[0] / 255, g: ink[1] / 255, b: ink[2] / 255 } : INK,
-      uncertain: luminanceSpread(outside) > 28,
+      uncertain: luminanceSpread(outside) > 28 || inkBox === null,
+      ink: inkBox,
     };
   } catch {
-    return { cover: WHITE, color: INK, uncertain: true };
+    return { cover: WHITE, color: INK, uncertain: true, ink: null };
   }
 }

@@ -78,7 +78,7 @@ const TOOL_IDS: ToolId[] = [
   "excel-to-pdf",
   "pdf-to-excel",
   "rotate-pdf",
-  "unlock-pdf",
+  "protect-pdf",
 ];
 
 /** Every tool uses the same layout as PDF to Word. */

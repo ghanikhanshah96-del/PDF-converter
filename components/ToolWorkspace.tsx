@@ -28,6 +28,12 @@ import {
 export type ProcessResult = {
   blob: Blob;
   filename: string;
+  /** Optional friendly status line after a successful run. */
+  notice?: string;
+  /** Original input size for tools that shrink or grow a file. */
+  originalBytes?: number;
+  /** Final output size; defaults to blob.size when omitted. */
+  resultBytes?: number;
 };
 
 export type ToolWorkspaceProps = {
@@ -68,7 +74,25 @@ type ResultEntry = {
   id: string;
   blob: Blob;
   filename: string;
+  notice?: string;
+  originalBytes?: number;
+  resultBytes?: number;
 };
+
+function sizeSummary(result: ResultEntry): string | null {
+  if (result.originalBytes == null) return null;
+  const out = result.resultBytes ?? result.blob.size;
+  const before = formatBytes(result.originalBytes);
+  const after = formatBytes(out);
+  if (out < result.originalBytes) {
+    const pct = Math.round((1 - out / result.originalBytes) * 100);
+    return `${before} → ${after} (${pct}% smaller)`;
+  }
+  if (out > result.originalBytes) {
+    return `${before} → ${after} (larger)`;
+  }
+  return `${before} → ${after} (same size)`;
+}
 
 function waitForPaint() {
   if (typeof window === "undefined") return Promise.resolve();
@@ -431,11 +455,14 @@ export function ToolWorkspace({
             id: makeId(),
             blob: out.blob,
             filename: out.filename,
+            notice: out.notice,
+            originalBytes: out.originalBytes,
+            resultBytes: out.resultBytes ?? out.blob.size,
           });
         }
       } else {
         setProgress(25);
-        setProgressLabel("Loading libraries…");
+        setProgressLabel("Getting things ready…");
         await waitForPaint();
         const out = await onProcess(processFiles, (pct, label) => {
           const mapped = 25 + Math.round((pct / 100) * 75);
@@ -446,17 +473,35 @@ export function ToolWorkspace({
           id: makeId(),
           blob: out.blob,
           filename: out.filename,
+          notice: out.notice,
+          originalBytes: out.originalBytes,
+          resultBytes: out.resultBytes ?? out.blob.size,
         });
       }
 
       setProgress(100);
-      setProgressLabel("Done");
+      setProgressLabel("Done — your file is ready");
       setResults(collected);
-      setStatus(
-        collected.length === 1
-          ? `Ready: ${collected[0].filename}`
-          : `${collected.length} files ready to download.`,
-      );
+      if (collected.length === 1) {
+        const one = collected[0];
+        setStatus(
+          one.notice ??
+            (sizeSummary(one)
+              ? `${one.filename} · ${sizeSummary(one)}`
+              : `Ready: ${one.filename}`),
+        );
+      } else {
+        const shrunk = collected.filter(
+          (item) =>
+            item.originalBytes != null &&
+            (item.resultBytes ?? item.blob.size) < item.originalBytes,
+        ).length;
+        setStatus(
+          shrunk > 0
+            ? `${collected.length} files ready. ${shrunk} got smaller.`
+            : `${collected.length} files ready to download.`,
+        );
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setProgress(0);
@@ -748,23 +793,37 @@ export function ToolWorkspace({
             )}
           </div>
           <ul className="space-y-2" aria-label="Ready downloads">
-            {results.map((result) => (
+            {results.map((result) => {
+              const sizes = sizeSummary(result);
+              return (
               <li
                 key={result.id}
                 className="flex flex-col gap-2 rounded-xl border border-[var(--line)] bg-white px-3 py-3 sm:flex-row sm:items-center"
               >
-                <label className="min-w-0 flex-1 text-xs font-medium text-[var(--ink-muted)]">
-                  File name
-                  <input
-                    type="text"
-                    className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[var(--bg-a)] px-3 py-2 text-sm font-medium text-[var(--ink)]"
-                    value={result.filename}
-                    onChange={(e) =>
-                      updateResultName(result.id, e.target.value)
-                    }
-                    aria-label="Edit download file name"
-                  />
-                </label>
+                <div className="min-w-0 flex-1">
+                  <label className="block text-xs font-medium text-[var(--ink-muted)]">
+                    File name
+                    <input
+                      type="text"
+                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[var(--bg-a)] px-3 py-2 text-sm font-medium text-[var(--ink)]"
+                      value={result.filename}
+                      onChange={(e) =>
+                        updateResultName(result.id, e.target.value)
+                      }
+                      aria-label="Edit download file name"
+                    />
+                  </label>
+                  {sizes && (
+                    <p className="mt-1.5 text-xs font-medium text-[var(--brand-deep)]">
+                      {sizes}
+                    </p>
+                  )}
+                  {result.notice && !sizes && (
+                    <p className="mt-1.5 text-xs text-[var(--ink-muted)]">
+                      {result.notice}
+                    </p>
+                  )}
+                </div>
                 <div className="flex shrink-0 flex-wrap gap-2">
                   <button
                     type="button"
@@ -782,7 +841,8 @@ export function ToolWorkspace({
                   </button>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
           {results.length === 1 && (
             <button

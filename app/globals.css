@@ -135,6 +135,74 @@ a:not([class]) {
   font-family: var(--font-display);
 }
 
+/* Article bullets sit in rows. One column on narrow phones, two from 30rem. */
+.point-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+  list-style: none;
+  padding: 0;
+}
+
+.point-grid > li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 0.8rem 0.9rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.point-grid > li::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--brand);
+}
+
+.point-grid-ordered {
+  counter-reset: point;
+}
+
+.point-grid-ordered > li {
+  counter-increment: point;
+}
+
+.point-grid-ordered > li::before {
+  content: counter(point);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (min-width: 30rem) {
+  .point-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .point-grid > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
 .site-container {
   width: 100%;
   max-width: 72rem;

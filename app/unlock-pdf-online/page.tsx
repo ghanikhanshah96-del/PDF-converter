@@ -1,15 +1,6 @@
-import type { Metadata } from "next";
-import { ToolPageShell, toolMetadata } from "@/components/ToolPageShell";
-import { UnlockPdfClient } from "@/components/tools/UnlockPdfClient";
-import { toolsById } from "@/lib/tools";
+import { redirect } from "next/navigation";
 
-const tool = toolsById["unlock-pdf"];
-export const metadata: Metadata = toolMetadata(tool);
-
+/** Old Unlock PDF URL — tool is now Protect PDF. */
 export default function Page() {
-  return (
-    <ToolPageShell tool={tool}>
-      <UnlockPdfClient />
-    </ToolPageShell>
-  );
+  redirect("/protect-pdf-online");
 }

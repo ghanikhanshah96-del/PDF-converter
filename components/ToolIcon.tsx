@@ -158,10 +158,10 @@ const icons: Record<ToolId, ReactNode> = {
       <path d="M9 12h.01M12 12h.01M15 12h.01" />
     </Svg>
   ),
-  "unlock-pdf": (
+  "protect-pdf": (
     <Svg>
       <rect x="5" y="11" width="14" height="10" rx="2" />
-      <path d="M8 11V8a4 4 0 0 1 7.2-2.4" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
       <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
     </Svg>
   ),
@@ -188,7 +188,7 @@ const iconColors: Record<ToolId, string> = {
   "edit-pdf": "#b45aa0",
   "sign-pdf": "#4d78a8",
   "rotate-pdf": "#b45aa0",
-  "unlock-pdf": "#4d78a8",
+  "protect-pdf": "#4d78a8",
   "pdf-password-remover": "#4d78a8",
 };
 

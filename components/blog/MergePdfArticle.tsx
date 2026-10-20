@@ -102,7 +102,7 @@ export function MergePdfArticle() {
         <p className="mt-3 text-base leading-7 text-[var(--ink)]">
           Under “Protect merged PDF,” choose one of three results:
         </p>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ul className="point-grid">
           <li>No password on the merged file.</li>
           <li>The same password, typed again, applied to the merged file.</li>
           <li>
@@ -122,7 +122,7 @@ export function MergePdfArticle() {
           The download is named <code>merged.pdf</code>. You can rename it in
           the download field before you save it. Open it and confirm:
         </p>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ul className="point-grid">
           <li>Every document you selected is included.</li>
           <li>The pages are in the order you arranged.</li>
           <li>Text and images look right.</li>
@@ -201,7 +201,7 @@ export function MergePdfArticle() {
           Browser processing does not encrypt the contents or make them private
           by itself.
         </p>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ul className="point-grid">
           <li>Confirm you are on the site you meant to use.</li>
           <li>Do not send the download through a channel you do not trust.</li>
           <li>Leave out personal details the packet does not need.</li>
@@ -214,7 +214,7 @@ export function MergePdfArticle() {
         <h2 id="password" className={h2Class}>
           How to merge password-protected PDF files
         </h2>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ol className="point-grid point-grid-ordered">
           <li>Select the PDFs you want to combine.</li>
           <li>Enter the correct password for each locked file and unlock it.</li>
           <li>Arrange the documents.</li>
@@ -242,7 +242,7 @@ export function MergePdfArticle() {
           PDFs on the phone.
         </p>
         <h3 className={h3Class}>Android</h3>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ol className="point-grid point-grid-ordered">
           <li>Open the browser and go to the merge page.</li>
           <li>Select the PDFs from the phone’s file picker.</li>
           <li>Arrange them with the up and down controls.</li>
@@ -250,7 +250,7 @@ export function MergePdfArticle() {
           <li>Download the combined PDF.</li>
         </ol>
         <h3 className={h3Class}>iPhone</h3>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-base leading-7 text-[var(--ink)]">
+        <ol className="point-grid point-grid-ordered">
           <li>Open Safari or another browser on the phone.</li>
           <li>Open the merge page.</li>
           <li>Select the documents from the file picker.</li>

@@ -35,8 +35,8 @@ export async function getToolPage(
       return (await import("./pages/pdf-to-excel")).default;
     case "rotate-pdf":
       return (await import("./pages/rotate-pdf")).default;
-    case "unlock-pdf":
-      return (await import("./pages/unlock-pdf")).default;
+    case "protect-pdf":
+      return (await import("./pages/protect-pdf")).default;
     default:
       return undefined;
   }
