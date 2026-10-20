@@ -42,7 +42,7 @@ const blogInput: BlogPost[] = [
     seoTitle:
       "Merge PDF Online Free: Combine Multiple PDF Files | BestFreePDFConverter",
     description:
-      "Combine PDF files online for free. Arrange the order, unlock protected PDFs, set an optional password, and download one merged PDF.",
+      "Combine PDF files online for free. Arrange the order, unlock protected PDFs, and download one merged PDF.",
     excerpt:
       "Put two to twenty PDFs in order, handle locked files, and download merged.pdf without installing software.",
     category: "Organize",

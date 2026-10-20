@@ -7,6 +7,16 @@ export async function POST(req: NextRequest) {
     const username = String(body.username || "");
     const password = String(body.password || "");
 
+    if (!process.env.ADMIN_PASSWORD?.trim() && !username.includes("@")) {
+      return NextResponse.json(
+        {
+          error:
+            "Admin login is not configured. Set ADMIN_USERNAME and ADMIN_PASSWORD in .env.local, then restart the server.",
+        },
+        { status: 503 },
+      );
+    }
+
     const auth = await authenticateAdminLogin(username, password);
     if (!auth) {
       return NextResponse.json(

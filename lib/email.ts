@@ -156,9 +156,10 @@ async function sendViaResend(
   }
 
   const from =
+    process.env.RESEND_FROM_EMAIL?.trim() ||
     process.env.RESEND_FROM?.trim() ||
     process.env.SMTP_FROM?.trim() ||
-    "StellixSoft <onboarding@resend.dev>";
+    "BestFreePDFConverter <onboarding@resend.dev>";
 
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({

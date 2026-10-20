@@ -15,6 +15,13 @@
 # Large document engine prepared by scripts/fetch-engine.mjs during dev and build.
 /public/engine/
 
+# TinyMCE is copied from node_modules by scripts/copy-tinymce.mjs
+/public/tinymce/
+
+# Admin blog uploads (keep folder via .gitkeep)
+/public/uploads/blog/*
+!/public/uploads/blog/.gitkeep
+
 # env (never commit secrets)
 .env
 .env*.local

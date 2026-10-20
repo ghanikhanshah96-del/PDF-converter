@@ -75,7 +75,7 @@ export default async function AdminDashboardPage({
         </div>
         <Link
           href="/admin/blogs/new"
-          className="inline-flex items-center rounded-xl bg-[var(--color-electricBlue-solid)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
+          className="inline-flex items-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
         >
           + New blog post
         </Link>
@@ -109,7 +109,7 @@ export default async function AdminDashboardPage({
             </h2>
             <Link
               href="/admin/blogs"
-              className="text-xs font-medium text-[var(--color-electricBlue-solid)] hover:underline"
+              className="text-xs font-medium text-[var(--brand)] hover:underline"
             >
               View all
             </Link>
@@ -128,7 +128,7 @@ export default async function AdminDashboardPage({
                   <div className="min-w-0">
                     <Link
                       href={`/admin/blogs/${post.id}/edit`}
-                      className="block truncate text-sm font-medium text-slate-900 hover:text-[var(--color-electricBlue-solid)]"
+                      className="block truncate text-sm font-medium text-slate-900 hover:text-[var(--brand)]"
                     >
                       {post.title}
                     </Link>

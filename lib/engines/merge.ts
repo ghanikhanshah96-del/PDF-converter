@@ -1,17 +1,8 @@
 import { PDFDocument } from "pdf-lib";
 import { openUnencryptedPdf } from "@/lib/pdf/openPdf";
 import { assertPdfHasVisiblePages } from "@/lib/pdf/visiblePdf";
-import { protectPdfBytes } from "@/lib/pdf-encryption";
 
-export type MergeOptions = {
-  /** Optional password to protect the merged output (iLovePDF-style Protect). */
-  outputPassword?: string;
-};
-
-export async function mergePdfs(
-  files: File[],
-  options: MergeOptions = {},
-): Promise<Uint8Array> {
+export async function mergePdfs(files: File[]): Promise<Uint8Array> {
   if (files.length < 2) {
     throw new Error("Add at least two PDF files to merge.");
   }
@@ -25,9 +16,5 @@ export async function mergePdfs(
 
   const out = await merged.save();
   await assertPdfHasVisiblePages(out);
-  const password = options.outputPassword?.trim();
-  if (password) {
-    return protectPdfBytes(out, password);
-  }
   return out;
 }

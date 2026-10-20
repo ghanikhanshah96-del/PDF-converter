@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { contentForEditor } from "@/lib/blog-content";
 import { slugify } from "@/lib/slug";
-import { blogCategories } from "@/data/blog-posts";
+import { blogCategories } from "@/lib/blog-categories";
 
 const WysiwygEditor = dynamic(
   () => import("@/components/admin/wysiwyg-editor"),
@@ -56,7 +56,7 @@ export default function BlogEditorForm({
     contentForEditor(initial?.content || "", initial?.contentFormat),
   );
   const [category, setCategory] = useState(
-    initial?.category || "Enterprise Development",
+    initial?.category || "Guides",
   );
   const [tags, setTags] = useState((initial?.tags || []).join(", "));
   const [metaTitle, setMetaTitle] = useState(initial?.metaTitle || "");
@@ -363,7 +363,7 @@ export default function BlogEditorForm({
                         }}
                         className={`relative aspect-[4/3] overflow-hidden border-2 bg-white ${
                           selected
-                            ? "border-[var(--color-electricBlue-solid)]"
+                            ? "border-[var(--brand)]"
                             : "border-transparent hover:border-slate-300"
                         }`}
                       >

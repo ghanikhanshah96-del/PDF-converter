@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       date: String(body.date || today),
       updatedAt: status === "published" ? today : null,
       readTime: String(body.readTime || estimateReadTime(content)),
-      category: String(body.category || "Enterprise Development"),
+      category: String(body.category || "Guides"),
       tags,
       metaTitle: String(body.metaTitle || title).trim(),
       metaDescription: String(body.metaDescription || body.excerpt || "").trim(),

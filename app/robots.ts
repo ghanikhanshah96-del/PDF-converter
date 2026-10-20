@@ -11,12 +11,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/", "/admin/", "/uploads/"],
       },
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/", "/admin/", "/uploads/"],
       },
       {
         userAgent: "Googlebot-Image",
@@ -25,7 +25,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "bingbot",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/", "/admin/", "/uploads/"],
       },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,

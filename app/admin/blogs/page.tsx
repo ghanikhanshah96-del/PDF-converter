@@ -24,7 +24,7 @@ export default async function AdminBlogsPage() {
         </p>
         <Link
           href="/admin/blogs/new"
-          className="inline-flex items-center rounded-xl bg-[var(--color-electricBlue-solid)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
+          className="inline-flex items-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
         >
           + New post
         </Link>
@@ -54,7 +54,7 @@ export default async function AdminBlogsPage() {
                   No posts yet.{" "}
                   <Link
                     href="/admin/blogs/new"
-                    className="font-medium text-[var(--color-electricBlue-solid)] hover:underline"
+                    className="font-medium text-[var(--brand)] hover:underline"
                   >
                     Create one
                   </Link>

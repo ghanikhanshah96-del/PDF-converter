@@ -195,7 +195,7 @@ export default function UsersManager({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="teammate@company.com"
-              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none ring-[var(--color-electricBlue-solid)] focus:ring-2"
+              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none ring-[var(--brand)] focus:ring-2"
             />
             <p className="mt-2 text-xs text-slate-400">
               Username for login will be this email address.
@@ -233,7 +233,7 @@ export default function UsersManager({
         <button
           type="submit"
           disabled={saving || permissions.length === 0}
-          className="mt-5 inline-flex rounded-xl bg-[var(--color-electricBlue-solid)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-60"
+          className="mt-5 inline-flex rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-60"
         >
           {saving ? "Sending invite…" : "Add user & send email"}
         </button>
@@ -291,7 +291,7 @@ export default function UsersManager({
                           key={perm.id}
                           className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
                             checked
-                              ? "border-[var(--color-electricBlue-solid)] bg-sky-50 text-slate-800"
+                              ? "border-[var(--brand)] bg-sky-50 text-slate-800"
                               : "border-slate-200 bg-white text-slate-500"
                           }`}
                         >

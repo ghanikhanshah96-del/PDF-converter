@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs",
+    "predev": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs && node scripts/copy-tinymce.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs",
+    "prebuild": "node scripts/copy-zeta.mjs && node scripts/fetch-engine.mjs && node scripts/copy-tinymce.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -23,6 +23,7 @@
     "jszip": "^3.10.2",
     "mammoth": "^1.12.3",
     "next": "15.5.25",
+    "nodemailer": "^10.1.7",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289",
     "react": "19.1.0",
@@ -36,6 +37,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

@@ -132,7 +132,7 @@ export default function MediaLibrary({
             type="button"
             disabled={uploading}
             onClick={() => inputRef.current?.click()}
-            className="inline-flex items-center rounded-xl bg-[var(--color-electricBlue-solid)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-60"
+            className="inline-flex items-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-60"
           >
             {uploading ? "Uploading…" : "+ Upload media"}
           </button>
@@ -152,7 +152,7 @@ export default function MediaLibrary({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or path…"
-            className="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm outline-none ring-[var(--color-electricBlue-solid)] focus:ring-2"
+            className="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm outline-none ring-[var(--brand)] focus:ring-2"
           />
           <p className="ml-auto text-xs text-slate-400">
             {filtered.length} of {items.length} file
@@ -177,7 +177,7 @@ export default function MediaLibrary({
               onClick={() => setTypeFilter(value)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 typeFilter === value
-                  ? "bg-[var(--color-deepSpace)] text-white"
+                  ? "bg-[#2b2b33] text-white"
                   : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -230,7 +230,7 @@ export default function MediaLibrary({
                     onClick={() => setSelected(item)}
                     className={`group overflow-hidden rounded-xl border bg-slate-50 text-left transition ${
                       active
-                        ? "border-[var(--color-electricBlue-solid)] ring-2 ring-[var(--color-electricBlue-solid)]/30"
+                        ? "border-[var(--brand)] ring-2 ring-[var(--brand)]/30"
                         : "border-slate-200 hover:border-slate-300"
                     }`}
                   >
@@ -323,7 +323,7 @@ export default function MediaLibrary({
                 <button
                   type="button"
                   onClick={() => void copyUrl(selected.url)}
-                  className="rounded-xl bg-[var(--color-deepSpace)] px-3 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+                  className="rounded-xl bg-[#2b2b33] px-3 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
                 >
                   {copied === selected.url ? "Copied!" : "Copy URL"}
                 </button>

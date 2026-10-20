@@ -35,8 +35,8 @@ export function MergePdfArticle() {
         report, or an application packet that should arrive as a single file.
       </p>
       <p className="mt-3 text-base leading-7 text-[var(--ink)]">
-        This guide covers the order of the files, locked PDFs, the optional
-        password on the result, and the problems that stop a merge. The{" "}
+        This guide covers the order of the files, locked PDFs, and the problems
+        that stop a merge. The{" "}
         <In href={mergePdf.href}>Merge PDF tool</In> needs at least two PDFs.
         It accepts up to 20 files, 50 MB each, and downloads one file named{" "}
         <code>merged.pdf</code>.
@@ -93,22 +93,14 @@ export function MergePdfArticle() {
           Checking the order now avoids a second merge.
         </p>
 
-        <h3 className={h3Class}>Step 4: Handle locked files and the output password</h3>
+        <h3 className={h3Class}>Step 4: Unlock locked files if needed</h3>
         <p className="mt-3 text-base leading-7 text-[var(--ink)]">
           A locked PDF shows a password field. Enter the password that opens
           that file and select Unlock. Only unlock a document you are allowed
-          to open.
+          to open. If you want a password on the final combined file, use the{" "}
+          <In href="/protect-pdf-online">Protect PDF</In> tool after the
+          merge.
         </p>
-        <p className="mt-3 text-base leading-7 text-[var(--ink)]">
-          Under “Protect merged PDF,” choose one of three results:
-        </p>
-        <ul className="point-grid">
-          <li>No password on the merged file.</li>
-          <li>The same password, typed again, applied to the merged file.</li>
-          <li>
-            A new password, entered twice. The two entries have to match.
-          </li>
-        </ul>
 
         <h3 className={h3Class}>Step 5: Merge the files</h3>
         <p className="mt-3 text-base leading-7 text-[var(--ink)]">
@@ -206,7 +198,9 @@ export function MergePdfArticle() {
           <li>Do not send the download through a channel you do not trust.</li>
           <li>Leave out personal details the packet does not need.</li>
           <li>Keep the original files.</li>
-          <li>Set a password on the merged file when the packet needs one.</li>
+          <li>
+            Use Protect PDF afterward when the packet needs a password.
+          </li>
         </ul>
       </section>
 
@@ -361,7 +355,7 @@ export function MergePdfArticle() {
           {
             question: "Can I merge password-protected PDFs?",
             answer:
-              "Yes, if you know each password. Enter it when the file is marked locked. You can also put a password on the merged file.",
+              "Yes, if you know each password. Enter it when the file is marked locked. To lock the merged result, use Protect PDF after downloading.",
           },
           {
             question: "Can I rearrange the files before merging?",

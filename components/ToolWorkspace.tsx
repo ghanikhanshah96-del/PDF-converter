@@ -132,6 +132,10 @@ function ensureExtension(name: string, fallbackExt: string): string {
   return ext ? `${trimmed}.${ext}` : trimmed;
 }
 
+function fileIdentityKey(file: File): string {
+  return `${file.name.toLowerCase()}|${file.size}`;
+}
+
 export function ToolWorkspace({
   accept,
   multiple = false,
@@ -162,6 +166,8 @@ export function ToolWorkspace({
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [results, setResults] = useState<ResultEntry[]>([]);
+  const [duplicateAck, setDuplicateAck] = useState(false);
+  const duplicateAckId = useId();
 
   const files = useMemo(() => entries.map((e) => e.file), [entries]);
   const onFilesChangeRef = useRef(onFilesChange);
@@ -171,6 +177,31 @@ export function ToolWorkspace({
     onFilesChangeRef.current?.(files);
   }, [files]);
   const slotsLeft = Math.max(0, maxFiles - entries.length);
+
+  const duplicateGroups = useMemo(() => {
+    const counts = new Map<string, { name: string; count: number }>();
+    for (const entry of entries) {
+      const key = fileIdentityKey(entry.file);
+      const existing = counts.get(key);
+      if (existing) existing.count += 1;
+      else counts.set(key, { name: entry.file.name, count: 1 });
+    }
+    return [...counts.values()].filter((g) => g.count > 1);
+  }, [entries]);
+
+  const hasDuplicateFiles = duplicateGroups.length > 0;
+  const duplicateSignature = useMemo(
+    () =>
+      duplicateGroups
+        .map((g) => `${g.name.toLowerCase()}:${g.count}`)
+        .sort()
+        .join("|"),
+    [duplicateGroups],
+  );
+
+  useEffect(() => {
+    setDuplicateAck(false);
+  }, [duplicateSignature]);
 
   const lockedPending = useMemo(
     () => entries.filter((e) => e.encrypted === true && !e.unlocked),
@@ -559,7 +590,8 @@ export function ToolWorkspace({
     !disabled &&
     entries.length >= minFiles &&
     !stillChecking &&
-    lockedPending.every((e) => e.password.trim().length > 0);
+    lockedPending.every((e) => e.password.trim().length > 0) &&
+    (!hasDuplicateFiles || duplicateAck);
 
   const showDropzone = entries.length === 0;
 
@@ -745,6 +777,38 @@ export function ToolWorkspace({
 
       {options && <div className="mt-4 space-y-3">{options}</div>}
 
+      {hasDuplicateFiles && (
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/90 px-4 py-3">
+          <p className="text-sm text-amber-950">
+            You added the same file more than once
+            {duplicateGroups.length === 1
+              ? ` (“${duplicateGroups[0].name}” ×${duplicateGroups[0].count})`
+              : ` (${duplicateGroups
+                  .map((g) => `“${g.name}” ×${g.count}`)
+                  .join(", ")})`}
+            . That is fine if you meant to — please confirm below before
+            converting or downloading.
+          </p>
+          <label
+            htmlFor={duplicateAckId}
+            className="mt-3 flex cursor-pointer items-start gap-3 text-sm font-medium text-amber-950"
+          >
+            <input
+              id={duplicateAckId}
+              type="checkbox"
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-amber-400 text-[var(--brand)] focus:ring-[var(--brand)]"
+              checked={duplicateAck}
+              disabled={busy}
+              onChange={(e) => setDuplicateAck(e.target.checked)}
+            />
+            <span>
+              I know I selected the same file more than once and want to
+              continue.
+            </span>
+          </label>
+        </div>
+      )}
+
       {(busy || progress > 0) && (
         <div className="mt-4" aria-live="polite">
           <div className="mb-1 flex justify-between text-xs text-[var(--ink-muted)]">
@@ -894,6 +958,7 @@ export function ToolWorkspace({
               setStatus(null);
               setProgress(0);
               setProgressLabel("");
+              setDuplicateAck(false);
             }}
           >
             Clear all

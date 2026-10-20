@@ -1,23 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { blogPosts } from "@/lib/blog";
+import { getPublishedBlogPosts } from "@/lib/blog-service";
 import { SITE } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `Blog | ${SITE.name}`,
   description:
-    "Guides for splitting PDF pages, merging PDF files, and downloading a Word document as a PDF.",
+    "Guides for converting, editing, compressing, merging, and protecting PDF files with free online tools.",
   alternates: { canonical: `${SITE.url}/blog` },
   openGraph: {
     title: `Blog | ${SITE.name}`,
     description:
-      "Guides for splitting PDF pages, merging PDF files, and downloading a Word document as a PDF.",
+      "Guides for converting, editing, compressing, merging, and protecting PDF files with free online tools.",
     url: `${SITE.url}/blog`,
     type: "website",
   },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPublishedBlogPosts();
+
   return (
     <div className="bg-[var(--bg-a)]">
       <section className="py-10 sm:py-14">
@@ -26,15 +30,15 @@ export default function BlogPage() {
             Blog
           </h1>
           <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
-            Step-by-step guides for splitting pages, combining PDF files, and
-            saving a Word document as a PDF.
+            Step-by-step guides for PDF conversion, editing, compression, and
+            file management.
           </p>
         </div>
       </section>
 
       <section className="site-container pb-16">
         <ul className="grid gap-4">
-          {blogPosts.map((post) => (
+          {posts.map((post) => (
             <li key={post.slug}>
               <Link
                 href={post.href}

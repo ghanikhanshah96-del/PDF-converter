@@ -2,13 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ComponentType } from "react";
+import { CmsArticleBody } from "@/components/blog/CmsArticleBody";
 import { DownloadWordAsPdfArticle } from "@/components/blog/DownloadWordAsPdfArticle";
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
-import { blogPosts, getBlogPost } from "@/lib/blog";
+import {
+  getBlogCoverImageSrc,
+  getBlogPostBySlug,
+  getPublishedBlogPosts,
+} from "@/lib/blog-service";
+import { buildArticleMetadata, absoluteUrl } from "@/lib/seo-metadata";
 import { SITE } from "@/lib/site";
 
-const articles: Record<string, ComponentType> = {
+export const dynamic = "force-dynamic";
+
+const staticArticles: Record<string, ComponentType> = {
   "how-to-download-word-document-as-pdf": DownloadWordAsPdfArticle,
   "how-to-split-pdf-pages": SplitPdfArticle,
   "how-to-merge-pdf-files": MergePdfArticle,
@@ -18,65 +26,52 @@ interface BlogArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const posts = await getPublishedBlogPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: BlogArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getBlogPostBySlug(slug);
+  if (!post) return {};
 
-  if (!post) {
-    return {};
-  }
+  const cover = getBlogCoverImageSrc(post);
+  const ogImageUrl = cover.startsWith("http") ? cover : absoluteUrl(cover);
 
-  const url = `${SITE.url}${post.href}`;
-
-  return {
-    title: { absolute: post.seoTitle },
-    description: post.description,
-    alternates: { canonical: url },
-    robots: { index: true, follow: true },
-    openGraph: {
-      type: "article",
-      title: post.seoTitle,
-      description: post.description,
-      url,
-      siteName: SITE.name,
-      publishedTime: post.published,
-      modifiedTime: post.updated,
-      images: [{ url: post.image, alt: post.imageAlt }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.seoTitle,
-      description: post.description,
-      images: [post.image],
-    },
-  };
+  return buildArticleMetadata({
+    title: post.metaTitle,
+    description: post.metaDescription,
+    path: `/blog/${post.slug}`,
+    publishedTime: post.date,
+    modifiedTime: post.updatedAt ?? post.date,
+    ogImageUrl,
+    tags: post.tags,
+  });
 }
 
 export default async function BlogArticlePage({ params }: BlogArticlePageProps) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getBlogPostBySlug(slug);
+  if (!post) notFound();
 
-  const Article = articles[slug];
+  const StaticArticle = post.staticGuide ? staticArticles[slug] : undefined;
+  if (post.staticGuide && !StaticArticle) notFound();
 
-  if (!post || !Article) {
-    notFound();
-  }
+  const articleUrl = absoluteUrl(`/blog/${post.slug}`);
+  const cover = getBlogCoverImageSrc(post);
+  const coverAbsolute = cover.startsWith("http") ? cover : absoluteUrl(cover);
 
-  const articleUrl = `${SITE.url}${post.href}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description: post.description,
-    image: `${SITE.url}${post.image}`,
-    datePublished: post.published,
-    dateModified: post.updated,
+    description: post.metaDescription || post.excerpt,
+    image: coverAbsolute,
+    datePublished: post.date,
+    dateModified: post.updatedAt ?? post.date,
     author: {
       "@type": "Organization",
       name: SITE.name,
@@ -88,7 +83,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
       url: SITE.url,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE.url}/logo.png`,
+        url: absoluteUrl("/logo.png"),
       },
     },
     mainEntityOfPage: {
@@ -96,6 +91,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
       "@id": articleUrl,
     },
   };
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -121,7 +117,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
     ],
   };
 
-  const publishedLabel = new Date(`${post.published}T00:00:00Z`).toLocaleDateString(
+  const publishedLabel = new Date(`${post.date}T00:00:00Z`).toLocaleDateString(
     "en-US",
     { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" },
   );
@@ -176,11 +172,16 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
           <h1 className="mt-4 font-display text-[clamp(1.85rem,5vw,2.75rem)] font-semibold leading-tight text-[var(--ink)]">
             {post.title}
           </h1>
+          {post.excerpt ? (
+            <p className="mt-3 max-w-3xl text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
+              {post.excerpt}
+            </p>
+          ) : null}
         </div>
       </header>
 
       <div className="site-container pb-16">
-        <Article />
+        {StaticArticle ? <StaticArticle /> : <CmsArticleBody post={post} />}
       </div>
     </article>
   );

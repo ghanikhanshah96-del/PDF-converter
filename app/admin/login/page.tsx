@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PasswordInput } from "@/components/PasswordInput";
 
 function LoginForm() {
   const router = useRouter();
@@ -36,7 +37,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--color-deepSpace)] px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#2b2b33] px-4">
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
@@ -48,8 +49,8 @@ function LoginForm() {
       <div className="relative w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
           <Image
-            src="/assets/images/stellixsoft-logo.png"
-            alt="StellixSoft"
+            src="/logo.png"
+            alt="BestFreePDFConverter"
             width={180}
             height={48}
             className="h-10 w-auto brightness-0 invert"
@@ -85,20 +86,23 @@ function LoginForm() {
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
                 placeholder="you@company.com"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-[var(--color-electricBlue)] focus:bg-white focus:ring-2 focus:ring-[var(--color-electricBlue)]/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand)]/20"
                 required
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <label
+                htmlFor="admin-login-password"
+                className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
                 Password
               </label>
-              <input
-                type="password"
+              <PasswordInput
+                id="admin-login-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-[var(--color-electricBlue)] focus:bg-white focus:ring-2 focus:ring-[var(--color-electricBlue)]/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand)]/20"
                 required
               />
             </div>
@@ -107,7 +111,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full rounded-xl bg-[var(--color-electricBlue-solid)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-50"
+            className="mt-6 w-full rounded-xl bg-[var(--brand)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -127,7 +131,7 @@ export default function AdminLoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[var(--color-deepSpace)] text-sm text-slate-300">
+        <div className="flex min-h-screen items-center justify-center bg-[#2b2b33] text-sm text-slate-300">
           Loading…
         </div>
       }

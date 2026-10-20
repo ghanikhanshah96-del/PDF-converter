@@ -1,15 +1,10 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/lib/blog";
+import { getPublishedBlogPosts } from "@/lib/blog-service";
 import { SITE } from "@/lib/site";
 import { tools, type ToolId } from "@/lib/tools";
 
-/** Content refresh date used when a page has no per-entry updated field. */
 const SITE_UPDATED = new Date("2026-10-07");
 
-/**
- * SEO priority by tool — higher for primary commercial keywords
- * from the SEO brief (convert / merge / compress / edit).
- */
 const TOOL_PRIORITY: Partial<Record<ToolId, number>> = {
   "pdf-to-word": 0.95,
   "word-to-pdf": 0.95,
@@ -44,11 +39,7 @@ function entry(
   };
 }
 
-/**
- * Fully SEO-oriented sitemap for Google / Bing.
- * Served at /sitemap.xml via Next.js App Router.
- */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     entry("/", 1.0, "daily"),
     entry("/about-us", 0.6, "monthly"),
@@ -61,25 +52,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const toolPages: MetadataRoute.Sitemap = tools.map((tool) =>
-    entry(
-      tool.href,
-      TOOL_PRIORITY[tool.id] ?? 0.8,
-      "weekly",
-      SITE_UPDATED,
-    ),
+    entry(tool.href, TOOL_PRIORITY[tool.id] ?? 0.8, "weekly", SITE_UPDATED),
   );
-
-  // Sort tools by priority (highest first) for cleaner SEO review of the XML
   toolPages.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
 
-  const articlePages: MetadataRoute.Sitemap = blogPosts.map((post) =>
-    entry(
-      post.href,
-      0.65,
-      "monthly",
-      post.updated ? new Date(post.updated) : SITE_UPDATED,
-    ),
-  );
+  let articlePages: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPublishedBlogPosts();
+    articlePages = posts.map((post) =>
+      entry(
+        post.href,
+        0.65,
+        "monthly",
+        post.updatedAt || post.date
+          ? new Date(post.updatedAt ?? post.date)
+          : SITE_UPDATED,
+      ),
+    );
+  } catch {
+    // Firestore may be offline during build
+  }
 
   return [...staticPages, ...toolPages, ...articlePages];
 }
