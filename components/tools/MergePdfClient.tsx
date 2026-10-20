@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { ToolWorkspace } from "@/components/ToolWorkspace";
 import { toPdfBlob } from "@/lib/blob";
 import { toolsById } from "@/lib/tools";
@@ -55,10 +56,10 @@ export function MergePdfClient() {
               <span>Use the same password (from an unlocked file)</span>
             </label>
             {protectMode === "same" && (
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="off"
-                className="ml-6 w-full max-w-sm rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                wrapperClassName="ml-6 w-full max-w-sm"
+                className="w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
                 placeholder="Password to apply to merged PDF"
                 value={samePassword}
                 onChange={(e) => setSamePassword(e.target.value)}
@@ -76,16 +77,14 @@ export function MergePdfClient() {
             </label>
             {protectMode === "new" && (
               <div className="ml-6 grid max-w-sm gap-2">
-                <input
-                  type="password"
+                <PasswordInput
                   autoComplete="off"
                   className="w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
                   placeholder="New password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
-                <input
-                  type="password"
+                <PasswordInput
                   autoComplete="off"
                   className="w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
                   placeholder="Confirm new password"

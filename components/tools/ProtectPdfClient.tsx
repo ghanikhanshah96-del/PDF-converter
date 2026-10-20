@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { ToolWorkspace } from "@/components/ToolWorkspace";
 import { basename } from "@/lib/download";
 import { toPdfBlob } from "@/lib/blob";
@@ -26,11 +27,11 @@ export function ProtectPdfClient() {
             <label className="block text-sm font-medium" htmlFor="protect-password">
               New password
             </label>
-            <input
+            <PasswordInput
               id="protect-password"
-              type="password"
               autoComplete="new-password"
-              className="mt-1 w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm"
+              wrapperClassName="mt-1"
+              className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Choose a password"
@@ -43,11 +44,11 @@ export function ProtectPdfClient() {
             >
               Confirm password
             </label>
-            <input
+            <PasswordInput
               id="protect-password-confirm"
-              type="password"
               autoComplete="new-password"
-              className="mt-1 w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm"
+              wrapperClassName="mt-1"
+              className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Type the password again"

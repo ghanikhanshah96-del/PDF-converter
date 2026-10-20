@@ -24,6 +24,7 @@ import {
   unlockPdfBytes,
   unlockedPdfFile,
 } from "@/lib/pdf-encryption";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export type ProcessResult = {
   blob: Blob;
@@ -706,10 +707,10 @@ export function ToolWorkspace({
                 <div className="mt-2 flex flex-wrap items-end gap-2 border-t border-[var(--line)] pt-2">
                   <label className="min-w-[12rem] flex-1 text-xs font-medium text-[var(--ink)]">
                     Password required to open this PDF
-                    <input
-                      type="password"
+                    <PasswordInput
                       autoComplete="off"
-                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                      wrapperClassName="mt-1"
+                      className="w-full rounded-lg border border-[var(--line)] bg-white px-3 py-2 text-sm"
                       placeholder="Enter PDF password"
                       value={entry.password}
                       disabled={busy}

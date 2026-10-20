@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { ToolWorkspace } from "@/components/ToolWorkspace";
 import { basename } from "@/lib/download";
 import { toPdfBlob } from "@/lib/blob";
@@ -25,9 +26,8 @@ export function PasswordRemoverClient() {
           <label className="block text-sm font-medium" htmlFor="pdf-password">
             PDF password
           </label>
-          <input
+          <PasswordInput
             id="pdf-password"
-            type="password"
             autoComplete="off"
             className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm"
             value={password}

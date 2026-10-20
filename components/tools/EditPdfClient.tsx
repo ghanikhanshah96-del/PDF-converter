@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import {
   IconAnnotate,
   IconArrowRight,
@@ -785,17 +786,17 @@ export function EditPdfClient() {
               <div className="mt-3 flex flex-wrap items-end gap-2">
                 <label className="min-w-[12rem] flex-1 text-xs font-medium">
                   Password
-            <input
-                    type="password"
+                  <PasswordInput
                     autoComplete="off"
-                    className="mt-1 w-full rounded-[var(--radius)] border border-[var(--line)] bg-white px-3 py-2 text-sm"
+                    wrapperClassName="mt-1"
+                    className="w-full rounded-[var(--radius)] border border-[var(--line)] bg-white px-3 py-2 text-sm"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") void unlockAndOpen();
                     }}
-            />
-          </label>
+                  />
+                </label>
                 <button
                   type="button"
                   className="btn btn-primary !py-2 text-sm"

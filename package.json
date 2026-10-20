@@ -12,10 +12,14 @@
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tinymce/tinymce-react": "^6.3.1",
     "cryptpdf": "^0.1.1",
     "docx": "^9.7.1",
     "docx-preview": "^0.4.1",
+    "firebase-admin": "^14.5.0",
     "html-to-image": "^1.11.13",
+    "iron-session": "^8.0.4",
     "jszip": "^3.10.2",
     "mammoth": "^1.12.3",
     "next": "15.5.25",
@@ -24,6 +28,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "resend": "^6.28.1",
+    "tinymce": "^8.10.0",
     "xlsx": "^0.18.5",
     "zetajs": "^1.2.0"
   },
