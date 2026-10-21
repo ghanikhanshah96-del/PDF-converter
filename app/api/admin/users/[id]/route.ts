@@ -48,7 +48,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
         console.error("Reset email failed:", detail, e);
         return NextResponse.json({
           user,
-          warning: `Password reset, but email could not be sent. ${detail}`,
+          warning: `Password updated; invitation email was not delivered. ${detail} The temporary password below is active and can be shared privately.`,
+          emailed: false,
           emailError: detail,
           tempPassword: password,
         });

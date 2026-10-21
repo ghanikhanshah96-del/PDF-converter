@@ -1,6 +1,8 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
 
+const RESEND_DOMAIN_HELP = "Resend sender domain is not verified. Verify bestfreepdfconverter.com in Resend > Domains, add its DNS records, then set RESEND_FROM_EMAIL=BestFreePDFConverter <noreply@bestfreepdfconverter.com> in Vercel and redeploy. Gmail may be a recipient, but cannot be your Resend sender.";
+
 interface SendEmailOptions {
   /** Override recipient. Defaults to the contact/inbox address. */
   to?: string;
@@ -49,6 +51,14 @@ export function formatEmailError(error: unknown): string {
   const response = String(err.response || err.message || "");
   const responseCode = Number(err.responseCode) || 0;
   const lower = response.toLowerCase();
+
+  // Resend validation errors must be handled before SMTP's generic recipient/sender checks.
+  if (lower.includes("only send testing emails") || lower.includes("testing emails to your own")) {
+    return "Resend is using a test sender. Verify bestfreepdfconverter.com in Resend > Domains, then set RESEND_FROM_EMAIL to an address on that verified domain and redeploy. The resend.dev test sender cannot invite other teammates.";
+  }
+  if (/domain.*not verified|domain.*not.*verified/.test(lower)) {
+    return RESEND_DOMAIN_HELP;
+  }
 
   if (
     code === "EAUTH" ||
@@ -160,6 +170,11 @@ async function sendViaResend(
     process.env.RESEND_FROM?.trim() ||
     process.env.SMTP_FROM?.trim() ||
     "BestFreePDFConverter <onboarding@resend.dev>";
+
+  const senderDomain = from.match(/@([^<>\s]+)/)?.[1]?.toLowerCase();
+  if (senderDomain === "gmail.com" || senderDomain === "googlemail.com") {
+    throw new Error(RESEND_DOMAIN_HELP);
+  }
 
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({

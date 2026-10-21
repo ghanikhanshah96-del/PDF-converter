@@ -61,6 +61,20 @@ Push the code and redeploy after connecting the store. Test login, upload from M
 
 Run `npm run test:media` for image pixel fidelity, animation/vector preservation, upload permissions/size checks, missing configuration, and the mocked Blob upload/list round trip. A successful local test does not prove a live Blob store has been connected.
 
+## Invitation email setup
+
+User creation and email delivery are separate: if delivery fails, the created account remains active. The Users screen shows the username, login link and a collapsed temporary-password disclosure. Share those details privately, or use Reset password to send a new invitation after fixing delivery.
+
+Resend must send **from a domain you own and have verified**, not from `gmail.com`. In **Resend > Domains**, add `bestfreepdfconverter.com`, copy the exact DNS records into its DNS provider, and wait for Resend to mark the domain verified. Then set this Vercel Production variable and redeploy:
+
+```text
+RESEND_FROM_EMAIL=BestFreePDFConverter <noreply@bestfreepdfconverter.com>
+```
+
+Paste only the value in Vercel's Value field. Keep `RESEND_API_KEY` from the same Resend account/domain. A Gmail address is valid as the recipient (`CONTACT_TO_EMAIL` or a teammate's address), but not as the Resend sender. `onboarding@resend.dev` only supports sending tests to the email associated with the Resend account, so it cannot replace a verified sender for team invitations. See [verified domains](https://resend.com/docs/dashboard/domains/introduction) and [test-sender restrictions](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain).
+
+Domain verification and the Production sender variable must be configured by the account/DNS owner; changing application code cannot verify ownership. No real invitation is sent by automated tests. Run `npm run test:email` for sender validation, provider-specific error messages, SMTP behavior, and account preservation when email fails.
+
 ## Post-deploy SEO checks
 
 - [ ] Canonical URLs use `https://bestfreepdfconverter.com`

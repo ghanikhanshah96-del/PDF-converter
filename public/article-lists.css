@@ -1,0 +1,74 @@
+/* Shared by published CMS articles and the visual editor's iframe. */
+.cms-article-content :where(ul, ol):not(:where(nav *, ul *, ol *, .point-grid)) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .75rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cms-article-content :where(ul, ol):not(:where(nav *, ul *, ol *, .point-grid)) > li {
+  display: list-item;
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: .75rem;
+  background: white;
+  padding: .8rem .9rem .8rem 2rem;
+  font-size: .9375rem;
+  line-height: 1.5;
+  color: var(--ink, #252735);
+  overflow-wrap: anywhere;
+}
+
+.cms-article-content :where(ul, ol):not(:where(nav *, ul *, ol *, .point-grid)) > li::before {
+  content: "";
+  position: absolute;
+  left: .9rem;
+  top: 1.25rem;
+  width: .45rem;
+  height: .45rem;
+  border-radius: 999px;
+  background: var(--brand, #f12c2c);
+}
+
+.cms-article-content ol:not(:where(nav *, ul *, ol *, .point-grid)) > li {
+  padding-left: 2.9rem;
+}
+
+.cms-article-content ol:not(:where(nav *, ul *, ol *, .point-grid)) > li::before {
+  content: counter(list-item);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  left: .8rem;
+  top: .8rem;
+  min-width: 1.5rem;
+  width: auto;
+  height: 1.5rem;
+  padding-inline: .25rem;
+  background: var(--brand-soft, #fff0f0);
+  color: var(--brand, #f12c2c);
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cms-article-content li > p { margin: 0; font-size: inherit; line-height: inherit; }
+.cms-article-content li > p + p { margin-top: .5rem; }
+.cms-article-content li :where(ul, ol) { display: block; margin: .5rem 0 0; padding-left: 1.4rem; }
+.cms-article-content li ul { list-style: disc; }
+.cms-article-content li ol { list-style: decimal; }
+.cms-article-content li li { display: list-item; margin-top: .35rem; }
+.cms-article-content li li::marker { color: var(--brand, #f12c2c); }
+
+@media (min-width: 30rem) {
+  .cms-article-content :where(ul, ol):not(:where(nav *, ul *, ol *, .point-grid)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cms-article-content :where(ul, ol):not(:where(nav *, ul *, ol *, .point-grid)) > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}

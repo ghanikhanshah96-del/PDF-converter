@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../public/article-lists.css";
 
 /* Shared admin controls keep management screens compact and consistent. */
 @layer components {

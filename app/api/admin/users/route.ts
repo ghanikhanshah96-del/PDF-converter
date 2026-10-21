@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           user,
-          warning: `User was created, but the invite email could not be sent. ${detail} Use Reset password to resend after fixing SMTP.`,
+          warning: `Account created and ready to use; invitation email was not delivered. ${detail} After fixing email settings, use Reset password to send a new invitation, or share the temporary login details privately.`,
+          emailed: false,
           emailError: detail,
           tempPassword: password,
         },

@@ -72,3 +72,14 @@ Historical verification of the initial implementation; superseded by the free-pl
 - Six media tests passed, including exact pixel/dimension preservation, vector/animation preservation, invalid/oversized image rejection, mocked Blob upload/list pagination, missing configuration, and permission checks. TypeScript and targeted ESLint passed.
 - Actual remote Blob upload/download is pending store connection; no Blob credentials were supplied and no cloud media was created during this change.
 - Production build passed with existing unrelated lint warnings. Against `next start`, existing media listing returned 200 with 16 images, invalid uploads returned 400, and a valid upload without Blob configuration returned 503 with store-connection instructions. No Firebase Storage call was required.
+
+## Invitation guidance and CMS article lists - 22 October 2026
+
+- Standard CMS HTML bullet lists and numbered lists now use the same compact white rows, red bullets, numbered badges and responsive two-column layout as existing articles. Nested lists keep their hierarchy; numbered HTML start values are preserved. Table-of-contents navigation and existing `.point-grid` lists are excluded from the new layout rules.
+- The visual editor loads the same scoped stylesheet as the public renderer, so standard bullet/number toolbar actions preview the published styling. Existing stored article content is unchanged.
+- Resend Gmail sender misconfiguration now produces specific verified-domain instructions. Provider test-sender/domain failures are classified before generic SMTP recipient errors. Gmail recipients remain valid, and authenticated SMTP remains supported.
+- Failed invitation delivery still preserves the created account and returns an explicit `emailed: false` result. Users UI now shows the username, sign-in link, domain-settings link and collapsed temporary credentials, and explains that the account does not need to be created again.
+- All 25 automated tests passed (5 email, 14 review, 6 media). TypeScript, targeted ESLint and whitespace checks passed.
+- Edge browser checks passed at 1440 and 390 pixels using temporary browser-only article markup: two/one columns, red markers, nested lists, retained inline formatting, correct 3/4/5 and restarted 1/2 numbering, unchanged navigation layout, and no page overflow. The real editor iframe preview used the shared grid stylesheet. A mocked user creation confirmed the failed-invite fallback guidance; no email was sent and no user/article was saved or changed.
+- Actual email delivery remains pending the owner's Resend domain DNS verification and correct Vercel Production `RESEND_FROM_EMAIL`, followed by redeployment. This task did not access the owner's DNS account or modify live variables.
+- Production build passed with existing unrelated lint warnings. Repeated the list layout, editor iframe preview and mocked failed-invitation UI checks against `next start`; all passed.
