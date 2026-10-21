@@ -156,6 +156,10 @@ The CMS, reviews, and admin users use the separate server Admin SDK. To enable t
 Check Analytics Realtime in Firebase after opening a normal public page with browser tracking enabled. A successful build verifies integration but does not prove that Analytics events reached the dashboard.
 
 
+## Admin media storage
+
+New blog image uploads use Vercel Blob with lossless image optimization, within the Hobby plan's free usage limits. Connect a public Blob store to the Vercel project; Firebase Storage is not needed. Existing icons, logos, and bundled website images are unchanged. See [DEPLOY.md](./DEPLOY.md#admin-login-and-blog-image-storage) for setup, image limits, and live checks. Run `npm run test:media` to verify image fidelity and upload behavior.
+
 ## User reviews
 
 Admins can open `/admin/reviews` from the User reviews sidebar item to search, filter, edit, or delete feedback and inspect email notification status. The list uses compact rows with pagination. Reviews rated 1?3 stars must remain private, and original feedback is retained privately on the first edit. Deletion requires confirmation. Team members need the Reviews permission. The admin list refreshes every 15 seconds, on window focus, or using Refresh feedback. Public visitors continue to see only 4–5 star reviews.

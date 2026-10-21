@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import type { MediaItem, MediaSource } from "@/lib/media-library";
+import { MAX_MEDIA_BYTES, MEDIA_SIZE_ERROR } from "@/lib/media-upload-policy";
 
 const SOURCE_LABEL: Record<MediaSource, string> = {
   site: "Site",
@@ -76,6 +77,7 @@ export default function MediaLibrary({
     setUploading(true);
     setError("");
     try {
+      if (file.size > MAX_MEDIA_BYTES) throw new Error(MEDIA_SIZE_ERROR);
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/admin/upload", {
@@ -85,13 +87,7 @@ export default function MediaLibrary({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
       await refresh();
-      const name = data.url.split("/").pop() || data.url;
-      setSelected({
-        url: data.url,
-        name,
-        source: "upload",
-        ext: name.includes(".") ? name.split(".").pop()!.toLowerCase() : "",
-      });
+      setSelected(data.item);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {

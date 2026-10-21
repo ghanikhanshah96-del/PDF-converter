@@ -1,4 +1,5 @@
 "use client";
+import { MAX_MEDIA_BYTES, MEDIA_SIZE_ERROR } from "@/lib/media-upload-policy";
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
@@ -106,6 +107,7 @@ export default function BlogEditorForm({
     setUploading(true);
     setError("");
     try {
+      if (file.size > MAX_MEDIA_BYTES) throw new Error(MEDIA_SIZE_ERROR);
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/admin/upload", {

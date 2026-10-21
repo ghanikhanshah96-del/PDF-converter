@@ -40,7 +40,7 @@ This report covers the local application using the connected `bestfreepdfconvert
 
 - Email routing, HTML escaping, and failure persistence were tested with a mocked mail provider. No new verification emails were sent. Actual inbox delivery and administrator invite emails are not verified. The configured sender uses Resend's onboarding domain; the API key permits sending but cannot list domain status.
 - Live hosting has not been deployed or tested in this task. Configure server credentials in the hosting environment, redeploy, and repeat login, review submission/live updates, mail delivery, uploads, and Word-to-PDF header tests on the HTTPS domain. The local Windows service-account path is not portable to hosting.
-- Media uploads currently use the application's local filesystem. Hosting must provide persistent writable storage for uploads to survive deployments; ephemeral/serverless hosting requires external storage.
+- New blog image uploads now target Vercel Blob within Hobby free-plan limits (see the latest update below). Existing bundled website assets remain unchanged. A public Blob store must be connected before new uploads succeed.
 - Inactive Pages and Services entries have been removed from navigation and assignable permissions.
 - npm reports 19 dependency vulnerabilities (6 moderate, 13 high). Dependency-wide remediation was outside this functional change.
 
@@ -52,3 +52,23 @@ This report covers the local application using the connected `bestfreepdfconvert
 - Real Edge browser checks at 1440, 768, and 390 pixels confirmed exact left/right navbar alignment, no page overflow, and FAQ opening/closing without browser errors. All three inline images loaded on desktop and mobile.
 - Targeted ESLint and TypeScript checks passed. Live hosting was not deployed as part of this layout change.
 - The production build passed with existing unrelated lint warnings. Repeated navbar alignment, mobile overflow, and FAQ checks against `next start` passed at all three widths, with no browser errors. Local preview is available at http://localhost:3000.
+
+## Firebase media update - 22 October 2026
+
+Historical verification of the initial implementation; superseded by the free-plan Vercel Blob update below. Firebase Storage is no longer used for uploads.
+
+- New admin media uploads use Firebase Storage (`media/blog/`) with permanent token download links and immutable cache metadata. No new upload writes to `public/uploads` or the Vercel filesystem. The library combines cloud uploads, bundled images and post images; existing local media was not modified or migrated.
+- Static 8-bit sRGB images use lossless WebP only when it is smaller. Dimensions, colour profile and EXIF are retained. Vectors, animations, high-bit-depth and other colour-space images remain original. Inputs are limited to 4 MB and 24 million decoded pixels. Browser guards cover Media, cover uploads and editor uploads.
+- Five media tests passed: exact RGBA/dimension preservation with size reduction; vector/animation preservation; corrupt/oversized/decompression-heavy inputs; mocked Storage write/list round trip; permission and upload-size enforcement. All 14 review tests also passed.
+- TypeScript, targeted ESLint, whitespace checks and the production build passed (existing unrelated lint warnings remain).
+- Real production-server checks confirmed authenticated media listing (16 existing images), corrupt-image rejection (400), and an actionable missing-bucket error (503). The configured Firebase bucket returned 404 when checked through the real Admin SDK. No object was created and no existing media was changed.
+- Actual cloud upload/download verification remains pending until the owner provisions `bestfreepdfconverter-3c4b7.firebasestorage.app` in Firebase Console. Blaze billing is required for Firebase Storage. Billing and bucket creation were not performed in this task; live Vercel variables/deployment were not changed.
+
+## Free-plan blog image storage update - 22 October 2026
+
+- Replaced the initial Firebase Storage implementation with Vercel Blob for new admin-uploaded blog images. The Firebase media module was removed; upload and listing use only the `blog-images/` Blob prefix. Firestore remains the database for content, users and reviews.
+- Vercel Hobby includes Blob usage within its free allowance; the app does not provision billing, create a paid store, or fall back to Firebase Storage. A public Blob store must be connected to the Vercel project before uploads can succeed. Quota exhaustion can interrupt access; free storage is not unlimited.
+- Existing website logos, icons and bundled images were not modified, optimized or migrated. Confirmed that there is no diff under `public/`. Lossless processing applies only to images sent through the admin upload endpoint.
+- Six media tests passed, including exact pixel/dimension preservation, vector/animation preservation, invalid/oversized image rejection, mocked Blob upload/list pagination, missing configuration, and permission checks. TypeScript and targeted ESLint passed.
+- Actual remote Blob upload/download is pending store connection; no Blob credentials were supplied and no cloud media was created during this change.
+- Production build passed with existing unrelated lint warnings. Against `next start`, existing media listing returned 200 with 16 images, invalid uploads returned 400, and a valid upload without Blob configuration returned 503 with store-connection instructions. No Firebase Storage call was required.

@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { requirePermission } from "@/lib/auth";
+import { MediaStorageNotConfiguredError, uploadMedia } from "@/lib/blog-media";
+import { InvalidMediaError } from "@/lib/optimize-media";
+import { MAX_MEDIA_BYTES, MEDIA_SIZE_ERROR } from "@/lib/media-upload-policy";
+
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   const media = await requirePermission("media");
@@ -32,37 +35,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_MEDIA_BYTES) {
       return NextResponse.json(
-        { error: "Image must be under 5MB" },
+        { error: MEDIA_SIZE_ERROR },
         { status: 400 },
       );
     }
 
-    const ext = path.extname(file.name) || ".jpg";
-    const safeExt = [
-      ".jpg",
-      ".jpeg",
-      ".png",
-      ".webp",
-      ".gif",
-      ".avif",
-      ".svg",
-      ".ico",
-    ].includes(ext.toLowerCase())
-      ? ext.toLowerCase()
-      : ".jpg";
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${safeExt}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "blog");
-    await mkdir(uploadDir, { recursive: true });
-
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadDir, filename), buffer);
-
-    const url = `/uploads/blog/${filename}`;
-    return NextResponse.json({ url });
+    const item = await uploadMedia(buffer, file.name);
+    return NextResponse.json({ ...item, item });
   } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    if (e instanceof InvalidMediaError) return NextResponse.json({ error: e.message }, { status: 400 });
+    if (e instanceof MediaStorageNotConfiguredError) return NextResponse.json({ error: e.message }, { status: 503 });
+    console.error("Blog image upload failed", e instanceof Error ? e.name : "unknown");
+    const error = "Blog image upload failed. Check the Vercel Blob connection and free-plan usage limits, then try again.";
+    return NextResponse.json({ error }, { status: 503 });
   }
 }

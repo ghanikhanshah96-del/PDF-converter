@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor } from "tinymce";
+import { MAX_MEDIA_BYTES, MEDIA_SIZE_ERROR } from "@/lib/media-upload-policy";
 
 interface WysiwygEditorProps {
   value: string;
@@ -13,6 +14,7 @@ interface WysiwygEditorProps {
 type EditorMode = "visual" | "text";
 
 async function uploadImageBlob(blob: Blob, filename: string): Promise<string> {
+  if (blob.size > MAX_MEDIA_BYTES) throw new Error(MEDIA_SIZE_ERROR);
   const formData = new FormData();
   formData.append("file", blob, filename);
   const res = await fetch("/api/admin/upload", {

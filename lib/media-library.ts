@@ -1,6 +1,7 @@
 import { readdir, stat } from "fs/promises";
 import path from "path";
 import { listBlogPosts } from "@/lib/blog-repo";
+import { listStoredMedia, isBlogMediaConfigured } from "@/lib/blog-media";
 
 export type MediaSource = "site" | "upload" | "cover" | "content";
 
@@ -21,7 +22,7 @@ function fileNameFromUrl(url: string) {
     const pathname = url.startsWith("http")
       ? new URL(url).pathname
       : url.split("?")[0];
-    return decodeURIComponent(pathname.split("/").pop() || url);
+    return decodeURIComponent(pathname).split("/").pop() || url;
   } catch {
     return url.split("/").pop() || url;
   }
@@ -114,6 +115,15 @@ async function walkPublicImages(
 export async function listMediaLibrary(): Promise<MediaItem[]> {
   const map = new Map<string, MediaItem>();
   const publicRoot = path.join(process.cwd(), "public");
+
+  if (isBlogMediaConfigured()) {
+    try {
+      for (const item of await listStoredMedia()) addImage(map, item.url, "upload", item);
+    } catch (error) {
+      // Existing site images remain usable while Storage is being configured.
+      console.error("Could not list blog images", error instanceof Error ? error.name : "unknown");
+    }
+  }
 
   await walkPublicImages(
     path.join(publicRoot, "uploads", "blog"),
