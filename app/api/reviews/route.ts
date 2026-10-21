@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     });
     if (!allowed) return NextResponse.json({ message: "Too many reviews. Please try again tomorrow." }, { status: 429 });
     const { review, published } = await createReview({ name: body.name.trim() || "Anonymous user", rating: body.rating, comment: body.comment.trim(), ...(body.tool ? { tool: body.tool.trim() } : {}) });
-    if (review.rating < 3) {
+    if (!published) {
       try {
         await sendEmail({ to: process.env.REVIEWS_TO_EMAIL || process.env.CONTACT_TO_EMAIL || undefined, subject: `PDF tool feedback: ${review.rating}/5 stars`, html: `<h2>Feedback needs attention</h2><p>${escape(review.name)} rated ${escape(review.tool || "PDF tools")} ${review.rating}/5.</p><p>${escape(review.comment)}</p><p>Saved privately as ${review.id}.</p>` });
         await getDb().collection(REVIEWS_COLLECTION).doc(review.id).update({ notificationStatus: "sent" });

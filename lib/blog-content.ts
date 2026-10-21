@@ -140,3 +140,14 @@ export function renderBlogContentHtml(
   }
   return markdownToEditorHtml(content);
 }
+
+/** Keep pasted article markup portable without changing the saved editor content. */
+export function normalizePublishedArticleHtml(html: string): string {
+  return html
+    .replace(/\b(href|src)=(['"])https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/[^'"]*)\2/gi,
+      (_match, attribute: string, quote: string, path: string) => `${attribute}=${quote}${path}${quote}`)
+    .replace(/<p\b([^>]*)>(?:\s|&nbsp;|\u00a0|<br\s*\/?>)*<\/p>/gi,
+      (paragraph, attributes: string) => /\b(?:id|name)\s*=/i.test(attributes) ? paragraph : "")
+    .replace(/<table\b(?:[^>"']|"[^"]*"|'[^']*')*>|<\/table\s*>/gi,
+      tag => /^<\//.test(tag) ? `${tag}</div>` : `<div class="cms-table-scroll">${tag}`);
+}

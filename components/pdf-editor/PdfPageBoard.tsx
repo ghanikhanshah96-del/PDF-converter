@@ -60,6 +60,7 @@ export function PdfPageBoard({
   draftRef.current = draft;
   const focusedLine = useRef<string | null>(null);
   const focusedOverlay = useRef<string | null>(null);
+  const placedOnPointerDown = useRef(false);
   const dragRef = useRef<{
     id: string;
     kind: "move" | "resize";
@@ -138,6 +139,7 @@ export function PdfPageBoard({
           const target = e.target as HTMLElement;
           if (target.closest("[data-line], [data-overlay]")) return;
           e.preventDefault();
+          placedOnPointerDown.current = true;
           const rect = e.currentTarget.getBoundingClientRect();
           onPlaceText?.(
             (e.clientX - rect.left) / rect.width,
@@ -145,6 +147,12 @@ export function PdfPageBoard({
           );
         }}
         onClick={(e) => {
+          // Placing text changes placeMode before this click arrives. Keep the
+          // newly focused text input selected instead of clearing it again.
+          if (placedOnPointerDown.current) {
+            placedOnPointerDown.current = false;
+            return;
+          }
           if (drawMode || panMode || placeMode) return;
           if (e.target === e.currentTarget) onSelect(null);
         }}

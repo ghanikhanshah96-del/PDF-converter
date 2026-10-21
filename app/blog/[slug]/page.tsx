@@ -137,7 +137,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <header className="py-8 sm:py-12">
+      <header className="py-6 sm:py-8">
         <div className="site-container">
           <nav className="text-sm text-[var(--ink-muted)]" aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -178,7 +178,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
           </h1>
           <p className="mt-3 text-sm text-[var(--ink-muted)]">By <Link href="/team/editorial" rel="author" className="font-semibold text-[var(--brand)] underline underline-offset-2">BestFreePDFConverter Editorial Team</Link></p>
           {post.excerpt ? (
-            <p className="mt-3 max-w-3xl text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
               {post.excerpt}
             </p>
           ) : null}

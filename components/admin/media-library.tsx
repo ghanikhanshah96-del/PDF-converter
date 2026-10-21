@@ -212,10 +212,10 @@ export default function MediaLibrary({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:p-5">
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_260px]">
+        <div className="admin-panel p-4">
           {filtered.length === 0 ? (
-            <p className="py-16 text-center text-sm text-slate-500">
+            <p className="py-8 text-center text-sm text-slate-500">
               No media found for this filter.
             </p>
           ) : (

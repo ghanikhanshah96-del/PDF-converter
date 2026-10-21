@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  middlewareClientMaxBodySize: "50mb",
+  experimental: {
+    middlewareClientMaxBodySize: "50mb",
+  },
   serverExternalPackages: ["firebase-admin"],
   // Keep Node-only optional peer out of browser bundles.
   // Do not put docx/pdf-lib/etc in optimizePackageImports — they are single-entry

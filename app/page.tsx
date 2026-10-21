@@ -62,6 +62,7 @@ export default function HomePage() {
           <Link href={homeContent.hero.ctaHref} className="btn btn-primary mt-6">
             {homeContent.hero.ctaLabel}
           </Link>
+          <div className="mt-4"><a href="#reviews" className="text-sm font-semibold text-[var(--brand)] underline underline-offset-4">Read user reviews</a></div>
         </div>
       </section>
 
@@ -81,6 +82,8 @@ export default function HomePage() {
         </div>
         <HomeToolsFilter heading="All PDF tools" />
       </section>
+
+      <ReviewsSection />
 
       <section className="bg-white py-12 sm:py-16">
         <div className="site-container">
@@ -107,8 +110,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <ReviewsSection />
 
       <section className="bg-[var(--bg-a)] pt-12 pb-2 sm:pt-16 sm:pb-3">
         <div className="site-container">

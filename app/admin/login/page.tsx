@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, Suspense, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PasswordInput } from "@/components/PasswordInput";
 
@@ -13,9 +13,12 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setReady(true); }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!ready || loading) return;
     setLoading(true);
     setError("");
     try {
@@ -51,11 +54,12 @@ function LoginForm() {
           <Image
             src="/logo.png"
             alt="BestFreePDFConverter"
-            width={180}
-            height={48}
-            className="h-10 w-auto brightness-0 invert"
+            width={88}
+            height={88}
+            className="h-22 w-22 rounded-2xl object-contain"
             priority
           />
+          <p className="mt-3 text-lg font-semibold text-white">BestFreePDFConverter</p>
           <p className="mt-4 text-sm text-slate-300">
             Content management dashboard
           </p>
@@ -76,7 +80,7 @@ function LoginForm() {
             </p>
           )}
 
-          <div className="mt-6 space-y-4">
+          <fieldset disabled={!ready || loading} className="mt-6 space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Email or username
@@ -106,11 +110,11 @@ function LoginForm() {
                 required
               />
             </div>
-          </div>
+          </fieldset>
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={!ready || loading}
             className="mt-6 w-full rounded-xl bg-[var(--brand)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? "Signing in…" : "Sign in"}

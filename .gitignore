@@ -25,6 +25,7 @@
 # env (never commit secrets)
 .env
 .env*.local
+*-firebase-adminsdk-*.json
 
 # misc
 .DS_Store

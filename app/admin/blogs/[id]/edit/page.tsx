@@ -1,3 +1,5 @@
+import { isFirebaseAdminConfigured } from "@/lib/firebase-admin";
+import { DatabaseSetup } from "@/components/admin/DatabaseSetup";
 import { notFound, redirect } from "next/navigation";
 import AdminShell from "@/components/admin/admin-shell";
 import BlogEditorForm from "@/components/admin/blog-editor-form";
@@ -16,6 +18,7 @@ interface PageProps {
 export default async function EditBlogPage({ params }: PageProps) {
   const session = await getAdminSession();
   if (!session.isLoggedIn) redirect("/admin/login");
+  if (!isFirebaseAdminConfigured()) return <DatabaseSetup />;
 
   const { id } = await params;
   const post = await getAdminBlogPostById(id);

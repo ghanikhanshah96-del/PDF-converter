@@ -1,4 +1,31 @@
 @import "tailwindcss";
+
+/* Shared admin controls keep management screens compact and consistent. */
+@layer components {
+.admin-portal { color: #334155; }
+.admin-panel { border: 1px solid #e2e8f0; border-radius: 12px; background: white; box-shadow: 0 1px 2px #0f172a04; }
+.admin-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 7px 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; font-size: 13px; line-height: 18px; font-weight: 600; color: #475569; cursor: pointer; transition: background .15s, border-color .15s; }
+.admin-btn:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
+.admin-btn:disabled { opacity: .5; cursor: not-allowed; }
+.admin-btn:focus-visible, .admin-input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.admin-btn-primary { background: var(--brand); border-color: var(--brand); color: white; }
+.admin-btn-primary:hover:not(:disabled) { background: #dc2626; border-color: #dc2626; }
+.admin-btn-danger { background: #dc2626; border-color: #dc2626; color: white; }
+.admin-btn-danger:hover:not(:disabled) { background: #b91c1c; border-color: #b91c1c; }
+.admin-btn-quiet { border-color: transparent; background: transparent; }
+.admin-icon { width: 34px; min-height: 34px; padding: 7px; }
+.admin-input { display: block; width: 100%; height: 38px; border: 1px solid #dbe1e9; border-radius: 8px; background: white; padding: 8px 11px; color: #0f172a; font-size: 13px; }
+textarea.admin-input { height: auto; min-height: 108px; resize: vertical; }
+.admin-label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: #475569; }
+.admin-pill { display: inline-flex; align-items: center; gap: 4px; border-radius: 5px; padding: 3px 7px; font-size: 11px; line-height: 15px; font-weight: 600; white-space: nowrap; }
+.admin-table { width: 100%; text-align: left; font-size: 13px; }
+.admin-table th { padding: 10px 16px; background: #f8fafc; font-size: 11px; font-weight: 600; color: #64748b; }
+.admin-table td { padding: 12px 16px; border-top: 1px solid #f1f5f9; vertical-align: top; }
+.admin-table tbody tr:hover { background: #fafbfc; }
+.admin-dialog { position: fixed; inset: 0; margin: auto; width: min(560px, calc(100% - 24px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 0; border: 1px solid #e2e8f0; border-radius: 16px; background: white; color: #334155; box-shadow: 0 24px 80px #0f172a33; }
+.admin-dialog::backdrop { background: #0f172a66; backdrop-filter: blur(3px); }
+@media (max-width: 640px) { .admin-btn { min-height: 40px; } .admin-icon { width: 40px; } }
+}
 @plugin "@tailwindcss/typography";
 
 :root {
@@ -210,6 +237,39 @@ a:not([class]) {
   margin-inline: auto;
   padding-inline: 1rem;
 }
+
+@layer components {
+  .cms-article-content { min-width: 0; font-size: 1rem; line-height: 1.75; color: var(--ink); overflow-wrap: break-word; }
+  .cms-article-content :where(p) { margin: 0 0 .75rem; font-size: 1rem; line-height: 1.75; }
+  .cms-article-content :where(h1, h2, h3, h4) { font-family: var(--font-display); font-weight: 600; line-height: 1.3; color: var(--ink); scroll-margin-top: 7rem; }
+  .cms-article-content :where(h1) { margin: 2rem 0 1rem; font-size: 2rem; }
+  .cms-article-content :where(h2) { margin: 2.5rem 0 .75rem; font-size: 1.5rem; }
+  .cms-article-content :where(h3) { margin: 1.5rem 0 .75rem; font-size: 1.125rem; }
+  .cms-article-content :where(h4) { margin: 1.25rem 0 .5rem; font-size: 1rem; }
+  .cms-article-content :where(ul:not([class]), ol:not([class])) { margin: 1rem 0; padding-left: 1.5rem; }
+  .cms-article-content :where(ul:not([class])) { list-style: disc; }
+  .cms-article-content :where(ol:not([class])) { list-style: decimal; }
+  .cms-article-content :where(ul:not([class]), ol:not([class])) > li { margin-block: .35rem; }
+  .cms-article-content :where(figure) { margin: 1.5rem 0; }
+  .cms-article-content :where(figcaption) { margin-top: .5rem; font-size: .875rem; line-height: 1.5; color: var(--ink-muted); }
+  .cms-article-content :where(img) { max-width: 100%; height: auto; }
+  .cms-article-content :where(table) { width: 100%; border-collapse: collapse; background: white; font-size: .875rem; line-height: 1.5; }
+  .cms-article-content :where(th, td) { border-bottom: 1px solid var(--line); padding: .75rem; text-align: left; vertical-align: top; }
+  .cms-article-content :where(th) { font-weight: 600; }
+  .cms-article-content :where(blockquote) { margin: 1.5rem 0; border-left: 3px solid var(--brand); padding: .25rem 0 .25rem 1rem; color: var(--ink-muted); }
+  .cms-article-content :where(pre) { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: .5rem; background: var(--bg-c); font-size: .875rem; }
+}
+
+/* Pasted page containers must use the article's existing navbar-aligned gutters. */
+.cms-article-content .site-container { width: 100%; max-width: none; margin-inline: 0; padding: 0; }
+.cms-article-content > header { padding: 0; }
+.cms-article-content > header p { max-width: none; margin-top: 0; font-size: inherit; line-height: inherit; }
+.cms-article-content > .site-container { padding-bottom: 0; }
+.cms-article-content > :first-child { margin-top: 0; }
+.cms-article-content > :last-child { margin-bottom: 0; }
+.cms-article-content .faq-panel-inner > p { margin-bottom: 0; }
+.cms-article-content a[href]:not([class]) { color: var(--brand); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.cms-table-scroll { width: 100%; max-width: 100%; overflow-x: auto; }
 
 @media (min-width: 640px) {
   .site-container {

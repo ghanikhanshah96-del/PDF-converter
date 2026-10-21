@@ -200,7 +200,7 @@ export function ReviewPrompt({ open, toolName, onClose }: Props) {
               </button>
             </div>
             <p className="mt-3 text-center text-xs text-[var(--ink-muted)]">
-              By submitting, you agree that your name and review may appear publicly. Selected 3-5 star reviews are displayed; lower ratings are saved privately and emailed to our team. Please avoid personal or document details.
+              By submitting, you agree that your name and review may appear publicly. Selected 4–5 star reviews are displayed; ratings of 1–3 stars are saved privately and emailed to our team. Please avoid personal or document details.
             </p>
           </>
         )}

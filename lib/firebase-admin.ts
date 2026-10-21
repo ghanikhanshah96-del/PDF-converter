@@ -1,4 +1,4 @@
-import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
+import { applicationDefault, cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 
 function getPrivateKey() {
@@ -7,15 +7,27 @@ function getPrivateKey() {
   return key.replace(/\\n/g, "\n");
 }
 
-function createFirebaseApp(): App {
-  const existing = getApps()[0];
-  if (existing) return existing;
+export function isFirebaseAdminConfigured() {
+  return Boolean(
+    (process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) &&
+    ((process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) ||
+      process.env.GOOGLE_APPLICATION_CREDENTIALS),
+  );
+}
 
+function createFirebaseApp(): App {
   const projectId =
     process.env.FIREBASE_PROJECT_ID ||
     process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const name = `admin-${projectId}`;
+  const existing = getApps().find(app => app.name === name);
+  if (existing) return existing;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   const privateKey = getPrivateKey();
+
+  if (projectId && process.env.GOOGLE_APPLICATION_CREDENTIALS && (!clientEmail || !privateKey)) {
+    return initializeApp({ credential: applicationDefault(), projectId }, name);
+  }
 
   if (!projectId || !clientEmail || !privateKey) {
     throw new Error(
@@ -30,7 +42,7 @@ function createFirebaseApp(): App {
       privateKey,
     }),
     projectId,
-  });
+  }, name);
 }
 
 const globalForFirebase = globalThis as unknown as {
@@ -39,15 +51,18 @@ const globalForFirebase = globalThis as unknown as {
 };
 
 export function getFirebaseApp(): App {
-  if (!globalForFirebase.firebaseApp) {
+  const projectId = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  if (!globalForFirebase.firebaseApp || globalForFirebase.firebaseApp.options.projectId !== projectId) {
     globalForFirebase.firebaseApp = createFirebaseApp();
+    globalForFirebase.firestore = undefined;
   }
   return globalForFirebase.firebaseApp;
 }
 
 export function getDb(): Firestore {
+  const app = getFirebaseApp();
   if (!globalForFirebase.firestore) {
-    globalForFirebase.firestore = getFirestore(getFirebaseApp());
+    globalForFirebase.firestore = getFirestore(app);
   }
   return globalForFirebase.firestore;
 }

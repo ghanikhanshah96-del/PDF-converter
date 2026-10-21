@@ -12,22 +12,16 @@ export const ADMIN_PERMISSIONS = [
     href: "/admin/blogs",
   },
   {
+    id: "reviews",
+    label: "Reviews",
+    description: "Read, edit, and remove customer feedback",
+    href: "/admin/reviews",
+  },
+  {
     id: "media",
     label: "Media",
     description: "Media library",
     href: "/admin/media",
-  },
-  {
-    id: "pages",
-    label: "Pages",
-    description: "Site pages (coming soon)",
-    href: "/admin/pages",
-  },
-  {
-    id: "services",
-    label: "Services",
-    description: "Services content (coming soon)",
-    href: "/admin/services",
   },
   {
     id: "users",
@@ -59,9 +53,8 @@ export function normalizePermissions(input: unknown): AdminPermissionId[] {
 export function permissionForPath(pathname: string): AdminPermissionId | null {
   if (pathname === "/admin" || pathname === "/admin/") return "dashboard";
   if (pathname.startsWith("/admin/blogs")) return "blogs";
+  if (pathname.startsWith("/admin/reviews")) return "reviews";
   if (pathname.startsWith("/admin/media")) return "media";
-  if (pathname.startsWith("/admin/pages")) return "pages";
-  if (pathname.startsWith("/admin/services")) return "services";
   if (pathname.startsWith("/admin/users")) return "users";
   return null;
 }

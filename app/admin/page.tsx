@@ -1,195 +1,47 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
+﻿import Link from "next/link";
 import AdminShell from "@/components/admin/admin-shell";
-import { getAdminSession, sessionIsSuperAdmin } from "@/lib/auth";
-import {
-  countBlogPosts,
-  listBlogPosts,
-} from "@/lib/blog-repo";
+import { AdminIcon } from "@/components/admin/AdminDialog";
+import { DatabaseSetup } from "@/components/admin/DatabaseSetup";
+import { requirePagePermission, sessionHasPermission, sessionIsSuperAdmin } from "@/lib/auth";
+import { isFirebaseAdminConfigured } from "@/lib/firebase-admin";
+import { getAllAdminBlogPosts } from "@/lib/blog-service";
+import { listAdminReviews } from "@/lib/reviews-repo";
+import { listAdminUsers } from "@/lib/admin-users";
 
 export const dynamic = "force-dynamic";
-
-export default async function AdminDashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ denied?: string }>;
-}) {
-  const session = await getAdminSession();
-  if (!session.isLoggedIn) redirect("/admin/login");
-  const sp = await searchParams;
-  let total = 0;
-  let published = 0;
-  let drafts = 0;
-  let recent: Awaited<ReturnType<typeof listBlogPosts>> = [];
-
-  try {
-    [total, published, drafts, recent] = await Promise.all([
-      countBlogPosts(),
-      countBlogPosts("published"),
-      countBlogPosts("draft"),
-      listBlogPosts({ orderBy: "modifiedAt" }).then((posts) => posts.slice(0, 5)),
-    ]);
-  } catch {
-    // Firestore may be briefly unavailable
-  }
-
-  const cards = [
-    {
-      label: "Total posts",
-      value: total,
-      hint: "All blog entries",
-      accent: "from-slate-800 to-slate-900",
-    },
-    {
-      label: "Published",
-      value: published,
-      hint: "Live on the site",
-      accent: "from-emerald-600 to-teal-700",
-    },
-    {
-      label: "Drafts",
-      value: drafts,
-      hint: "Not published yet",
-      accent: "from-amber-500 to-orange-600",
-    },
+export default async function AdminDashboardPage({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
+  const session = await requirePagePermission("/admin");
+  if (!isFirebaseAdminConfigured()) return <DatabaseSetup />;
+  const denied = (await searchParams).denied;
+  const canBlogs = sessionHasPermission(session, "blogs");
+  const canReviews = sessionHasPermission(session, "reviews");
+  const canUsers = sessionHasPermission(session, "users");
+  const [posts, reviews, users] = await Promise.all([
+    canBlogs ? getAllAdminBlogPosts() : [], canReviews ? listAdminReviews() : [], canUsers ? listAdminUsers() : [],
+  ]);
+  const privateReviews = reviews.filter(review => !review.published);
+  const stats = [
+    ...(canBlogs ? [{ label: "Blog posts", count: posts.length, detail: `${posts.filter(post => post.status === "published").length} published`, href: "/admin/blogs", icon: "blog" as const }] : []),
+    ...(canReviews ? [{ label: "Public reviews", count: reviews.filter(review => review.published).length, detail: "Visible on the homepage", href: "/admin/reviews", icon: "star" as const }, { label: "Private feedback", count: privateReviews.length, detail: "Feedback for your team", href: "/admin/reviews", icon: "star" as const }] : []),
+    ...(canUsers ? [{ label: "Team members", count: users.length, detail: "Workspace access", href: "/admin/users", icon: "users" as const }] : []),
   ];
+  const shortcuts = [
+    { label: "Write a post", detail: "Create a new blog article", href: "/admin/blogs/new", permission: "blogs" as const, icon: "edit" as const },
+    { label: "Review feedback", detail: "Read and manage customer reviews", href: "/admin/reviews", permission: "reviews" as const, icon: "star" as const },
+    { label: "Manage your team", detail: "Invite users and edit access", href: "/admin/users", permission: "users" as const, icon: "users" as const },
+    { label: "Browse media", detail: "Find and upload images", href: "/admin/media", permission: "media" as const, icon: "image" as const },
+  ].filter(item => sessionHasPermission(session, item.permission));
 
-  return (
-    <AdminShell
-      username={session.username}
-      permissions={session.permissions}
-      isSuperAdmin={sessionIsSuperAdmin(session)}
-    >
-      {sp.denied ? (
-        <p className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          You don&apos;t have access to that section. Ask a super admin to update
-          your permissions.
-        </p>
-      ) : null}
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-sm text-slate-500">
-            Welcome back{session.username ? `, ${session.username}` : ""}. Manage
-            content from one place.
-          </p>
-        </div>
-        <Link
-          href="/admin/blogs/new"
-          className="inline-flex items-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
-        >
-          + New blog post
-        </Link>
+  return <AdminShell username={session.username} permissions={session.permissions} isSuperAdmin={sessionIsSuperAdmin(session)}>
+    <div className="space-y-5">
+      {denied && <p role="alert" className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">You do not have access to that section. Ask your workspace owner to update your permissions.</p>}
+      <div className="flex items-start justify-between gap-4"><div><h2 className="text-lg font-semibold text-slate-950">Welcome back, {session.username || "admin"}</h2><p className="mt-1 text-sm text-slate-500">Your content, customer feedback, and team in one place.</p></div>{canBlogs && <Link href="/admin/blogs/new" className="admin-btn admin-btn-primary shrink-0"><AdminIcon name="plus" /><span className="hidden sm:inline">New post</span></Link>}</div>
+      {stats.length > 0 && <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">{stats.map(stat => <Link key={stat.label} href={stat.href} className="admin-panel p-4 transition hover:border-slate-300"><div className="flex items-center justify-between gap-2"><p className="text-xs font-medium text-slate-500">{stat.label}</p><AdminIcon name={stat.icon} className="h-4 w-4 text-slate-400" /></div><p className="mt-2 text-2xl font-semibold text-slate-950">{stat.count}</p><p className="mt-1 text-[11px] text-slate-400">{stat.detail}</p></Link>)}</div>}
+      {shortcuts.length > 0 && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{shortcuts.map(item => <Link key={item.href} href={item.href} className="admin-panel flex items-center gap-3 p-3.5 transition hover:border-red-200"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-[var(--brand)]"><AdminIcon name={item.icon} /></span><div><p className="text-xs font-semibold text-slate-900">{item.label}</p><p className="mt-0.5 text-[11px] text-slate-400">{item.detail}</p></div></Link>)}</div>}
+      <div className="grid items-start gap-4 xl:grid-cols-2">
+        {canBlogs && <section className="admin-panel overflow-hidden"><div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="text-sm font-semibold text-slate-900">Recent posts</h3><Link href="/admin/blogs" className="text-xs font-medium text-[var(--brand)]">View all →</Link></div>{posts.length ? <ul className="divide-y divide-slate-100">{posts.slice(0, 5).map(post => <li key={post.id}><Link href={`/admin/blogs/${post.id}/edit`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-slate-50"><div className="min-w-0"><p className="truncate text-sm font-medium text-slate-800">{post.title}</p><p className="mt-1 truncate text-xs text-slate-400">/blog/{post.slug}</p></div><span className={`admin-pill ${post.status === "published" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{post.status === "published" ? "Published" : "Draft"}</span></Link></li>)}</ul> : <div className="px-4 py-7 text-center"><p className="text-sm text-slate-500">Your first article starts here.</p><Link href="/admin/blogs/new" className="admin-btn mt-3">Write a post</Link></div>}</section>}
+        {canReviews && <section className="admin-panel overflow-hidden"><div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="text-sm font-semibold text-slate-900">Latest private feedback</h3><Link href="/admin/reviews" className="text-xs font-medium text-[var(--brand)]">View all →</Link></div>{privateReviews.length ? <ul className="divide-y divide-slate-100">{privateReviews.slice(0, 4).map(review => <li key={review.id}><Link href="/admin/reviews" className="block px-4 py-3 hover:bg-slate-50"><div className="flex items-center justify-between"><p className="text-xs font-semibold text-slate-800">{review.name}</p><span className="text-xs font-semibold text-amber-600">★ {review.rating}/5</span></div><p className="mt-1 line-clamp-1 text-xs text-slate-500">{review.comment}</p></Link></li>)}</ul> : <p className="px-4 py-7 text-center text-sm text-slate-500">No private feedback to review.</p>}</section>}
       </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        {cards.map((card) => (
-          <div
-            key={card.label}
-            className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
-          >
-            <div
-              className={`absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${card.accent} opacity-10`}
-            />
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-              {card.label}
-            </p>
-            <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-              {card.value}
-            </p>
-            <p className="mt-1 text-xs text-slate-400">{card.hint}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:p-6">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold text-slate-900">
-              Recent posts
-            </h2>
-            <Link
-              href="/admin/blogs"
-              className="text-xs font-medium text-[var(--brand)] hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-          {recent.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-500">
-              No posts yet. Create your first article.
-            </p>
-          ) : (
-            <ul className="divide-y divide-slate-100">
-              {recent.map((post) => (
-                <li
-                  key={post.id}
-                  className="flex flex-wrap items-center justify-between gap-3 py-3.5 first:pt-0 last:pb-0"
-                >
-                  <div className="min-w-0">
-                    <Link
-                      href={`/admin/blogs/${post.id}/edit`}
-                      className="block truncate text-sm font-medium text-slate-900 hover:text-[var(--brand)]"
-                    >
-                      {post.title}
-                    </Link>
-                    <p className="mt-0.5 truncate text-xs text-slate-400">
-                      /blog/{post.slug}
-                    </p>
-                  </div>
-                  <span
-                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-                      post.status === "published"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-amber-50 text-amber-700"
-                    }`}
-                  >
-                    {post.status}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:p-6">
-          <h2 className="text-sm font-semibold text-slate-900">Quick actions</h2>
-          <div className="mt-4 space-y-2">
-            {[
-              {
-                href: "/admin/blogs/new",
-                title: "Write a new post",
-                desc: "Open the blog editor",
-              },
-              {
-                href: "/admin/blogs",
-                title: "Manage blogs",
-                desc: "Edit, publish, or delete",
-              },
-              {
-                href: "/admin/media",
-                title: "Media library",
-                desc: "Browse and upload images",
-              },
-              {
-                href: "/blog",
-                title: "Preview public blog",
-                desc: "Open the live blog page",
-                external: true,
-              },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                className="block rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 transition hover:border-slate-300 hover:bg-white"
-              >
-                <p className="text-sm font-medium text-slate-900">{item.title}</p>
-                <p className="mt-0.5 text-xs text-slate-500">{item.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </div>
-    </AdminShell>
-  );
+    </div>
+  </AdminShell>;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { SITE } from "@/lib/site";
 import { getPublishedBlogPosts } from "@/lib/blog-service";
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export default async function EditorialProfile() {
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\u003c") }} />
     <Link href="/blog" className="text-sm font-semibold text-[var(--brand)]">&larr; Back to the blog</Link>
     <header className="mt-6 rounded-2xl border border-[var(--line)] bg-white p-6 sm:p-10">
-      <div aria-hidden="true" className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--brand-soft)] font-display text-xl font-semibold text-[var(--brand)]">PDF</div>
+      <Image src="/logo.png" alt="BestFreePDFConverter logo" width={64} height={64} priority className="mb-5 h-16 w-16 rounded-2xl object-contain" />
       <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand)]">Meet the authors</p>
       <h1 className="mt-3 font-display text-3xl font-semibold text-[var(--ink)] sm:text-4xl">{name}</h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[var(--ink-muted)]">PDF tasks should be easier to understand. Our website&apos;s editorial team creates guides that explain file conversion, page organization, and document workflows in everyday language.</p>

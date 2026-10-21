@@ -1,3 +1,5 @@
+import { isFirebaseAdminConfigured } from "@/lib/firebase-admin";
+import { DatabaseSetup } from "@/components/admin/DatabaseSetup";
 import { redirect } from "next/navigation";
 import AdminShell from "@/components/admin/admin-shell";
 import UsersManager from "@/components/admin/users-manager";
@@ -10,14 +12,10 @@ export const dynamic = "force-dynamic";
 export default async function AdminUsersPage() {
   const session = await getAdminSession();
   if (!session.isLoggedIn) redirect("/admin/login");
+  if (!isFirebaseAdminConfigured()) return <DatabaseSetup />;
   if (!sessionHasPermission(session, "users")) redirect("/admin?denied=1");
 
-  let users: Awaited<ReturnType<typeof listAdminUsers>> = [];
-  try {
-    users = await listAdminUsers();
-  } catch {
-    users = [];
-  }
+  const users = await listAdminUsers();
 
   return (
     <AdminShell

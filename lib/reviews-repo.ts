@@ -1,25 +1,76 @@
 import { randomBytes } from "crypto";
-import { getDb } from "@/lib/firebase-admin";
+import { getDb, isFirebaseAdminConfigured } from "@/lib/firebase-admin";
 import type { UserReview } from "@/lib/reviews";
+import { isPublicReviewRating, selectPublicReviews } from "@/lib/review-policy";
 
 export const REVIEWS_COLLECTION = "userReviews";
-export function isFirebaseConfigured() {
-  return Boolean((process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY);
+export const isFirebaseConfigured = isFirebaseAdminConfigured;
+export type AdminReview = UserReview & {
+  published: boolean;
+  notificationStatus: "sent" | "failed" | "pending" | "not-required";
+};
+
+export type ReviewEdit = Pick<UserReview, "name" | "rating" | "comment"> & { tool: string; published: boolean };
+
+export async function updateReview(id: string, input: ReviewEdit, actor: string) {
+  const db = getDb();
+  const ref = db.collection(REVIEWS_COLLECTION).doc(id);
+  return db.runTransaction(async transaction => {
+    const snapshot = await transaction.get(ref);
+    if (!snapshot.exists) return false;
+    const original = snapshot.data()!;
+    transaction.update(ref, {
+      ...input,
+      published: input.published && isPublicReviewRating(input.rating),
+      moderated: true,
+      updatedAt: new Date().toISOString(),
+      updatedBy: actor,
+      originalReview: original.originalReview || {
+        name: original.name || "", rating: original.rating, comment: original.comment || "", tool: original.tool || "",
+      },
+    });
+    return true;
+  });
+}
+
+export async function deleteReview(id: string) {
+  const db = getDb();
+  const ref = db.collection(REVIEWS_COLLECTION).doc(id);
+  return db.runTransaction(async transaction => {
+    const snapshot = await transaction.get(ref);
+    if (!snapshot.exists) return false;
+    transaction.delete(ref);
+    return true;
+  });
+}
+
+export async function listAdminReviews(): Promise<AdminReview[]> {
+  const snapshot = await getDb().collection(REVIEWS_COLLECTION).orderBy("createdAt", "desc").get();
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      name: typeof data.name === "string" ? data.name : "Anonymous user",
+      comment: typeof data.comment === "string" ? data.comment : "",
+      rating: Number(data.rating),
+      createdAt: typeof data.createdAt === "string" ? data.createdAt : "",
+      ...(typeof data.tool === "string" ? { tool: data.tool } : {}),
+      published: data.published === true && isPublicReviewRating(data.rating),
+      notificationStatus: ["sent", "failed", "pending", "not-required"].includes(data.notificationStatus)
+        ? data.notificationStatus : "not-required",
+    } as AdminReview;
+  });
 }
 export async function listPublicReviews(): Promise<UserReview[]> {
-  if (!isFirebaseConfigured()) return [];
+  if (!isFirebaseConfigured()) throw new Error("REVIEWS_NOT_CONFIGURED");
   // A single-field query avoids requiring a composite index at deployment.
   const snap = await getDb().collection(REVIEWS_COLLECTION).where("published", "==", true).get();
-  return snap.docs.map(doc => {
-    const d = doc.data();
-    return { id: doc.id, name: d.name, rating: d.rating, comment: d.comment, createdAt: d.createdAt, ...(d.tool ? { tool: d.tool } : {}) } as UserReview;
-  }).filter(r => typeof r.name === "string" && typeof r.comment === "string" && Number.isInteger(r.rating) && r.rating >= 3 && r.rating <= 5)
-    .sort((a,b) => b.createdAt.localeCompare(a.createdAt)).slice(0,40);
+  return selectPublicReviews(snap.docs.map(doc => ({ id: doc.id, data: doc.data() })));
 }
 export async function createReview(input: Omit<UserReview, "id" | "createdAt">) {
   if (!isFirebaseConfigured()) throw new Error("REVIEWS_NOT_CONFIGURED");
   const review: UserReview = { ...input, id: `rv_${randomBytes(10).toString("hex")}`, createdAt: new Date().toISOString() };
-  const published = review.rating >= 3;
-  await getDb().collection(REVIEWS_COLLECTION).doc(review.id).set({ ...review, published, moderated: false, notificationStatus: review.rating < 3 ? "pending" : "not-required" });
+  const published = isPublicReviewRating(review.rating);
+  await getDb().collection(REVIEWS_COLLECTION).doc(review.id).set({ ...review, published, moderated: false, notificationStatus: published ? "not-required" : "pending" });
   return { review, published };
 }

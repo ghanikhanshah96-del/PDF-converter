@@ -1,3 +1,5 @@
+import { isFirebaseAdminConfigured } from "@/lib/firebase-admin";
+import { DatabaseSetup } from "@/components/admin/DatabaseSetup";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import AdminShell from "@/components/admin/admin-shell";
@@ -10,6 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminBlogsPage() {
   const session = await getAdminSession();
   if (!session.isLoggedIn) redirect("/admin/login");
+  if (!isFirebaseAdminConfigured()) return <DatabaseSetup />;
 
   const posts = await getAllAdminBlogPosts();
 
@@ -18,20 +21,20 @@ export default async function AdminBlogsPage() {
       username={session.username}
       permissions={session.permissions}
       isSuperAdmin={sessionIsSuperAdmin(session)}
-    >      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    >      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-500">
           Create, edit, and publish posts for the public blog.
         </p>
         <Link
           href="/admin/blogs/new"
-          className="inline-flex items-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
+          className="admin-btn admin-btn-primary"
         >
           + New post
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
-        <table className="w-full text-left text-sm">
+      <div className="admin-panel overflow-hidden">
+        <table className="admin-table">
           <thead className="border-b border-slate-200 bg-slate-50/80 text-[11px] uppercase tracking-[0.12em] text-slate-500">
             <tr>
               <th className="px-5 py-3.5 font-semibold">Title</th>
@@ -49,7 +52,7 @@ export default async function AdminBlogsPage() {
               <tr>
                 <td
                   colSpan={4}
-                  className="px-5 py-14 text-center text-slate-500"
+                  className="px-5 py-8 text-center text-slate-500"
                 >
                   No posts yet.{" "}
                   <Link
