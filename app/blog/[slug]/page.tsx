@@ -78,8 +78,8 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
     dateModified: post.updatedAt ?? post.date,
     author: {
       "@type": "Organization",
-      name: SITE.name,
-      url: SITE.url,
+      name: "BestFreePDFConverter Editorial Team",
+      url: `${SITE.url}/team/editorial`,
     },
     publisher: {
       "@type": "Organization",
@@ -176,6 +176,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
           <h1 className="mt-4 font-display text-[clamp(1.85rem,5vw,2.75rem)] font-semibold leading-tight text-[var(--ink)]">
             {post.title}
           </h1>
+          <p className="mt-3 text-sm text-[var(--ink-muted)]">By <Link href="/team/editorial" rel="author" className="font-semibold text-[var(--brand)] underline underline-offset-2">BestFreePDFConverter Editorial Team</Link></p>
           {post.excerpt ? (
             <p className="mt-3 max-w-3xl text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
               {post.excerpt}

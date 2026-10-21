@@ -10,46 +10,6 @@ export type UserReview = {
 const STORAGE_KEY = "bfpc-user-reviews-v1";
 const PROMPT_KEY = "bfpc-review-prompt-v1";
 
-/** Seed reviews shown publicly (4–5 stars only). */
-export const SEED_REVIEWS: UserReview[] = [
-  {
-    id: "seed-1",
-    name: "Amina K.",
-    rating: 5,
-    comment:
-      "Merged my application PDFs in seconds. Clear steps and no account needed.",
-    createdAt: "2026-09-12T10:00:00.000Z",
-    tool: "Merge PDF",
-  },
-  {
-    id: "seed-2",
-    name: "Daniel R.",
-    rating: 5,
-    comment:
-      "PDF to Word worked well for my report. I like that files stay in the browser.",
-    createdAt: "2026-09-28T14:20:00.000Z",
-    tool: "PDF to Word",
-  },
-  {
-    id: "seed-3",
-    name: "Sofia M.",
-    rating: 4,
-    comment:
-      "Compress tool cut my file size enough to email. Simple and polite UI.",
-    createdAt: "2026-10-05T09:15:00.000Z",
-    tool: "Compress PDF",
-  },
-  {
-    id: "seed-4",
-    name: "James L.",
-    rating: 5,
-    comment:
-      "Unlocked my own PDF and then protected it again. Exactly what I needed.",
-    createdAt: "2026-10-14T16:40:00.000Z",
-    tool: "Protect PDF",
-  },
-];
-
 function canUseStorage() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
@@ -70,24 +30,6 @@ export function saveLocalReview(review: UserReview) {
   if (!canUseStorage()) return;
   const next = [review, ...loadLocalReviews()].slice(0, 40);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-}
-
-/** Public wall: seed + local reviews with rating above 3 (4 or 5). */
-export function getPublicReviews(): UserReview[] {
-  const local = loadLocalReviews().filter((r) => r.rating >= 4);
-  const merged = [...local, ...SEED_REVIEWS];
-  const seen = new Set<string>();
-  return merged
-    .filter((r) => {
-      if (r.rating < 4) return false;
-      if (seen.has(r.id)) return false;
-      seen.add(r.id);
-      return true;
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
 }
 
 export function averagePublicRating(reviews: UserReview[]): number {
@@ -113,7 +55,7 @@ function loadPromptState(): PromptState {
 
 function savePromptState(state: PromptState) {
   if (!canUseStorage()) return;
-  localStorage.setItem(PROMPT_KEY, JSON.stringify(state));
+  try { localStorage.setItem(PROMPT_KEY, JSON.stringify(state)); } catch { /* Optional preference storage. */ }
 }
 
 /** True when we may politely ask for a review after a download. */

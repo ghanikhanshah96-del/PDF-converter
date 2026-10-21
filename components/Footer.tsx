@@ -25,6 +25,7 @@ const PRIVACY_ITEMS = [
 const SITE_LINKS = [
   { href: "/about-us", label: "About Us" },
   { href: "/blog", label: "Blog" },
+  { href: "/team/editorial", label: "Editorial Team" },
   { href: "/contact-us", label: "Contact Us" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms-and-conditions", label: "Terms and Conditions" },
