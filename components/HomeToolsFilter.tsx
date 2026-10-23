@@ -34,11 +34,10 @@ export function HomeToolsFilter({
   const [active, setActive] = useState<ActiveCategory>("all");
 
   const visibleTools = useMemo(() => {
-    if (active === "all") {
-      return tools;
-    }
-
-    return tools.filter((tool) => tool.category === active);
+    // Temporarily hide Edit PDF from the website's tool listing.
+    return tools.filter(
+      (tool) => tool.id !== "edit-pdf" && (active === "all" || tool.category === active),
+    );
   }, [active]);
 
   return (
