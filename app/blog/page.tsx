@@ -2,6 +2,7 @@ import { BlogIndex } from "@/components/blog/BlogIndex";
 import type { Metadata } from "next";
 import {
   getPublishedBlogPosts,
+  getBlogCoverImageSrc,
 } from "@/lib/blog-service";
 import { SITE } from "@/lib/site";
 
@@ -39,7 +40,11 @@ export default async function BlogPage() {
       </section>
 
       <section className="site-container pb-16">
-        <BlogIndex posts={posts.map(({ slug, href, title, excerpt, category, readTime, date }) => ({ slug, href, title, excerpt, category, readTime, date }))} />
+        <BlogIndex posts={posts.map(post => ({
+          slug: post.slug, href: post.href, title: post.title, excerpt: post.excerpt,
+          category: post.category, readTime: post.readTime, date: post.date,
+          coverImage: getBlogCoverImageSrc(post), coverImageAlt: post.coverImageAlt,
+        }))} />
       </section>
     </div>
   );

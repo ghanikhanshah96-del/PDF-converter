@@ -83,3 +83,12 @@ Historical verification of the initial implementation; superseded by the free-pl
 - Edge browser checks passed at 1440 and 390 pixels using temporary browser-only article markup: two/one columns, red markers, nested lists, retained inline formatting, correct 3/4/5 and restarted 1/2 numbering, unchanged navigation layout, and no page overflow. The real editor iframe preview used the shared grid stylesheet. A mocked user creation confirmed the failed-invite fallback guidance; no email was sent and no user/article was saved or changed.
 - Actual email delivery remains pending the owner's Resend domain DNS verification and correct Vercel Production `RESEND_FROM_EMAIL`, followed by redeployment. This task did not access the owner's DNS account or modify live variables.
 - Production build passed with existing unrelated lint warnings. Repeated the list layout, editor iframe preview and mocked failed-invitation UI checks against `next start`; all passed.
+
+## Blog listing image cards - 22 October 2026
+
+- Blog listing cards now display each article's selected cover image above date/category, title, excerpt and a pill-shaped Read more action. Retained the site's red accents, typography, surfaces, and navbar-aligned container.
+- Static guides use their existing illustrations; CMS posts use their configured cover images, including public Blob URLs. Missing/unavailable images fall back to a PDF illustration. Uploaded images are served without a second lossy encoding pass, while SVG diagrams use contain sizing so labels are not cropped.
+- Cards use three columns on desktop, two on tablet and one on phones, with aligned actions and accessible whole-card links. Search, category filters, article counts, and Load more remain available.
+- Edge checks at 1440, 768 and 390 pixels confirmed the expected columns, images above headings, all nine current cover images loaded, and no horizontal overflow. Search empty state, category filtering, missing-image fallback, and article navigation passed without browser errors. No article records or stored images were modified.
+- TypeScript, targeted ESLint and whitespace checks passed. Live deployment remains the owner's next step.
+- Production build passed with existing unrelated lint warnings. Repeated the complete card layout/image/search/filter/fallback/navigation checks against `next start`; all passed without browser errors.

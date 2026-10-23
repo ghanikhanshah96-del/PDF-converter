@@ -80,6 +80,15 @@ components/tools/     Client components for each PDF tool
 lib/                  Site config, tool metadata, download helpers, engines
 lib/engines/          Browser-side PDF/document processing logic
 public/               Static assets, logo, PDF worker, images
+scripts/              Build asset preparation
+docs/                 Admin, deployment, verification and source documentation
+docs/content/         Source copy and article handoffs
+docs/research/        PDF editor research
+docs/references/      Archived design references, outside public assets
+tests/                Automated review, email and media tests
+tests/integration/    PDF editing and processing verification
+tests/fixtures/       PDF, DOCX and image test inputs
+tests/helpers/        Node test import helpers
 types/                Local TypeScript declarations
 ```
 
@@ -132,11 +141,20 @@ npm run lint
 npm run build
 ```
 
+PDF regression checks (Node.js 22.18+ or 24):
+
+```bash
+npm run test:pdf-edit
+npm run test:pdf-core
+```
+
+These use portable repository paths and `tests/fixtures/`. Generated verification PDFs go to the operating system's temporary directory.
+
 ## Deployment
 
 The app is intended for Vercel deployment with the domain `bestfreepdfconverter.com`.
 
-See [DEPLOY.md](./DEPLOY.md) for Vercel and DNS steps.
+See [deployment instructions](./docs/deployment.md) for Vercel and DNS steps, [admin documentation](./docs/admin.md), and [review behavior](./docs/reviews.md).
 
 ## Notes For Future Changes
 
@@ -158,7 +176,7 @@ Check Analytics Realtime in Firebase after opening a normal public page with bro
 
 ## Admin media storage
 
-New blog image uploads use Vercel Blob with lossless image optimization, within the Hobby plan's free usage limits. Connect a public Blob store to the Vercel project; Firebase Storage is not needed. Existing icons, logos, and bundled website images are unchanged. See [DEPLOY.md](./DEPLOY.md#admin-login-and-blog-image-storage) for setup, image limits, and live checks. Run `npm run test:media` to verify image fidelity and upload behavior.
+New blog image uploads use Vercel Blob with lossless image optimization, within the Hobby plan's free usage limits. Connect a public Blob store to the Vercel project; Firebase Storage is not needed. Existing icons, logos, and bundled website images are unchanged. See [deployment instructions](./docs/deployment.md#admin-login-and-blog-image-storage) for setup, image limits, and live checks. Run `npm run test:media` to verify image fidelity and upload behavior.
 
 ## User reviews
 

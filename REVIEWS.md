@@ -1,7 +1,0 @@
-Reviews and editorial profile
-
-User reviews now use /api/reviews and Firestore userReviews. Missing storage configuration returns an error instead of reporting a successful submission. Public cards are selected testimonials rated 3?5, explicitly disclosed, with no aggregate rating markup. 1?2 star feedback is saved privately and emailed using the existing SMTP/Resend integration. Optional REVIEWS_TO_EMAIL overrides the existing inbox. No historical reviews are fabricated or imported from browser storage. Old browser-only reviews cannot be recovered centrally.
-
-Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY and existing email provider settings in the deployment. Public clients must not have direct write access to userReviews or reviewSubmissionLimits. Apply Firestore TTL to reviewSubmissionLimits.expiresAt. The API limits five attempts per daily network-address hash; configure trusted proxy headers at hosting. Notification failures retain notificationStatus=failed for operator follow-up; no automatic email retry worker is configured. Do not assume successful delivery without testing the configured provider.
-
-The /team/editorial profile uses original website-specific text, existing theme/fonts, Organization profile markup, article bylines, a footer link and sitemap entry. Confirm editorial ownership before publication. No affiliation with HAVEN is implied. Google approval and ranking are not guaranteed; selected testimonials must not be described as representative customer satisfaction.
