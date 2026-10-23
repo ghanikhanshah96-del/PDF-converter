@@ -77,6 +77,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9309280380486229"
+          crossOrigin="anonymous"
+        />
         <meta
           name="google-site-verification"
           content="DitQAgl2NUL0gASsHbsDC7lX9Fbp7UcDc_nC33zPE-4"
