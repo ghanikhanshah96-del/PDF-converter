@@ -13,8 +13,8 @@ The app is built with Next.js and runs the core PDF workflows on the user's devi
 - A shared layout container so the navbar, sections, tool grid, pages, and footer use the same fixed site width.
 
 ## PDF Tools
-
-The toolkit currently includes:
+  
+The toolkit currently includes:::
 
 - PDF to Word
 - Word to PDF
