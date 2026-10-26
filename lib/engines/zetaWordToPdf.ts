@@ -3,6 +3,8 @@ const ENGINE_TIMEOUT_MS = 3 * 60 * 1000;
 const CONVERT_TIMEOUT_MS = 2 * 60 * 1000;
 const ENGINE_STAMP = "zetaoffice_latest-2025-05-13";
 const ENGINE_DB = "word-pdf-engine";
+const LOCAL_ENGINE = "/engine/";
+const CDN_ENGINE = "https://cdn.zetaoffice.net/zetaoffice_latest/";
 
 type Progress = (percent: number, label?: string) => void;
 
@@ -97,10 +99,10 @@ async function loadEngineFile(
   label: string,
   onProgress?: Progress,
 ): Promise<Uint8Array> {
-  const response = await fetch(url);
+  const response = await fetch(url, { mode: "cors" });
   if (!response.ok) {
     throw fail(
-      "The document engine is not available on this site yet. Deploy the site again, then reload this page.",
+      "The document engine could not be downloaded. Check your connection and try again.",
     );
   }
   const reader = response.body?.getReader();
@@ -309,9 +311,20 @@ function attachDispatcher(engine: ZetaEngine): void {
   };
 }
 
+async function localEngineAvailable(): Promise<boolean> {
+  try {
+    const response = await fetch(`${LOCAL_ENGINE}stamp.txt`, { cache: "no-store" });
+    return response.ok && (await response.text()).trim() === ENGINE_STAMP;
+  } catch {
+    return false;
+  }
+}
+
 async function bootEngine(): Promise<ZetaEngine> {
   if (!wordEngineReady()) throw fail(isolationMessage());
   ensureCanvas();
+  const useLocal = await localEngineAvailable();
+  const base = useLocal ? LOCAL_ENGINE : CDN_ENGINE;
   const cached = await readCachedEngine();
   let wasm: Uint8Array;
   let data: Uint8Array;
@@ -320,12 +333,16 @@ async function bootEngine(): Promise<ZetaEngine> {
     data = cached.data;
   } else {
     emit(8, "Downloading the document engine…");
-    wasm = await loadEngineFile("/engine/soffice.wasm.gz", "Downloading the document engine…", emit);
+    wasm = await loadEngineFile(
+      useLocal ? `${LOCAL_ENGINE}soffice.wasm.gz` : `${CDN_ENGINE}soffice.wasm`,
+      "Downloading the document engine…",
+      emit,
+    );
     if (wasm[0] !== 0x00 || wasm[1] !== 0x61 || wasm[2] !== 0x73 || wasm[3] !== 0x6d) {
       throw fail(downloadFailedMessage());
     }
     data = await loadEngineFile(
-      "/engine/soffice.data.gz",
+      useLocal ? `${LOCAL_ENGINE}soffice.data.gz` : `${CDN_ENGINE}soffice.data`,
       "Downloading fonts…",
       emit,
     );
@@ -334,7 +351,7 @@ async function bootEngine(): Promise<ZetaEngine> {
   const { ZetaHelperMain } = await loadHelper();
   const engine = new ZetaHelperMain("/office_thread.js", {
     threadJsType: "module",
-    wasmPkg: "url:/engine/",
+    wasmPkg: `url:${base}`,
     blockPageScroll: false,
   });
   engine.Module.wasmBinary = asArrayBuffer(wasm);
@@ -364,7 +381,7 @@ async function bootEngine(): Promise<ZetaEngine> {
     });
 
     const script = document.querySelector<HTMLScriptElement>(
-      'script[src*="/engine/soffice.js"]',
+      'script[src*="soffice.js"]',
     );
     if (script) {
       script.onerror = () => {

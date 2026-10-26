@@ -156,6 +156,13 @@ async function gzipFile(from, to) {
   );
 }
 
+if (process.env.VERCEL) {
+  console.log(
+    "Skipping document engine download on Vercel. Word to PDF will load it from the ZetaOffice CDN in the browser.",
+  );
+  process.exit(0);
+}
+
 if ((await existingStamp()).trim() === stamp) {
   const wasmReady = await stat(join(outDir, "soffice.wasm.gz")).then(
     (info) => info.size > 0,
