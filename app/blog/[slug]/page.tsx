@@ -5,6 +5,7 @@ import type { ComponentType } from "react";
 import { AddPdfToWordArticle } from "@/components/blog/AddPdfToWordArticle";
 import { CmsArticleBody } from "@/components/blog/CmsArticleBody";
 import { DownloadWordAsPdfArticle } from "@/components/blog/DownloadWordAsPdfArticle";
+import { MakeFileLessThan10MbArticle } from "@/components/blog/MakeFileLessThan10MbArticle";
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
 import { OpenPdfInWordArticle } from "@/components/blog/OpenPdfInWordArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
@@ -24,6 +25,7 @@ const staticArticles: Record<string, ComponentType> = {
   "how-to-merge-pdf-files": MergePdfArticle,
   "add-pdf-to-word-document": AddPdfToWordArticle,
   "how-can-i-open-pdf-file-in-word": OpenPdfInWordArticle,
+  "how-to-make-a-file-less-than-10-mb": MakeFileLessThan10MbArticle,
 };
 
 interface BlogArticlePageProps {

@@ -1,5 +1,6 @@
 import { createWriteStream } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import https from "node:https";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
@@ -17,12 +18,58 @@ async function existingStamp() {
   }
 }
 
+function requestOnce(url, redirectCount = 0) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(
+      url,
+      {
+        headers: {
+          // Node fetch auto-decompresses brotli and fails on this CDN
+          // (`ERR__ERROR_FORMAT_PADDING_1`). Request uncompressed bytes.
+          "Accept-Encoding": "identity",
+          "User-Agent": "bestfreepdfconverter-engine-fetch",
+        },
+      },
+      (res) => {
+        const status = res.statusCode ?? 0;
+        const location = res.headers.location;
+        if (status >= 300 && status < 400 && location) {
+          res.resume();
+          if (redirectCount >= 5) {
+            reject(new Error(`Too many redirects downloading ${url}`));
+            return;
+          }
+          requestOnce(new URL(location, url).href, redirectCount + 1).then(resolve, reject);
+          return;
+        }
+        if (status !== 200) {
+          res.resume();
+          reject(new Error(`Could not download ${url}: ${status}`));
+          return;
+        }
+        const chunks = [];
+        res.on("data", (chunk) => chunks.push(chunk));
+        res.on("end", () => resolve(Buffer.concat(chunks)));
+        res.on("error", reject);
+      },
+    );
+    req.on("error", reject);
+  });
+}
+
 async function download(name) {
-  const response = await fetch(source + name);
-  if (!response.ok) {
-    throw new Error(`Could not download ${name}: ${response.status}`);
+  const url = source + name;
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      return await requestOnce(url);
+    } catch (error) {
+      lastError = error;
+      console.warn(`Download failed for ${name} (attempt ${attempt}/3): ${error.message}`);
+      await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
+    }
   }
-  return Buffer.from(await response.arrayBuffer());
+  throw lastError;
 }
 
 if ((await existingStamp()).trim() === stamp) {

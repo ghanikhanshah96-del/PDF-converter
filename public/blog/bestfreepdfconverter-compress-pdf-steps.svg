@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Four steps to compress a PDF under 10 MB</title>
+  <desc id="desc">Open Compress PDF, select the file, choose High Medium or Low, then download and check the size.</desc>
+  <rect width="1200" height="420" rx="18" fill="#f7f7fb"/>
+  <g>
+    <rect x="40" y="70" width="250" height="250" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+    <circle cx="70" cy="104" r="18" fill="#c82420"/>
+    <text x="64" y="110" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">1</text>
+    <text x="100" y="110" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Open compressor</text>
+    <rect x="78" y="150" width="174" height="110" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+    <text x="104" y="214" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Compress PDF</text>
+  </g>
+  <polygon points="310,195 348,178 348,212" fill="#e5322d"/>
+  <g>
+    <rect x="368" y="70" width="250" height="250" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+    <circle cx="398" cy="104" r="18" fill="#c82420"/>
+    <text x="392" y="110" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">2</text>
+    <text x="428" y="110" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Select PDF</text>
+    <rect x="428" y="150" width="130" height="130" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+    <text x="466" y="224" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PDF</text>
+  </g>
+  <polygon points="638,195 676,178 676,212" fill="#e5322d"/>
+  <g>
+    <rect x="696" y="70" width="250" height="250" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+    <circle cx="726" cy="104" r="18" fill="#c82420"/>
+    <text x="720" y="110" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">3</text>
+    <text x="756" y="110" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Pick quality</text>
+    <text x="736" y="180" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="16">High</text>
+    <text x="736" y="214" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Medium</text>
+    <text x="736" y="248" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="16">Low</text>
+  </g>
+  <polygon points="966,195 1004,178 1004,212" fill="#e5322d"/>
+  <g>
+    <rect x="1024" y="70" width="136" height="250" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+    <circle cx="1054" cy="104" r="18" fill="#c82420"/>
+    <text x="1048" y="110" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">4</text>
+    <text x="1044" y="150" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">Download</text>
+    <rect x="1054" y="180" width="76" height="90" rx="8" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+    <text x="1066" y="232" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">&lt;10MB</text>
+  </g>
+  <text x="40" y="390" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">BestFreePDFConverter illustration - topic guide, not a screenshot.</text>
+</svg>

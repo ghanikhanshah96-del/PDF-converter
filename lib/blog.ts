@@ -15,6 +15,7 @@ export interface BlogPost {
   published: string;
   updated: string;
   toolId: ToolId;
+  tags?: string[];
 }
 
 const blogInput: BlogPost[] = [
@@ -107,6 +108,33 @@ const blogInput: BlogPost[] = [
     published: "2026-10-21",
     updated: "2026-10-21",
     toolId: "pdf-to-word",
+  },
+  {
+    slug: "how-to-make-a-file-less-than-10-mb",
+    title: "How to Make a File Less Than 10 MB: Easy Methods",
+    seoTitle:
+      "How to Make a File Less Than 10 MB: Easy Methods | BestFreePDFConverter",
+    description:
+      "Learn how to make a file less than 10 MB. Reduce PDF, Word, and image file sizes with simple compression steps for uploads and email attachments.",
+    excerpt:
+      "Compress a PDF, shrink pictures in Word, or resize an image so the file stays under a 10 MB upload or email limit.",
+    category: "Optimize",
+    readTime: "8 min read",
+    image: "/blog/bestfreepdfconverter-file-under-10mb.svg",
+    imageAlt:
+      "Diagram of reducing a PDF, Word document, and image so each file is under 10 MB",
+    published: "2026-10-27",
+    updated: "2026-10-27",
+    toolId: "compress-pdf",
+    tags: [
+      "how to make a file less than 10 mb",
+      "reduce file size to 10 MB",
+      "compress PDF under 10 MB",
+      "make a file smaller",
+      "compress Word document",
+      "reduce image file size",
+      "file compression online",
+    ],
   },
 ];
 

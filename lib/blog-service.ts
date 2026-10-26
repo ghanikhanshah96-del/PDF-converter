@@ -68,7 +68,7 @@ function staticToView(post: StaticBlogPost & { href: string }): CmsBlogPostView 
     updatedAt: post.updated,
     readTime: post.readTime,
     category: post.category,
-    tags: [],
+    tags: post.tags ?? [],
     metaTitle: post.seoTitle,
     metaDescription: post.description,
     featured: false,

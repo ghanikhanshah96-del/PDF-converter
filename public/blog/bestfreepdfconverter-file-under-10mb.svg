@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="525" viewBox="0 0 1200 525" role="img" aria-labelledby="title desc">
+  <title id="title">Make a PDF, Word file, or image smaller than 10 MB</title>
+  <desc id="desc">Three methods: compress a PDF, compress pictures in Word, and resize or convert an image so the file is under 10 MB.</desc>
+  <rect width="1200" height="525" rx="18" fill="#f7f7fb"/>
+  <rect x="36" y="36" width="360" height="408" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="36" y="36" width="360" height="56" rx="14" fill="#fff0f0"/>
+  <rect x="36" y="76" width="360" height="16" fill="#fff0f0"/>
+  <text x="56" y="74" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Compress a PDF</text>
+  <rect x="86" y="130" width="110" height="140" rx="12" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="114" y="198" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PDF</text>
+  <text x="108" y="228" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Too large</text>
+  <polygon points="220,195 258,178 258,212" fill="#e5322d"/>
+  <rect x="278" y="150" width="90" height="100" rx="10" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="293" y="198" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">PDF</text>
+  <text x="289" y="222" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">&lt; 10 MB</text>
+  <text x="56" y="320" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">Use Compress PDF online</text>
+  <text x="56" y="350" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">High, Medium, or Low quality.</text>
+  <text x="56" y="376" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Then check the new file size.</text>
+  <rect x="420" y="36" width="360" height="408" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="420" y="36" width="360" height="56" rx="14" fill="#fff0f0"/>
+  <rect x="420" y="76" width="360" height="16" fill="#fff0f0"/>
+  <text x="440" y="74" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Shrink a Word file</text>
+  <rect x="470" y="130" width="230" height="160" rx="12" fill="#ffffff" stroke="#2b579a" stroke-width="2"/>
+  <rect x="470" y="130" width="230" height="40" rx="12" fill="#2b579a"/>
+  <text x="492" y="156" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Picture Format</text>
+  <rect x="494" y="190" width="70" height="70" rx="8" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="506" y="232" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">IMG</text>
+  <rect x="580" y="200" width="96" height="14" rx="3" fill="#c8c8d2"/>
+  <rect x="580" y="222" width="78" height="10" rx="3" fill="#c8c8d2"/>
+  <text x="440" y="340" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">Compress Pictures in Word</text>
+  <text x="440" y="370" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Lower resolution for every image.</text>
+  <rect x="804" y="36" width="360" height="408" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="804" y="36" width="360" height="56" rx="14" fill="#fff0f0"/>
+  <rect x="804" y="76" width="360" height="16" fill="#fff0f0"/>
+  <text x="824" y="74" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Reduce an image</text>
+  <rect x="854" y="140" width="120" height="120" rx="12" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="878" y="198" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">PNG</text>
+  <text x="872" y="226" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="13">Large photo</text>
+  <polygon points="996,195 1034,178 1034,212" fill="#e5322d"/>
+  <rect x="1048" y="160" width="88" height="80" rx="10" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="1066" y="206" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">JPG</text>
+  <text x="824" y="320" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">Resize, compress, or convert</text>
+  <text x="824" y="350" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Keep text and details readable.</text>
+  <text x="36" y="490" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">BestFreePDFConverter illustration - topic guide, not a screenshot.</text>
+</svg>
