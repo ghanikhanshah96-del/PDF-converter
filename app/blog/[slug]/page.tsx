@@ -7,6 +7,7 @@ import { CmsArticleBody } from "@/components/blog/CmsArticleBody";
 import { DownloadWordAsPdfArticle } from "@/components/blog/DownloadWordAsPdfArticle";
 import { MakeFileLessThan10MbArticle } from "@/components/blog/MakeFileLessThan10MbArticle";
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
+import { WhatDoesCompressingAPdfDoArticle } from "@/components/blog/WhatDoesCompressingAPdfDoArticle";
 import { OpenPdfInWordArticle } from "@/components/blog/OpenPdfInWordArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
 import {
@@ -26,6 +27,7 @@ const staticArticles: Record<string, ComponentType> = {
   "add-pdf-to-word-document": AddPdfToWordArticle,
   "how-can-i-open-pdf-file-in-word": OpenPdfInWordArticle,
   "how-to-make-a-file-less-than-10-mb": MakeFileLessThan10MbArticle,
+  "what-does-compressing-a-pdf-do": WhatDoesCompressingAPdfDoArticle,
 };
 
 interface BlogArticlePageProps {

@@ -14,13 +14,19 @@ export default function Page() {
       notice={
         <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
           <Link
+            href="/blog/what-does-compressing-a-pdf-do"
+            className="font-semibold text-[var(--brand-deep)] underline decoration-[rgba(200,36,32,0.35)] underline-offset-2 hover:decoration-[var(--brand-deep)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          >
+            What compressing a PDF does
+          </Link>
+          , including quality settings. Need a size limit? See{" "}
+          <Link
             href="/blog/how-to-make-a-file-less-than-10-mb"
             className="font-semibold text-[var(--brand-deep)] underline decoration-[rgba(200,36,32,0.35)] underline-offset-2 hover:decoration-[var(--brand-deep)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
           >
-            How to make a file less than 10 MB
+            how to make a file less than 10 MB
           </Link>
-          , including PDF compression, Word picture compression, and image
-          resizing.
+          .
         </p>
       }
     >
