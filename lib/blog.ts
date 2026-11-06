@@ -163,6 +163,33 @@ const blogInput: BlogPost[] = [
       "PDF compressor",
     ],
   },
+  {
+    slug: "how-do-i-save-a-pdf-as-a-jpeg",
+    title: "How Do I Save a PDF as a JPEG? Easy Step-by-Step Guide",
+    seoTitle:
+      "How Do I Save a PDF as a JPEG? Easy Methods | BestFreePDFConverter",
+    description:
+      "Wondering how do I save a PDF as a JPEG? Learn to convert PDF pages into JPG images online for free or use Preview on Mac with simple steps.",
+    excerpt:
+      "Convert PDF pages into JPEG images with a free online converter, or export a page from Preview on a Mac.",
+    category: "Convert",
+    readTime: "7 min read",
+    image: "/blog/bestfreepdfconverter-pdf-to-jpeg.svg",
+    imageAlt:
+      "Diagram of a PDF becoming separate JPEG images, one file per page",
+    published: "2026-11-06",
+    updated: "2026-11-06",
+    toolId: "pdf-to-jpg",
+    tags: [
+      "how do i save a pdf as a jpeg",
+      "PDF to JPEG converter",
+      "save PDF as JPG",
+      "convert PDF to JPEG free",
+      "PDF to JPG online",
+      "convert PDF pages to images",
+      "save PDF as image",
+    ],
+  },
 ];
 
 export const blogPosts = blogInput.map((post) => ({

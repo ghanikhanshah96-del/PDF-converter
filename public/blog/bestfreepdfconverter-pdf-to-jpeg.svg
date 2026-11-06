@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="525" viewBox="0 0 1200 525" role="img" aria-labelledby="title desc">
+  <title id="title">Save a PDF as JPEG images</title>
+  <desc id="desc">A multi-page PDF is converted into separate JPEG files, one image for each page.</desc>
+  <rect width="1200" height="525" rx="18" fill="#f7f7fb"/>
+  <rect x="40" y="50" width="240" height="280" rx="14" fill="#ffffff" stroke="#e5322d" stroke-width="2"/>
+  <rect x="40" y="50" width="240" height="48" rx="14" fill="#fff0f0"/>
+  <rect x="40" y="82" width="240" height="16" fill="#fff0f0"/>
+  <text x="118" y="84" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PDF file</text>
+  <rect x="88" y="128" width="144" height="168" rx="8" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="130" y="198" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PDF</text>
+  <text x="108" y="228" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Several pages</text>
+  <text x="88" y="360" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">One document</text>
+  <polygon points="310,185 350,168 350,202" fill="#e5322d"/>
+  <rect x="370" y="50" width="420" height="280" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="370" y="50" width="420" height="48" rx="14" fill="#fff0f0"/>
+  <rect x="370" y="82" width="420" height="16" fill="#fff0f0"/>
+  <text x="430" y="84" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Convert each page</text>
+  <rect x="400" y="130" width="110" height="150" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="424" y="214" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Page 1</text>
+  <rect x="525" y="130" width="110" height="150" rx="10" fill="#ffffff" stroke="#e5322d" stroke-width="2"/>
+  <text x="549" y="214" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Page 2</text>
+  <rect x="650" y="130" width="110" height="150" rx="10" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="674" y="214" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Page 3</text>
+  <polygon points="820,185 860,168 860,202" fill="#e5322d"/>
+  <rect x="880" y="50" width="280" height="280" rx="14" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <rect x="880" y="50" width="280" height="48" rx="14" fill="#eef8f2"/>
+  <rect x="880" y="82" width="280" height="16" fill="#eef8f2"/>
+  <text x="932" y="84" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">JPEG images</text>
+  <rect x="910" y="130" width="70" height="90" rx="8" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="920" y="182" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">JPG</text>
+  <rect x="990" y="130" width="70" height="90" rx="8" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="1000" y="182" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">JPG</text>
+  <rect x="1070" y="130" width="70" height="90" rx="8" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="1080" y="182" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">JPG</text>
+  <text x="910" y="268" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600">One image per page</text>
+  <text x="910" y="294" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">JPG and JPEG are the same</text>
+  <text x="40" y="390" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600">Use a browser converter, or export a single page from Preview on a Mac.</text>
+  <text x="40" y="420" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">The result is an image. Text is no longer selectable as ordinary PDF text.</text>
+  <text x="40" y="490" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">BestFreePDFConverter illustration - topic guide, not a screenshot.</text>
+</svg>

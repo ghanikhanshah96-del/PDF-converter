@@ -9,6 +9,7 @@ import { MakeFileLessThan10MbArticle } from "@/components/blog/MakeFileLessThan1
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
 import { WhatDoesCompressingAPdfDoArticle } from "@/components/blog/WhatDoesCompressingAPdfDoArticle";
 import { OpenPdfInWordArticle } from "@/components/blog/OpenPdfInWordArticle";
+import { SavePdfAsJpegArticle } from "@/components/blog/SavePdfAsJpegArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
 import {
   getBlogCoverImageSrc,
@@ -28,6 +29,7 @@ const staticArticles: Record<string, ComponentType> = {
   "how-can-i-open-pdf-file-in-word": OpenPdfInWordArticle,
   "how-to-make-a-file-less-than-10-mb": MakeFileLessThan10MbArticle,
   "what-does-compressing-a-pdf-do": WhatDoesCompressingAPdfDoArticle,
+  "how-do-i-save-a-pdf-as-a-jpeg": SavePdfAsJpegArticle,
 };
 
 interface BlogArticlePageProps {
