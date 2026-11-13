@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Source_Sans_3 } from "next/font/google";
 import { Analytics } from "@/components/Analytics";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { SiteChrome } from "@/components/SiteChrome";
 import { SITE } from "@/lib/site";
 import "./globals.css";
@@ -90,6 +91,7 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${sourceSans.variable} flex min-h-screen flex-col antialiased`}
       >
+        <GoogleAnalytics />
         <Analytics />
         <SiteChrome>{children}</SiteChrome>
       </body>
