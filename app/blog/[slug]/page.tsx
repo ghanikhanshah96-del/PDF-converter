@@ -9,6 +9,7 @@ import { MakeFileLessThan10MbArticle } from "@/components/blog/MakeFileLessThan1
 import { MergePdfArticle } from "@/components/blog/MergePdfArticle";
 import { WhatDoesCompressingAPdfDoArticle } from "@/components/blog/WhatDoesCompressingAPdfDoArticle";
 import { OpenPdfInWordArticle } from "@/components/blog/OpenPdfInWordArticle";
+import { CompressPdfInWindowsArticle } from "@/components/blog/CompressPdfInWindowsArticle";
 import { SavePdfAsJpegArticle } from "@/components/blog/SavePdfAsJpegArticle";
 import { SplitPdfArticle } from "@/components/blog/SplitPdfArticle";
 import {
@@ -30,6 +31,7 @@ const staticArticles: Record<string, ComponentType> = {
   "how-to-make-a-file-less-than-10-mb": MakeFileLessThan10MbArticle,
   "what-does-compressing-a-pdf-do": WhatDoesCompressingAPdfDoArticle,
   "how-do-i-save-a-pdf-as-a-jpeg": SavePdfAsJpegArticle,
+  "how-to-compress-a-pdf-in-windows": CompressPdfInWindowsArticle,
 };
 
 interface BlogArticlePageProps {

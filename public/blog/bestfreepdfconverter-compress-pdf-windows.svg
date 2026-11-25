@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="525" viewBox="0 0 1200 525" role="img" aria-labelledby="title desc">
+  <title id="title">Compress a PDF on Windows 10 or 11</title>
+  <desc id="desc">A large PDF on Windows is compressed in the browser, then checked in File Explorer as a smaller file.</desc>
+  <rect width="1200" height="525" rx="18" fill="#f7f7fb"/>
+  <rect x="40" y="50" width="250" height="280" rx="14" fill="#ffffff" stroke="#e5322d" stroke-width="2"/>
+  <rect x="40" y="50" width="250" height="48" rx="14" fill="#fff0f0"/>
+  <rect x="40" y="82" width="250" height="16" fill="#fff0f0"/>
+  <text x="88" y="84" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Windows PDF</text>
+  <rect x="78" y="128" width="174" height="110" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="132" y="192" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PDF</text>
+  <text x="78" y="278" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600">Too large to email</text>
+  <text x="78" y="302" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Windows 10 or 11</text>
+  <polygon points="320,185 360,168 360,202" fill="#e5322d"/>
+  <rect x="380" y="50" width="430" height="280" rx="14" fill="#ffffff" stroke="#e7e7ee" stroke-width="2"/>
+  <rect x="380" y="50" width="430" height="48" rx="14" fill="#fff0f0"/>
+  <rect x="380" y="82" width="430" height="16" fill="#fff0f0"/>
+  <text x="430" y="84" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Browser compressor</text>
+  <rect x="410" y="130" width="170" height="150" rx="10" fill="#fff0f0" stroke="#e5322d" stroke-width="2"/>
+  <text x="440" y="198" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Edge / Chrome</text>
+  <text x="448" y="226" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="13">No install needed</text>
+  <rect x="600" y="130" width="180" height="150" rx="10" fill="#ffffff" stroke="#e5322d" stroke-width="2"/>
+  <text x="632" y="188" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">High</text>
+  <text x="624" y="214" fill="#c82420" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">Medium</text>
+  <text x="636" y="240" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">Low</text>
+  <polygon points="840,185 880,168 880,202" fill="#e5322d"/>
+  <rect x="900" y="50" width="260" height="280" rx="14" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <rect x="900" y="50" width="260" height="48" rx="14" fill="#eef8f2"/>
+  <rect x="900" y="82" width="260" height="16" fill="#eef8f2"/>
+  <text x="932" y="84" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">File Explorer</text>
+  <rect x="970" y="140" width="120" height="90" rx="8" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+  <text x="1000" y="192" fill="#1f7a4d" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">PDF</text>
+  <text x="928" y="268" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600">Right-click Properties</text>
+  <text x="928" y="292" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">Compare size with original</text>
+  <text x="40" y="390" fill="#33333b" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600">Compress in the browser. Microsoft Print to PDF is not a dedicated compressor.</text>
+  <text x="40" y="420" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="15">Start with Medium quality, then open the file and confirm the pages stay readable.</text>
+  <text x="40" y="490" fill="#707078" font-family="Arial, Helvetica, sans-serif" font-size="14">BestFreePDFConverter illustration - topic guide, not a screenshot.</text>
+</svg>

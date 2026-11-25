@@ -26,6 +26,13 @@ export default function Page() {
           >
             how to make a file less than 10 MB
           </Link>
+          . On Windows 10 or 11? See{" "}
+          <Link
+            href="/blog/how-to-compress-a-pdf-in-windows"
+            className="font-semibold text-[var(--brand-deep)] underline decoration-[rgba(200,36,32,0.35)] underline-offset-2 hover:decoration-[var(--brand-deep)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          >
+            how to compress a PDF in Windows
+          </Link>
           .
         </p>
       }

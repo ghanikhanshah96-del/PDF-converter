@@ -190,6 +190,32 @@ const blogInput: BlogPost[] = [
       "save PDF as image",
     ],
   },
+  {
+    slug: "how-to-compress-a-pdf-in-windows",
+    title: "How to Compress a PDF in Windows 10 or 11 for Free",
+    seoTitle:
+      "How to Compress a PDF in Windows 10 or 11 for Free | BestFreePDFConverter",
+    description:
+      "Learn how to compress a PDF in Windows 10 or 11 for free. Reduce PDF file size online, maintain readability, and prepare documents for email or upload.",
+    excerpt:
+      "Reduce a PDF in Microsoft Edge or Chrome with a free online compressor, then check the size in File Explorer.",
+    category: "Optimize",
+    readTime: "8 min read",
+    image: "/blog/bestfreepdfconverter-compress-pdf-windows.svg",
+    imageAlt:
+      "Diagram of compressing a PDF on Windows 10 or 11 in a browser, then checking the smaller file in File Explorer",
+    published: "2026-11-25",
+    updated: "2026-11-25",
+    toolId: "compress-pdf",
+    tags: [
+      "how to compress a pdf in windows",
+      "compress PDF Windows 11",
+      "compress PDF Windows 10",
+      "reduce PDF file size Windows",
+      "free PDF compressor for Windows",
+      "compress PDF without Adobe",
+    ],
+  },
 ];
 
 export const blogPosts = blogInput.map((post) => ({
